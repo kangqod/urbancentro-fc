@@ -5,7 +5,7 @@ export const PRIMARY_COLOR = '#ff681f'
 export const shareKakao = (content: string) => {
   const kakao = (window as unknown as KakaoWindow).Kakao
 
-  kakao.Share.sendCustom({
+  kakao.Share.sendDefault({
     objectType: 'text',
     text: content,
     link: {

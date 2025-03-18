@@ -58,7 +58,7 @@ export default function TeamTabs({ activeTab, setActiveTab }: TeamTabsProps) {
       label: (
         <div className="tab-label">
           <UserPlus size={TAB_ICON_SIZE} />
-          <span>선수 등록</span>
+          <span>선수 선택</span>
         </div>
       ),
       children: (
@@ -67,6 +67,7 @@ export default function TeamTabs({ activeTab, setActiveTab }: TeamTabsProps) {
           onPrev={() => setActiveTab(TAB_KEYS.TEAM_SETUP)}
           requiredCount={requiredPlayers}
           onPlayersSelected={setSelectedPlayers}
+          activeTab={activeTab}
         />
       )
     },
@@ -84,17 +85,5 @@ export default function TeamTabs({ activeTab, setActiveTab }: TeamTabsProps) {
     }
   ]
 
-  return (
-    <Tabs
-      activeKey={activeTab}
-      // onChange={() => {
-      //   //
-      // }}
-      items={tabItems}
-      className="team-tabs"
-      centered
-      size="large"
-      tabBarGutter={TAB_GAP}
-    />
-  )
+  return <Tabs activeKey={activeTab} items={tabItems} className="team-tabs" centered size="large" tabBarGutter={TAB_GAP} />
 }

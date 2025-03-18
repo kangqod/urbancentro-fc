@@ -88,6 +88,7 @@
   background-color: #ff681f;
 }
 
+.shuffle-button.ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):hover,
 .shuffle-button:hover:not(:disabled) {
   color: #fff;
   background-color: #ff8142;

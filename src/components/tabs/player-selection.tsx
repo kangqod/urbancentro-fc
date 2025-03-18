@@ -23,9 +23,10 @@ interface PlayerSelectionProps {
   onPrev: () => void
   requiredCount: number
   onPlayersSelected: (players: Player[]) => void
+  activeTab: string
 }
 
-export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlayersSelected }: PlayerSelectionProps) {
+export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlayersSelected, activeTab }: PlayerSelectionProps) {
   const [players, setPlayers] = useState<Player[]>(
     playerData.map((player) => ({
       id: `${player.year}-${player.number}`,
@@ -33,7 +34,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
       number: player.number,
       year: player.year,
       isGuest: false,
-      selected: player.year.length !== 1 // 지원자
+      selected: player.year !== '99' // 지원자
     }))
   )
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -83,7 +84,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
       id: `guest-${Date.now()}`,
       name: values.name,
       number: 0,
-      year: '',
+      year: '99',
       isGuest: true,
       selected: true
     }
@@ -109,13 +110,15 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
 
   useEffect(() => {
     const newStatus = getSelectionStatus(selectedCount)
-
-    messageApi.open({
-      key: 'player-selection',
-      type: newStatus.type as 'warning' | 'error' | 'success',
-      content: newStatus.message
-    })
-  }, [selectedCount, getSelectionStatus, messageApi])
+    if (activeTab === '2') {
+      // PLAYER_SELECTION 탭일 때만
+      messageApi.open({
+        key: 'player-selection',
+        type: newStatus.type as 'warning' | 'error' | 'success',
+        content: newStatus.message
+      })
+    }
+  }, [selectedCount, getSelectionStatus, messageApi, activeTab])
 
   return (
     <div className="player-selection-container">
@@ -182,7 +185,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
         </div>
       </div>
 
-      <Modal title="게스트 추가" open={isModalOpen} onCancel={() => setIsModalOpen(false)} footer={null}>
+      <Modal title="게스트 추가" width={350} open={isModalOpen} onCancel={() => setIsModalOpen(false)} footer={null}>
         <Form form={form} layout="vertical" onFinish={addGuest}>
           <Form.Item name="name" label="이름" rules={[{ required: true, message: '이름을 입력해주세요' }]}>
             <Input placeholder="게스트 이름" />

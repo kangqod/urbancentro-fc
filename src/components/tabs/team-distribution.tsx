@@ -1,24 +1,12 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, Button, Typography, Row, Col, Spin, Badge, Tooltip, message } from 'antd'
-import { RotateCw, ArrowLeft, Share2, MessageCircle, Clipboard } from 'lucide-react'
-import './team-distribution.css'
+import { RotateCw, Share2, MessageCircle, Clipboard, Undo2 } from 'lucide-react'
 import { shareKakao } from '@/utils'
+import type { Player, Team } from '@/types'
+
+import './team-distribution.css'
 
 const { Title, Text } = Typography
-
-interface Player {
-  id: string
-  name: string
-  year?: string
-  number?: number
-  skill?: number
-}
-
-interface Team {
-  id: string
-  name: string
-  players: Player[]
-}
 
 interface TeamDistributionProps {
   onPrev: () => void
@@ -27,51 +15,46 @@ interface TeamDistributionProps {
 }
 
 export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }: TeamDistributionProps) {
-  const [teams, setTeams] = useState<Team[]>(
-    Array.from({ length: teamCount }, (_, i) => ({
-      id: String(i + 1),
-      name: `팀 ${String.fromCharCode(65 + i)}`,
-      players: []
-    }))
-  )
-  const [isShuffling, setIsShuffling] = useState(false)
+  const [teams, setTeams] = useState<Team[]>([])
+  const [playersForDistribution, setPlayersForDistribution] = useState<Player[]>([])
+  const [isShuffling, setIsShuffling] = useState(true)
   const [messageApi, contextHolder] = message.useMessage()
 
-  const playersForDistribution = selectedPlayers.map((player) => ({
-    id: player.id,
-    name: player.name,
-    year: player.year,
-    number: player.number,
-    skill: player.skill
-  }))
-
-  const shuffleTeams = useCallback(() => {
-    setIsShuffling(true)
-    const shuffledPlayers = [...playersForDistribution].sort(() => Math.random() - 0.5)
-    const teamSize = Math.floor(shuffledPlayers.length / teamCount)
-
-    const newTeams = Array.from({ length: teamCount }, (_, index) => {
-      const start = index * teamSize
-      const end = index === teamCount - 1 ? shuffledPlayers.length : (index + 1) * teamSize
-      return {
-        id: String(index + 1),
-        name: `팀 ${String.fromCharCode(65 + index)}`,
-        players: shuffledPlayers.slice(start, end)
-      }
-    }).sort((a, b) => a.name.localeCompare(b.name))
-
-    setTimeout(() => {
-      setTeams(newTeams)
-      setIsShuffling(false)
-    }, 800)
-  }, [playersForDistribution, teamCount])
+  useEffect(() => {
+    // 선택된 선수들을 복사하여 새로운 배열 생성
+    setPlayersForDistribution([...selectedPlayers])
+  }, [selectedPlayers])
 
   useEffect(() => {
     if (playersForDistribution.length > 0) {
-      shuffleTeams()
+      distributePlayers()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [playersForDistribution])
+
+  const distributePlayers = async () => {
+    setIsShuffling(true)
+    const newTeams2 = await new Promise<Team[]>((resolve) =>
+      setTimeout(() => {
+        const shuffledPlayers = [...playersForDistribution].sort(() => Math.random() - 0.5)
+        const newTeams = Array.from({ length: teamCount }, (_, i) => ({
+          id: String(i + 1),
+          name: `팀 ${String.fromCharCode(65 + i)}`,
+          players: shuffledPlayers.slice(
+            i * Math.ceil(shuffledPlayers.length / teamCount),
+            (i + 1) * Math.ceil(shuffledPlayers.length / teamCount)
+          )
+        }))
+        newTeams.forEach((team) => {
+          team.players.sort((a, b) => a.year.localeCompare(b.year))
+        })
+        resolve(newTeams)
+      }, 800)
+    )
+
+    setTeams(newTeams2)
+    setIsShuffling(false)
+  }
 
   const getTeamsText = () => {
     return teams
@@ -119,6 +102,12 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
     shareKakao(shareText)
   }
 
+  const handlePrevClick = () => {
+    setIsShuffling(true)
+    setPlayersForDistribution([]) // 선수 목록 초기화
+    onPrev()
+  }
+
   return (
     <div className="team-distribution-container">
       {contextHolder}
@@ -148,7 +137,7 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
                   {team.players.map((player) => (
                     <div key={player.id} className="player-item">
                       <Text>
-                        {player.year ? `${player.year} ` : '??'}
+                        {player.year ? `${player.year} ` : 'G '}
                         {player.name}
                       </Text>
                     </div>
@@ -173,14 +162,14 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
           </Tooltip>
         </div>
         <div className="button-group">
-          <Button size="large" icon={<ArrowLeft size={16} />} onClick={onPrev} className="action-button prev-button" disabled={isShuffling}>
+          <Button type="default" onClick={handlePrevClick} className="action-button prev-button" icon={<Undo2 size={16} />}>
             이전
           </Button>
           <Button
-            type="default"
+            type="primary"
             size="large"
             icon={<RotateCw size={16} />}
-            onClick={shuffleTeams}
+            onClick={distributePlayers}
             disabled={isShuffling}
             className="action-button shuffle-button"
           >
