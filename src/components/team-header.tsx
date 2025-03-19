@@ -7,6 +7,7 @@ const { Header } = Layout
 const { Title } = Typography
 
 export default function TeamHeader() {
+  // TODO: reload 부분 수정
   return (
     <Header className="team-header" onClick={() => window.location.reload()}>
       <div className="team-header-content">

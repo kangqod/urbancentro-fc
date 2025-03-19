@@ -2,16 +2,19 @@ import type { KakaoWindow } from '@/types'
 
 export const PRIMARY_COLOR = '#ff681f'
 
-export const shareKakao = (content: string) => {
+// TODO: content any type
+export const shareKakao = (content: any) => {
   const kakao = (window as unknown as KakaoWindow).Kakao
+  const baseUrl = window.location.origin + window.location.pathname
+  const teamsParam = content.teams ? `?teams=${encodeURIComponent(JSON.stringify(content.teams))}` : ''
+  const shareUrl = baseUrl + teamsParam
 
   kakao.Share.sendDefault({
     objectType: 'text',
-    text: content,
+    text: content.description,
     link: {
-      // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-      mobileWebUrl: window.location.href,
-      webUrl: window.location.href
+      webUrl: shareUrl,
+      mobileWebUrl: shareUrl
     }
   })
 }

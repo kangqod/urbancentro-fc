@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/urbancentro-fc/',
+  base: '/urbancentro-fc',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
