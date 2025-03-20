@@ -48,8 +48,7 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
         const teamsParam = searchParams.get('teams')
         if (teamsParam) {
           try {
-            const decodedTeams = JSON.parse(decodeURIComponent(teamsParam))
-            // 디코딩된 팀 데이터를 Team 인터페이스 형식으로 변환
+            const decodedTeams = JSON.parse(teamsParam)
             const formattedTeams: Team[] = decodedTeams.map((team: [string, string[]], index: number) => ({
               id: String(index + 1),
               name: `팀 ${team[0]}`,

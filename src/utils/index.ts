@@ -121,7 +121,7 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
 export const shareKakao = (content: ShareKakaoContent) => {
   const kakao = (window as unknown as KakaoWindow).Kakao
   const baseUrl = window.location.origin + window.location.pathname
-  const teamsParam = content.teams ? `?teams=${encodeURIComponent(JSON.stringify(content.teams))}` : ''
+  const teamsParam = content.teams ? `?teams=${JSON.stringify(content.teams)}` : ''
   const shareUrl = baseUrl + teamsParam
 
   kakao.Share.sendDefault({
