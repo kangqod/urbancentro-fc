@@ -1,23 +1,15 @@
+import { useState, useEffect } from 'react'
 import { Tabs } from 'antd'
 import { Users, UserPlus, Shuffle } from 'lucide-react'
 import TeamSetup from '@/components/tabs/team-setup'
 import PlayerSelection from '@/components/tabs/player-selection'
 import TeamDistribution from '@/components/tabs/team-distribution'
+import type { Player } from '@/types'
 import './team-tabs.css'
-import { useState, useEffect } from 'react'
 
 interface TeamTabsProps {
   activeTab: string
   setActiveTab: (tab: string) => void
-}
-
-interface Player {
-  id: string
-  name: string
-  number: number
-  year: string
-  isGuest: boolean
-  selected: boolean
 }
 
 const TAB_ICON_SIZE = 20

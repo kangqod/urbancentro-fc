@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ConfigProvider, Layout } from 'antd'
 import TeamTabs from '@/components/team-tabs'
 import TeamHeader from '@/components/team-header'
-import { PRIMARY_COLOR } from '@/utils'
+import { PRIMARY_COLOR } from '@/constants'
 import KakaoLoader from './KakaoLoader'
 
 import './App.css'

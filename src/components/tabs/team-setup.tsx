@@ -2,17 +2,10 @@ import { useState } from 'react'
 import { Card, Button, Typography, Row, Col } from 'antd'
 import { Users, ArrowRight } from 'lucide-react'
 import './team-setup.css'
+import { MATCH_FORMAT_CONFIG } from '@/constants'
 // import { PRIMARY_COLOR } from '@/utils'
 
 const { Title, Text } = Typography
-
-interface TeamOption {
-  id: string
-  title: string
-  description: string
-  teams: number
-  playersPerTeam: number
-}
 
 interface TeamSetupProps {
   onNext: () => void
@@ -24,23 +17,20 @@ const ICON_SIZE = {
   ARROW: 16
 }
 
+const TEAM_OPTIONS = Object.values(MATCH_FORMAT_CONFIG).map((config) => ({
+  id: config.ID,
+  title: config.TITLE,
+  description: config.DESCRIPTION
+}))
+
 export default function TeamSetup({ onNext, onSelectTeamOption }: TeamSetupProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
 
-  const teamOptions: TeamOption[] = [
-    { id: '1', title: '5 vs 5', description: '총 10명', teams: 2, playersPerTeam: 5 },
-    { id: '2', title: '5 vs 5 vs 5', description: '총 15명', teams: 3, playersPerTeam: 5 },
-    { id: '3', title: '6 vs 6', description: '총 12명', teams: 2, playersPerTeam: 6 },
-    { id: '4', title: '6 vs 6 vs 6', description: '총 18명', teams: 3, playersPerTeam: 6 },
-    { id: '5', title: '7 vs 7', description: '총 14명', teams: 2, playersPerTeam: 7 },
-    { id: '6', title: '7 vs 7 vs 7', description: '총 21명', teams: 3, playersPerTeam: 7 }
-  ]
-
   const handleOptionSelect = (optionId: string) => {
     setSelectedOption(optionId)
-    const selectedTeam = teamOptions.find((option) => option.id === optionId)
+    const selectedTeam = Object.values(MATCH_FORMAT_CONFIG).find((option) => option.ID === optionId)
     if (selectedTeam) {
-      onSelectTeamOption(selectedTeam.teams * selectedTeam.playersPerTeam, selectedTeam.teams)
+      onSelectTeamOption(selectedTeam.TEAMS * selectedTeam.PLAYERS_PER_TEAM, selectedTeam.TEAMS)
     }
   }
 
@@ -52,7 +42,7 @@ export default function TeamSetup({ onNext, onSelectTeamOption }: TeamSetupProps
       </div>
 
       <Row gutter={[16, 16]}>
-        {teamOptions.map((option) => (
+        {TEAM_OPTIONS.map((option) => (
           <Col xs={12} md={8} key={option.id}>
             <Card
               hoverable
