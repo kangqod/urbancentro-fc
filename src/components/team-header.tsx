@@ -9,7 +9,7 @@ const { Title } = Typography
 export default function TeamHeader() {
   // TODO: reload 부분 수정
   return (
-    <Header className="team-header" onClick={() => (window.location.href = '/')}>
+    <Header className="team-header" onClick={() => (window.location.href = '/urbancentro-fc')}>
       <div className="team-header-content">
         <Users size={24} style={{ color: PRIMARY_COLOR }} />
         <Title
