@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, Typography, Row, Col, Spin, Badge, Tooltip, message } from 'antd'
 import { RotateCw, Share2, MessageCircle, Clipboard, Undo2 } from 'lucide-react'
-import { shareKakao } from '@/utils'
-import type { Player, Team } from '@/types'
+import { shareKakao, balanceTeams } from '@/utils'
+import type { Player, Team, MatchFormatType } from '@/types'
 
 import './team-distribution.css'
 
@@ -19,6 +19,13 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
   const [playersForDistribution, setPlayersForDistribution] = useState<Player[]>([])
   const [isShuffling, setIsShuffling] = useState(true)
   const [messageApi, contextHolder] = message.useMessage()
+  const [isSharedView, setIsSharedView] = useState(false)
+
+  useEffect(() => {
+    // URL에서 teams 파라미터 확인
+    const searchParams = new URLSearchParams(window.location.search)
+    setIsSharedView(searchParams.has('teams'))
+  }, [])
 
   useEffect(() => {
     // 선택된 선수들을 복사하여 새로운 배열 생성
@@ -26,40 +33,72 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
   }, [selectedPlayers])
 
   useEffect(() => {
-    if (playersForDistribution.length > 0) {
-      distributePlayers()
+    if (playersForDistribution.length > 0 || isSharedView) {
+      distributePlayers(isSharedView)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playersForDistribution])
+  }, [playersForDistribution, isSharedView])
 
-  const distributePlayers = async () => {
-    setIsShuffling(true)
-    const newTeams2 = await new Promise<Team[]>((resolve) =>
-      setTimeout(() => {
-        const shuffledPlayers = [...playersForDistribution].sort(() => Math.random() - 0.5)
-        const newTeams = Array.from({ length: teamCount }, (_, i) => ({
-          id: String(i + 1),
-          name: `팀 ${String.fromCharCode(65 + i)}`,
-          players: shuffledPlayers.slice(
-            i * Math.ceil(shuffledPlayers.length / teamCount),
-            (i + 1) * Math.ceil(shuffledPlayers.length / teamCount)
-          )
-        }))
-        newTeams.forEach((team) => {
-          team.players.sort((a, b) => a.year.localeCompare(b.year))
-        })
-        resolve(newTeams)
-      }, 800)
-    )
+  const distributePlayers = async (isShared: boolean) => {
+    try {
+      setIsShuffling(true)
 
-    setTeams(newTeams2)
-    setIsShuffling(false)
+      if (isShared) {
+        const searchParams = new URLSearchParams(window.location.search)
+        const teamsParam = searchParams.get('teams')
+        if (teamsParam) {
+          try {
+            const decodedTeams = JSON.parse(decodeURIComponent(teamsParam))
+            // 디코딩된 팀 데이터를 Team 인터페이스 형식으로 변환
+            const formattedTeams: Team[] = decodedTeams.map((team: [string, string[]], index: number) => ({
+              id: String(index + 1),
+              name: `팀 ${team[0]}`,
+              players: team[1].map((player, playerIndex) => {
+                const [year, name] = player.split('-')
+                return {
+                  id: `shared-${index}-${playerIndex}`,
+                  name,
+                  year,
+                  position: 'midfielder',
+                  isGuest: true
+                }
+              })
+            }))
+            setTeams(formattedTeams)
+            return
+          } catch (error) {
+            console.error('팀 데이터 파싱 실패:', error)
+            messageApi.error('팀 데이터를 불러오는데 실패했습니다')
+            return
+          }
+        }
+      }
+
+      const newTeams = await new Promise<Team[]>((resolve, reject) =>
+        setTimeout(() => {
+          try {
+            const playersPerTeam = Math.ceil(playersForDistribution.length / teamCount)
+            const mode = Array(teamCount).fill(playersPerTeam).join(':') as MatchFormatType
+            const balancedTeams = balanceTeams(playersForDistribution, mode)
+            resolve(balancedTeams)
+          } catch (error) {
+            reject(error)
+          }
+        }, 800)
+      )
+
+      setTeams(newTeams)
+    } catch (err) {
+      messageApi.error((err as Error).message)
+    } finally {
+      setIsShuffling(false)
+    }
   }
 
   const getTeamsText = () => {
     return teams
       .map((team) => {
-        const playerList = team.players.map((p) => `${p.year ? `${p.year} ` : ''}${p.name}`).join('\n')
+        const playerList = team.players.map((p) => `${p.year ? `${p.year.slice(-2)}` : '99'} ${p.name}`).join('\n')
         return `${team.name}\n${playerList}`
       })
       .join('\n\n')
@@ -97,9 +136,16 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
     }
   }
 
-  const handleKakaoShare = () => {
-    const shareText = getTeamsText()
-    shareKakao(shareText)
+  const handleShareKakao = () => {
+    const teamsData = teams.map((team) => [
+      team.name.slice(-1), // "팀 A" -> "A"
+      team.players.map((player) => `${player.year ? `${player.year.slice(-2)}` : '99'}-${player.name}`)
+    ])
+
+    shareKakao({
+      description: getTeamsText(),
+      teams: teamsData as unknown as Team[]
+    })
   }
 
   const handlePrevClick = () => {
@@ -137,7 +183,7 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
                   {team.players.map((player) => (
                     <div key={player.id} className="player-item">
                       <Text>
-                        {player.year ? `${player.year} ` : 'G '}
+                        {player.year ? `${player.year.slice(-2)} ` : 'G '}
                         {player.name}
                       </Text>
                     </div>
@@ -149,34 +195,39 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
         </Row>
       )}
 
-      <div className="button-container">
-        <div className="share-icons">
-          <Tooltip title="공유하기">
-            <Button type="text" icon={<Share2 size={24} />} onClick={handleNativeShare} className="share-icon-button" />
-          </Tooltip>
-          <Tooltip title="카카오톡 공유">
-            <Button type="text" icon={<MessageCircle size={24} />} onClick={handleKakaoShare} className="share-icon-button kakao" />
-          </Tooltip>
-          <Tooltip title="클립보드에 복사">
-            <Button type="text" icon={<Clipboard size={24} />} onClick={handleCopyToClipboard} className="share-icon-button clipboard" />
-          </Tooltip>
+      {!isSharedView && (
+        <div className="button-container">
+          <div className="share-icons">
+            <Tooltip title="공유하기">
+              <Button type="text" icon={<Share2 size={24} />} onClick={handleNativeShare} className="share-icon-button" />
+            </Tooltip>
+            <Tooltip title="카카오톡 공유">
+              <Button type="text" icon={<MessageCircle size={24} />} onClick={handleShareKakao} className="share-icon-button kakao" />
+            </Tooltip>
+            <Tooltip title="클립보드에 복사">
+              <Button type="text" icon={<Clipboard size={24} />} onClick={handleCopyToClipboard} className="share-icon-button clipboard" />
+            </Tooltip>
+          </div>
+
+          <div className="button-group">
+            <Button type="default" onClick={handlePrevClick} className="action-button prev-button" icon={<Undo2 size={16} />}>
+              이전
+            </Button>
+            {!isSharedView && (
+              <Button
+                type="primary"
+                size="large"
+                icon={<RotateCw size={16} />}
+                onClick={() => distributePlayers(false)}
+                disabled={isShuffling}
+                className="action-button shuffle-button"
+              >
+                다시 섞기
+              </Button>
+            )}
+          </div>
         </div>
-        <div className="button-group">
-          <Button type="default" onClick={handlePrevClick} className="action-button prev-button" icon={<Undo2 size={16} />}>
-            이전
-          </Button>
-          <Button
-            type="primary"
-            size="large"
-            icon={<RotateCw size={16} />}
-            onClick={distributePlayers}
-            disabled={isShuffling}
-            className="action-button shuffle-button"
-          >
-            다시 섞기
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   )
 }

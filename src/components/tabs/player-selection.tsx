@@ -1,22 +1,16 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card, Button, Typography, Row, Col, Checkbox, Badge, Modal, Form, Input, Alert, message } from 'antd'
 import { UserPlus, ArrowRight, Plus, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
-import { PRIMARY_COLOR } from '@/utils'
-import playerData from '@/assets/data.json'
+import { DEFAULT_POSITION, DEFAULT_YEAR, PRIMARY_COLOR } from '@/constants'
+import type { Player } from '@/types'
+
 import './player-selection.css'
+
+import playerData from '@/assets/data.json'
 
 const { Title, Text } = Typography
 
 const ICON_SIZE = 16
-
-interface Player {
-  id: string
-  name: string
-  number: number
-  year: string
-  isGuest: boolean
-  selected: boolean
-}
 
 interface PlayerSelectionProps {
   onNext: () => void
@@ -29,12 +23,13 @@ interface PlayerSelectionProps {
 export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlayersSelected, activeTab }: PlayerSelectionProps) {
   const [players, setPlayers] = useState<Player[]>(
     playerData.map((player) => ({
-      id: `${player.year}-${player.number}`,
+      id: `${player.year}-${player.name}-${player.number}`,
       name: player.name,
-      number: player.number,
       year: player.year,
+      position: player.position,
+      number: player.number,
       isGuest: false,
-      selected: player.year !== '99' // 지원자
+      isParticipating: player.year !== DEFAULT_YEAR // 지원자
     }))
   )
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -43,7 +38,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
   const [messageApi, contextHolder] = message.useMessage()
 
   useEffect(() => {
-    const initialSelectedCount = players.filter((player) => player.selected).length
+    const initialSelectedCount = players.filter((player) => player.isParticipating).length
     setSelectedCount(initialSelectedCount)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -67,12 +62,12 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
     setPlayers((prevPlayers) => {
       const newPlayers = prevPlayers.map((player) => {
         if (player.id === id) {
-          return { ...player, selected: !player.selected }
+          return { ...player, isParticipating: !player.isParticipating }
         }
         return player
       })
 
-      const newSelectedCount = newPlayers.filter((player) => player.selected).length
+      const newSelectedCount = newPlayers.filter((player) => player.isParticipating).length
       setSelectedCount(newSelectedCount)
 
       return newPlayers
@@ -84,13 +79,14 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
       id: `guest-${Date.now()}`,
       name: values.name,
       number: 0,
-      year: '99',
+      year: DEFAULT_YEAR,
+      position: DEFAULT_POSITION,
       isGuest: true,
-      selected: true
+      isParticipating: true
     }
     setPlayers((prevPlayers) => {
       const newPlayers = [newPlayer, ...prevPlayers]
-      const updatedCount = newPlayers.filter((player) => player.selected).length
+      const updatedCount = newPlayers.filter((player) => player.isParticipating).length
 
       setSelectedCount(updatedCount)
 
@@ -103,7 +99,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
   const status = getSelectionStatus(selectedCount)
 
   const handleNext = () => {
-    const selected = players.filter((player) => player.selected)
+    const selected = players.filter((player) => player.isParticipating)
     onPlayersSelected(selected)
     onNext()
   }
@@ -147,15 +143,15 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
             <Col xs={12} sm={12} md={8} key={player.id}>
               <Card
                 hoverable
-                className={`player-card ${player.selected ? 'selected' : ''}`}
+                className={`player-card ${player.isParticipating ? 'selected' : ''}`}
                 onClick={() => togglePlayerSelection(player.id)}
               >
                 <div className="player-card-content">
-                  <Checkbox checked={player.selected} />
+                  <Checkbox checked={player.isParticipating} />
                   <div className="player-info">
                     <div className="player-name-container">
                       <Text strong>
-                        {player.year}&nbsp;{player.name}
+                        {player.year.slice(-2)}&nbsp;{player.name}
                       </Text>
                       {player.isGuest && <Badge count="게스트" style={{ backgroundColor: PRIMARY_COLOR }} />}
                     </div>

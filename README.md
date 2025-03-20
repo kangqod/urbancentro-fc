@@ -6,4 +6,5 @@
 - [ ] 리팩토링
 - [ ] 게스트 참가자와 연결
 - [ ] styled-components
-- [ ] querystring 처리
+- [x] querystring 처리
+- [ ] git actions deploy
