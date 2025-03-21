@@ -4,24 +4,20 @@ import { Users, UserPlus, Shuffle } from 'lucide-react'
 import TeamSetup from '@/components/tabs/team-setup'
 import PlayerSelection from '@/components/tabs/player-selection'
 import TeamDistribution from '@/components/tabs/team-distribution'
-import type { Player } from '@/types'
+import { TAB_KEYS } from '@/constants'
+import type { Player, TabKeys } from '@/types'
+
 import './team-tabs.css'
 
 interface TeamTabsProps {
-  activeTab: string
-  setActiveTab: (tab: string) => void
+  activeTab: TabKeys
+  onChangeTab: (tab: TabKeys) => void
 }
 
 const TAB_ICON_SIZE = 20
 const TAB_GAP = 16
 
-const TAB_KEYS = {
-  TEAM_SETUP: '1',
-  PLAYER_SELECTION: '2',
-  TEAM_DISTRIBUTION: '3'
-} as const
-
-export default function TeamTabs({ activeTab, setActiveTab }: TeamTabsProps) {
+export default function TeamTabs({ activeTab, onChangeTab }: TeamTabsProps) {
   const [requiredPlayers, setRequiredPlayers] = useState(0)
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([])
   const [teamCount, setTeamCount] = useState(2)
@@ -56,12 +52,12 @@ export default function TeamTabs({ activeTab, setActiveTab }: TeamTabsProps) {
 
         setSelectedPlayers(players)
         // 팀 분배 탭으로 이동
-        setActiveTab(TAB_KEYS.TEAM_DISTRIBUTION)
+        onChangeTab(TAB_KEYS.TEAM_DISTRIBUTION)
       } catch (e) {
         console.error('Invalid teams parameter:', e)
       }
     }
-  }, [setActiveTab])
+  }, [onChangeTab])
 
   const tabItems = [
     {
@@ -74,7 +70,7 @@ export default function TeamTabs({ activeTab, setActiveTab }: TeamTabsProps) {
       ),
       children: (
         <TeamSetup
-          onNext={() => setActiveTab(TAB_KEYS.PLAYER_SELECTION)}
+          onNext={() => onChangeTab(TAB_KEYS.PLAYER_SELECTION)}
           onSelectTeamOption={(totalPlayers: number, teams: number) => {
             setRequiredPlayers(totalPlayers)
             setTeamCount(teams)
@@ -92,8 +88,8 @@ export default function TeamTabs({ activeTab, setActiveTab }: TeamTabsProps) {
       ),
       children: (
         <PlayerSelection
-          onNext={() => setActiveTab(TAB_KEYS.TEAM_DISTRIBUTION)}
-          onPrev={() => setActiveTab(TAB_KEYS.TEAM_SETUP)}
+          onNext={() => onChangeTab(TAB_KEYS.TEAM_DISTRIBUTION)}
+          onPrev={() => onChangeTab(TAB_KEYS.TEAM_SETUP)}
           requiredCount={requiredPlayers}
           onPlayersSelected={setSelectedPlayers}
           activeTab={activeTab}
@@ -109,7 +105,7 @@ export default function TeamTabs({ activeTab, setActiveTab }: TeamTabsProps) {
         </div>
       ),
       children: (
-        <TeamDistribution onPrev={() => setActiveTab(TAB_KEYS.PLAYER_SELECTION)} selectedPlayers={selectedPlayers} teamCount={teamCount} />
+        <TeamDistribution onPrev={() => onChangeTab(TAB_KEYS.PLAYER_SELECTION)} selectedPlayers={selectedPlayers} teamCount={teamCount} />
       )
     }
   ]

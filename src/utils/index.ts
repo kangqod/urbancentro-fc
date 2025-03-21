@@ -1,5 +1,5 @@
 import type { KakaoWindow, Player, Team, MatchFormatType, ShareKakaoContent } from '@/types'
-import { PLAYER_POSITIONS } from '@/constants'
+import { PLAYER_CONDITIONS, PLAYER_POSITIONS } from '@/constants'
 
 function shuffleArray<T>(array: T[]): T[] {
   return array.sort(() => Math.random() - 0.5)
@@ -71,47 +71,10 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
     }
   })
 
-  // 최종 인원 체크 및 재조정
-  const maxTeamSize = Math.ceil(players.length / numTeams)
-  let hasAdjustment = true
-  let safetyCounter = 0
-  const MAX_ITERATIONS = 2
-
-  while (hasAdjustment && safetyCounter < MAX_ITERATIONS) {
-    hasAdjustment = false
-    safetyCounter++
-
-    // 가장 많은 인원을 가진 팀에서 가장 적은 인원을 가진 팀으로 이동
-    const maxTeam = teams.reduce((max, team) => (team.players.length > max.players.length ? team : max), teams[0])
-    const minTeam = teams.reduce((min, team) => (team.players.length < min.players.length ? team : min), teams[0])
-
-    if (maxTeam.players.length > maxTeamSize && maxTeam.players.length - minTeam.players.length > 1) {
-      // 이동할 선수 선택 (공격수와 수비수는 마지막 한 명은 이동하지 않음)
-      const movablePlayers = maxTeam.players.filter((p) => {
-        if (p.position === PLAYER_POSITIONS.FORWARD) {
-          return maxTeam.players.filter((player) => player.position === PLAYER_POSITIONS.FORWARD).length > 1
-        }
-        if (p.position === PLAYER_POSITIONS.DEFENDER) {
-          return maxTeam.players.filter((player) => player.position === PLAYER_POSITIONS.DEFENDER).length > 1
-        }
-        return true
-      })
-
-      if (movablePlayers.length > 0) {
-        const playerToMove = movablePlayers[movablePlayers.length - 1]
-        maxTeam.players = maxTeam.players.filter((p) => p !== playerToMove)
-        minTeam.players.push(playerToMove)
-        hasAdjustment = true
-      }
-    }
-  }
-
-  if (safetyCounter >= MAX_ITERATIONS) {
-    throw new Error('팀 밸런싱 중 오류가 발생했습니다')
-  }
-
-  // 각 팀별로 선수들을 year 순으로 정렬
   teams.forEach((team) => {
+    setPlayerCondition(team)
+
+    // 각 팀별로 선수들을 year 순으로 정렬
     team.players.sort((a, b) => a.year.localeCompare(b.year))
   })
 
@@ -132,4 +95,26 @@ export const shareKakao = (content: ShareKakaoContent) => {
       mobileWebUrl: shareUrl
     }
   })
+}
+
+function setPlayerCondition(team: Team) {
+  // 모든 선수의 컨디션을 기본값으로 초기화
+  team.players.forEach((player) => {
+    player.condition = PLAYER_CONDITIONS.MID
+  })
+
+  // 마지막 선수는 항상 HIGH 컨디션
+  const lastIndex = team.players.length - 1
+  if (lastIndex >= 0) {
+    team.players[lastIndex].condition = PLAYER_CONDITIONS.HIGH
+  }
+
+  // 나머지 선수들은 순서대로 감소하는 확률로 HIGH 컨디션 부여
+  // 첫 번째 선수부터 30%, 20%, 10%, ... 순으로 감소
+  for (let i = 0; i < lastIndex; i++) {
+    const probability = Math.max(0.3 - i * 0.1, 0.01) // 최소 1% 확률 유지
+    if (Math.random() < probability) {
+      team.players[i].condition = PLAYER_CONDITIONS.HIGH
+    }
+  }
 }

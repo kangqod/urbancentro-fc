@@ -1,7 +1,7 @@
-export const PLAYER_POSITIONS = {
-  FORWARD: 'forward',
-  MIDFIELDER: 'midfielder',
-  DEFENDER: 'defender'
+export const TAB_KEYS = {
+  TEAM_SETUP: 'team-setup',
+  PLAYER_SELECTION: 'player-selection',
+  TEAM_DISTRIBUTION: 'team-distribution'
 } as const
 
 export const MATCH_FORMAT_CONFIG = {
@@ -49,7 +49,23 @@ export const MATCH_FORMAT_CONFIG = {
   }
 } as const
 
+export const PLAYER_POSITIONS = {
+  FORWARD: 'forward',
+  MIDFIELDER: 'midfielder',
+  DEFENDER: 'defender'
+} as const
+
+export const PLAYER_CONDITIONS = {
+  HIGH: 'high',
+  MID_HIGH: 'midhigh',
+  MID: 'mid',
+  MID_LOW: 'midlow',
+  LOW: 'low'
+} as const
+
 export const DEFAULT_POSITION = PLAYER_POSITIONS.MIDFIELDER
+
+export const DEFAULT_CONDITION = PLAYER_CONDITIONS.MID
 
 export const PRIMARY_COLOR = '#ff681f'
 

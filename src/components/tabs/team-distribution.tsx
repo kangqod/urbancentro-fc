@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Card, Button, Typography, Row, Col, Spin, Badge, Tooltip, message } from 'antd'
-import { RotateCw, Share2, MessageCircle, Clipboard, Undo2 } from 'lucide-react'
+import { RotateCw, Share2, MessageCircle, Clipboard, Undo2, ArrowBigUp } from 'lucide-react'
+import { DEFAULT_CONDITION, PLAYER_CONDITIONS, PLAYER_POSITIONS } from '@/constants'
 import { shareKakao, balanceTeams } from '@/utils'
 import type { Player, Team, MatchFormatType } from '@/types'
 
@@ -53,12 +54,13 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
               id: String(index + 1),
               name: `팀 ${team[0]}`,
               players: team[1].map((player, playerIndex) => {
-                const [year, name] = player.split('-')
+                const [year, name, condition] = player.split('-')
                 return {
                   id: `shared-${index}-${playerIndex}`,
                   name,
                   year,
-                  position: 'midfielder',
+                  position: PLAYER_POSITIONS.MIDFIELDER,
+                  condition: condition || DEFAULT_CONDITION,
                   isGuest: true
                 }
               })
@@ -66,7 +68,6 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
             setTeams(formattedTeams)
             return
           } catch (error) {
-            console.error('팀 데이터 파싱 실패:', error)
             messageApi.error('팀 데이터를 불러오는데 실패했습니다')
             return
           }
@@ -97,7 +98,9 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
   const getTeamsText = () => {
     return teams
       .map((team) => {
-        const playerList = team.players.map((p) => `${p.year ? `${p.year.slice(-2)}` : '99'} ${p.name}`).join('\n')
+        const playerList = team.players
+          .map((p) => `${p.year ? `${p.year.slice(-2)}` : '99'} ${p.name} ${p.condition === PLAYER_CONDITIONS.HIGH ? '↑' : ''}`)
+          .join('\n')
         return `${team.name}\n${playerList}`
       })
       .join('\n\n')
@@ -138,7 +141,12 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
   const handleShareKakao = () => {
     const teamsData = teams.map((team) => [
       team.name.slice(-1), // "팀 A" -> "A"
-      team.players.map((player) => `${player.year ? `${player.year.slice(-2)}` : '99'}-${player.name}`)
+      team.players.map(
+        (player) =>
+          `${player.year ? `${player.year.slice(-2)}` : '99'}-${player.name}-${
+            player.condition === PLAYER_CONDITIONS.HIGH ? PLAYER_CONDITIONS.HIGH : ''
+          }`
+      )
     ])
 
     shareKakao({
@@ -166,14 +174,14 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
           <Spin size="large" style={{ fontSize: '48px' }} />
         </div>
       ) : (
-        <Row gutter={[16, 16]}>
+        <Row gutter={[8, 8]} className="team-row">
           {teams.map((team) => (
             <Col xs={8} md={8} key={team.id}>
               <Card
                 title={
                   <div className="team-header">
                     <span>{team.name}</span>
-                    <Badge count={team.players.length} style={{ backgroundColor: '#ff681f' }} />
+                    <Badge count={team.players.length} />
                   </div>
                 }
                 className="team-card"
@@ -185,6 +193,7 @@ export default function TeamDistribution({ onPrev, selectedPlayers, teamCount }:
                         {player.year ? `${player.year.slice(-2)} ` : 'G '}
                         {player.name}
                       </Text>
+                      {player.condition === PLAYER_CONDITIONS.HIGH && <ArrowBigUp className="arrow-big-up" />}
                     </div>
                   ))}
                 </div>

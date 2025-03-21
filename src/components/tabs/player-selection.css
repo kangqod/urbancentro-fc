@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 1rem 0;
 }
 
 .section-header {
@@ -17,6 +16,11 @@
   align-items: center;
   margin-bottom: 0.5rem;
   flex-shrink: 0;
+  padding-inline: 1rem;
+}
+
+.player-row {
+  padding-inline: 1rem;
 }
 
 .guest-add-button {
@@ -125,4 +129,10 @@
 
 .players-scroll-container::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+@media (max-width: 576px) {
+  .section-header h4 {
+    margin-block: 0.5em;
+  }
 }

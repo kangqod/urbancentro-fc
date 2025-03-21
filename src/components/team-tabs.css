@@ -6,6 +6,10 @@
   padding: 4px 8px;
 }
 
+/* .ant-tabs .ant-tabs-content-holder {
+  padding-inline: 1rem;
+} */
+
 .ant-tabs .ant-tabs-tab .ant-tabs-tab-btn,
 .ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible) {
   color: #ccc;

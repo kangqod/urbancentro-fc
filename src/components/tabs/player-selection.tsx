@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card, Button, Typography, Row, Col, Checkbox, Badge, Modal, Form, Input, Alert, message } from 'antd'
 import { UserPlus, ArrowRight, Plus, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
-import { DEFAULT_POSITION, DEFAULT_YEAR, PRIMARY_COLOR } from '@/constants'
-import type { Player } from '@/types'
+import { DEFAULT_CONDITION, DEFAULT_POSITION, DEFAULT_YEAR, PRIMARY_COLOR, TAB_KEYS } from '@/constants'
+import type { Player, TabKeys, ConditionType } from '@/types'
 
 import './player-selection.css'
 
@@ -17,7 +17,7 @@ interface PlayerSelectionProps {
   onPrev: () => void
   requiredCount: number
   onPlayersSelected: (players: Player[]) => void
-  activeTab: string
+  activeTab: TabKeys
 }
 
 export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlayersSelected, activeTab }: PlayerSelectionProps) {
@@ -27,6 +27,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
       name: player.name,
       year: player.year,
       position: player.position,
+      condition: (player.condition || DEFAULT_CONDITION) as ConditionType,
       number: player.number,
       isGuest: false,
       isParticipating: player.year !== DEFAULT_YEAR // 지원자
@@ -106,7 +107,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
 
   useEffect(() => {
     const newStatus = getSelectionStatus(selectedCount)
-    if (activeTab === '2') {
+    if (activeTab === TAB_KEYS.PLAYER_SELECTION) {
       // PLAYER_SELECTION 탭일 때만
       messageApi.open({
         key: 'player-selection',
@@ -138,7 +139,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
       </div>
 
       <div className="players-scroll-container">
-        <Row gutter={[16, 16]}>
+        <Row gutter={[16, 16]} className="player-row">
           {players.map((player) => (
             <Col xs={12} sm={12} md={8} key={player.id}>
               <Card
@@ -153,7 +154,7 @@ export default function PlayerSelection({ onNext, onPrev, requiredCount, onPlaye
                       <Text strong>
                         {player.year.slice(-2)}&nbsp;{player.name}
                       </Text>
-                      {player.isGuest && <Badge count="게스트" style={{ backgroundColor: PRIMARY_COLOR }} />}
+                      {player.isGuest && <Badge count="G" style={{ backgroundColor: PRIMARY_COLOR }} />}
                     </div>
                   </div>
                 </div>

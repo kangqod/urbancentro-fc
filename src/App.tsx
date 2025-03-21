@@ -1,16 +1,16 @@
-import { useState } from 'react'
 import { ConfigProvider, Layout } from 'antd'
 import TeamTabs from '@/components/team-tabs'
 import TeamHeader from '@/components/team-header'
 import { PRIMARY_COLOR } from '@/constants'
 import KakaoLoader from './KakaoLoader'
+import { useApp } from './App.hooks'
 
 import './App.css'
 
 const { Content } = Layout
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('1')
+  const { activeTab, handleTabChange } = useApp()
 
   return (
     <ConfigProvider
@@ -21,10 +21,10 @@ export default function App() {
         }
       }}
     >
-      <Layout className="min-h-screen bg-gray-50">
+      <Layout className="app-layout">
         <TeamHeader />
-        <Content className="p-4 md:p-6 max-w-[1200px] mx-auto w-full">
-          <TeamTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Content className="app-content">
+          <TeamTabs activeTab={activeTab} onChangeTab={handleTabChange} />
         </Content>
       </Layout>
       <KakaoLoader />

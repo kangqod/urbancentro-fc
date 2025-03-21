@@ -41,7 +41,7 @@ export default function TeamSetup({ onNext, onSelectTeamOption }: TeamSetupProps
         <Text type="secondary">원하는 팀 구성을 선택해주세요</Text>
       </div>
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} className="team-option-row">
         {TEAM_OPTIONS.map((option) => (
           <Col xs={12} md={8} key={option.id}>
             <Card
