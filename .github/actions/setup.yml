@@ -1,0 +1,26 @@
+name: Setup
+
+description: Sets up the whole monorepo and install dependencies
+
+runs:
+  using: composite
+  steps:
+    - name: Install dependencies
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: "pnpm"
+
+    - name: .env setting
+      run: |
+        echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" >> .env
+        echo "VITE_KAKAO_JS_KEY=${{ secrets.VITE_KAKAO_JS_KEY }}" >> .env
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install

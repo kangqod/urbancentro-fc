@@ -5,6 +5,6 @@
 리팩토링 해야하는데 시간이 없음
 
 - [ ] 리팩토링
-- [ ] 게스트 참가자와 연결
+- [ ] 게스트 참가자와 연결 ?
 - [x] querystring 처리
-- [ ] git actions deploy
+- [x] git actions deploy

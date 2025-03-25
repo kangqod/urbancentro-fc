@@ -15,3 +15,8 @@
   align-items: center;
   gap: 8px;
 }
+
+.team-header-content > h4 {
+  margin: 0;
+  color: #1f2937;
+}
