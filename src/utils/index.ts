@@ -56,7 +56,7 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
   assignPlayersToTeams(PLAYER_POSITIONS.DEFENDER)
   assignPlayersToTeams(PLAYER_POSITIONS.FORWARD)
 
-  // 남은 선수들 배분 (미드필더 및 기타 포지션)
+  // 남은 선수들 배분 (미드필더)
   Object.entries(positionMap).forEach(([_, positionPlayers]) => {
     if (positionPlayers.length > 0) {
       shuffleArray(positionPlayers)
@@ -103,18 +103,18 @@ function setPlayerCondition(team: Team) {
     player.condition = PLAYER_CONDITIONS.MID
   })
 
-  // 마지막 선수는 항상 HIGH 컨디션
   const lastIndex = team.players.length - 1
-  if (lastIndex >= 0) {
-    team.players[lastIndex].condition = PLAYER_CONDITIONS.HIGH
-  }
-
-  // 나머지 선수들은 순서대로 감소하는 확률로 HIGH 컨디션 부여
-  // 첫 번째 선수부터 30%, 20%, 10%, ... 순으로 감소
-  for (let i = 0; i < lastIndex; i++) {
-    const probability = Math.max(0.3 - i * 0.1, 0.01) // 최소 1% 확률 유지
+  // 처음과 마지막 선수의 컨디션은 항상 HIGH
+  // 두 번째 선수부터 70%, 50%, 2% 순으로 감소
+  for (let i = 0; i <= lastIndex; i++) {
+    if (i === 0 || i === lastIndex) {
+      team.players[i].condition = PLAYER_CONDITIONS.HIGH
+      continue
+    }
+    const probability = i === 1 ? 0.7 : i === 2 ? 0.5 : 0.02
     if (Math.random() < probability) {
       team.players[i].condition = PLAYER_CONDITIONS.HIGH
+      console.log(i)
     }
   }
 }
