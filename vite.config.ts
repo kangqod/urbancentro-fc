@@ -16,9 +16,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-          antd: ['antd']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('antd')) return 'antd'
+            if (id.includes('lucide-react')) return 'lucide-react'
+            return 'vendor'
+          }
         }
       }
     }
