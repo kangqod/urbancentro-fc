@@ -5,20 +5,23 @@ description: Sets up the whole monorepo and install dependencies
 runs:
   using: composite
   steps:
-    - name: Install dependencies
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9
-
-    - name: Setup Node.js
+    - name: Setup Node.js and pnpm
       uses: actions/setup-node@v4
       with:
         node-version: 20
-        cache: "pnpm"
+        cache: pnpm
+        cache-dependency-path: pnpm-lock.yaml
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+        run_install: false
 
     - name: Create .env file for Vite
       run: |
-        echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" >> .env
+        touch -f .env
+        echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" > .env
         echo "VITE_KAKAO_JS_KEY=${{ secrets.VITE_KAKAO_JS_KEY }}" >> .env
       shell: bash
 
