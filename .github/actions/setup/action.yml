@@ -2,6 +2,14 @@ name: Setup
 
 description: Sets up the whole monorepo and install dependencies
 
+inputs:
+  VITE_API_URL:
+    description: "VITE API URL"
+    required: true
+  VITE_KAKAO_JS_KEY:
+    description: "VITE Kakao JS Key"
+    required: true
+
 runs:
   using: composite
   steps:
@@ -21,8 +29,8 @@ runs:
     - name: Create .env file for Vite
       shell: bash
       run: |
-        echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
-        echo "VITE_KAKAO_JS_KEY=${{ secrets.VITE_KAKAO_JS_KEY }}" >> .env
+        echo "VITE_API_URL=${{ inputs.VITE_API_URL }}" >> .env
+        echo "VITE_KAKAO_JS_KEY=${{ inputs.VITE_KAKAO_JS_KEY }}" >> .env
 
     - name: Install dependencies
       shell: bash
