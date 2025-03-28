@@ -19,6 +19,7 @@ runs:
         run_install: false
 
     - name: Create .env file for Vite
+      shell: bash
       run: |
         echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
         echo "VITE_KAKAO_JS_KEY=${{ secrets.VITE_KAKAO_JS_KEY }}" >> .env
