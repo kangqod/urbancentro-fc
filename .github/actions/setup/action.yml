@@ -16,10 +16,11 @@ runs:
         node-version: 20
         cache: "pnpm"
 
-    - name: .env setting
+    - name: Create .env file for Vite
       run: |
         echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" >> .env
         echo "VITE_KAKAO_JS_KEY=${{ secrets.VITE_KAKAO_JS_KEY }}" >> .env
+      shell: bash
 
     - name: Install dependencies
       shell: bash
