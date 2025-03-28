@@ -1,0 +1,35 @@
+.tab-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+}
+
+/* .ant-tabs .ant-tabs-content-holder {
+  padding-inline: 1rem;
+} */
+
+.ant-tabs .ant-tabs-tab .ant-tabs-tab-btn,
+.ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible) {
+  color: #ccc;
+}
+
+.ant-tabs {
+  background-color: white;
+}
+.ant-tabs > .ant-tabs-nav {
+  background-color: #f9fafb;
+}
+.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+  padding-block: 10px;
+}
+
+.ant-tabs-large > .ant-tabs-nav .ant-tabs-tab {
+  padding-block: 0;
+}
+
+.tab-progress {
+  width: 100%;
+}
+

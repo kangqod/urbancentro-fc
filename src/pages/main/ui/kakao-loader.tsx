@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import type { KakaoWindow } from './types'
+import type { KakaoWindow } from '../types'
 
-export default function KakaoLoader() {
+export function KakaoLoader() {
   useEffect(() => {
     const kakao = (window as unknown as KakaoWindow).Kakao
     if (!kakao) return

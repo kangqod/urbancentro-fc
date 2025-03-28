@@ -1,9 +1,5 @@
 import { PLAYER_POSITIONS, MATCH_FORMAT_CONFIG, TAB_KEYS, PLAYER_CONDITIONS } from '@/constants'
 
-export interface KakaoWindow extends Window {
-  Kakao: any
-}
-
 export type TabKeys = (typeof TAB_KEYS)[keyof typeof TAB_KEYS]
 
 export type Player = {

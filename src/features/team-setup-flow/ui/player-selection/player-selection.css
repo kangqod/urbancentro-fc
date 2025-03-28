@@ -1,0 +1,138 @@
+.player-selection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0;
+}
+
+.control-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+  padding-inline: 1rem;
+}
+
+.player-row {
+  padding-inline: 1rem;
+}
+
+.guest-add-button {
+  display: flex;
+  align-items: center;
+}
+
+.status-alert {
+  margin-left: 0.5rem;
+}
+
+.player-card {
+  transition: all 0.3s ease;
+  border: 2px solid #f0f0f0;
+}
+
+.ant-card.player-card .ant-card-body {
+  padding-block: 0.8rem;
+}
+
+.player-card.selected {
+  border: 2px solid var(--primary-color, #ff681f);
+}
+
+.player-card-content {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-name-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.players-scroll-container {
+  flex: 1;
+  padding: 1rem 0;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+.next-button-container {
+  flex-shrink: 0;
+  padding: 1rem 0;
+  background: white;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.prev-button,
+.next-button {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 2rem;
+}
+
+.prev-button {
+  background-color: #f0f0f0;
+}
+
+.prev-button:hover {
+  background-color: #e0e0e0;
+}
+
+.modal-footer {
+  margin-bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-guest-button {
+  display: flex;
+  align-items: center;
+}
+
+/* 스크롤바 스타일링 */
+.players-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.players-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.players-scroll-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.players-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media (max-width: 576px) {
+  .section-header h4 {
+    margin-block: 0.5em;
+  }
+}
