@@ -4,25 +4,24 @@ description: Sets up the whole monorepo and install dependencies
 
 inputs:
   VITE_API_URL:
-    description: "VITE API URL"
+    description: 'VITE API URL'
     required: true
   VITE_KAKAO_JS_KEY:
-    description: "VITE Kakao JS Key"
+    description: 'VITE Kakao JS Key'
     required: true
 
 runs:
   using: composite
   steps:
+    - name: Install dependencies
+      uses: pnpm/action-setup@v4
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
-        cache: "pnpm"
-
-    - name: Install dependencies
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9
+        node-version-file: '.nvmrc'
+        registry-url: 'https://registry.npmjs.org'
+        cache: 'pnpm'
 
     - name: Create .env file for Vite
       shell: bash
