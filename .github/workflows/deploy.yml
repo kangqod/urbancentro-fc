@@ -23,7 +23,6 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_KAKAO_JS_KEY: ${{ secrets.VITE_KAKAO_JS_KEY }}
 
       - name: Build project
