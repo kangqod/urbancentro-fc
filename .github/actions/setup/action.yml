@@ -20,7 +20,7 @@ runs:
 
     - name: Create .env file for Vite
       run: |
-        echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" >> .env
+        echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
         echo "VITE_KAKAO_JS_KEY=${{ secrets.VITE_KAKAO_JS_KEY }}" >> .env
 
     - name: Install dependencies
