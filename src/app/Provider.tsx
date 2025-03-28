@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 import { ConfigProvider } from 'antd'
-import { PRIMARY_COLOR } from '@/constants'
+import { PRIMARY_COLOR } from '@/shared'
 
 export function Provider({ children }: { children: ReactNode }) {
   return (

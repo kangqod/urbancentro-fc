@@ -15,4 +15,5 @@ export type ConditionType = 'high' | 'midhigh' | 'mid' | 'midlow' | 'low'
 
 export interface PlayerState {
   players: Player[]
+  availablePlayerCount: number
 }

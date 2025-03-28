@@ -1,6 +1,6 @@
 import { Card, Button, Typography, Row, Col } from 'antd'
 import { Users, ArrowRight } from 'lucide-react'
-import { MATCH_FORMAT_CONFIG } from '../../constants'
+import { MATCH_FORMAT_CONFIG } from '@/entities'
 import { useTeamSizeSelector } from './team-size-selector.hooks'
 
 import './team-size-selector.css'

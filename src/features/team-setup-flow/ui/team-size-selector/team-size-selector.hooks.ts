@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import { useTeamStore } from '@/entities'
-import { MATCH_FORMAT_CONFIG } from '../../constants'
-import { useTeamSetupFlowStore } from '../../model/store'
+import { MATCH_FORMAT_CONFIG } from '@/entities'
+import { useSetActiveTabState, useSetTeamOptionState } from '../../lib'
 
 export function useTeamSizeSelector() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
 
-  const { setActiveTab } = useTeamSetupFlowStore()
-  const { setTeamOption } = useTeamStore()
+  const setActiveTab = useSetActiveTabState()
+  const setTeamOption = useSetTeamOptionState()
 
   const handleOptionClick = (optionId: string) => () => {
     setSelectedOption(optionId)

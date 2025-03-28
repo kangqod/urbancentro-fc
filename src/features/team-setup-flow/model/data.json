@@ -2,14 +2,14 @@
   {
     "year": "2099",
     "number": 90,
-    "name": "지원자",
-    "position": "midfielder"
+    "name": "지원",
+    "position": "defender"
   },
   {
     "year": "2099",
     "number": 91,
-    "name": "지원자2",
-    "position": "midfielder"
+    "name": "지원 2",
+    "position": "defender"
   },
   {
     "year": "1973",
@@ -33,7 +33,7 @@
     "year": "1986",
     "number": 11,
     "name": "김성일",
-    "position": "forward"
+    "position": "midfielder"
   },
   {
     "year": "1986",

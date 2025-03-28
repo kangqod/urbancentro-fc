@@ -1,7 +1,8 @@
-import { Card, Button, Typography, Row, Col, Checkbox, Badge, Modal, Input, Alert, Form } from 'antd'
-import { UserPlus, ArrowRight, Plus, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
+import { Card, Button, Typography, Row, Col, Checkbox, Badge, Alert } from 'antd'
+import { ArrowRight, Plus, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import { PRIMARY_COLOR } from '@/shared'
-
+import { GuestModal } from './guest-modal'
+import { ToastMessage } from './toast-message'
 import { usePlayerSelection } from './player-selection.hook'
 
 import './player-selection.css'
@@ -11,20 +12,8 @@ const { Title, Text } = Typography
 const ICON_SIZE = 16
 
 export function PlayerSelection() {
-  const {
-    form,
-    players,
-    status,
-    requiredPlayers,
-    availablePlayerCount,
-    isModalOpen,
-    contextHolder,
-    handleModalOpen,
-    addGuest,
-    handlePlayerClick,
-    handlePrevClick,
-    handleNextClick
-  } = usePlayerSelection()
+  const { form, players, status, isDisabled, isModalOpen, handleModalOpen, handlePlayerClick, handlePrevClick, handleNextClick } =
+    usePlayerSelection()
 
   return (
     <div className="player-selection-container">
@@ -79,7 +68,7 @@ export function PlayerSelection() {
             size="large"
             icon={<ArrowRight size={ICON_SIZE} />}
             onClick={handleNextClick}
-            disabled={availablePlayerCount !== requiredPlayers}
+            disabled={isDisabled}
             className="next-button"
           >
             다음
@@ -87,20 +76,8 @@ export function PlayerSelection() {
         </div>
       </div>
 
-      <Modal title="게스트 추가" width={350} open={isModalOpen} onCancel={handleModalOpen(false)} footer={null}>
-        <Form form={form} layout="vertical" onFinish={addGuest}>
-          <Form.Item name="name" label="이름" rules={[{ required: true, message: '이름을 입력해주세요' }]}>
-            <Input placeholder="게스트 이름" />
-          </Form.Item>
-          <Form.Item className="modal-footer">
-            <Button type="primary" htmlType="submit" icon={<UserPlus size={ICON_SIZE} />} className="add-guest-button">
-              추가하기
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {contextHolder}
+      <GuestModal form={form} isModalOpen={isModalOpen} onOpenModal={handleModalOpen} />
+      <ToastMessage />
     </div>
   )
 }

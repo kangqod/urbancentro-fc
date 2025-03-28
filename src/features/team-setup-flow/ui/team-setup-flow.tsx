@@ -1,15 +1,15 @@
 import { Tabs } from 'antd'
 import { Users, UserPlus, Shuffle } from 'lucide-react'
 import { TAB_GAP, TAB_ICON_SIZE } from '../constants'
-import { useTeamSetupFlowStore } from '../model/store'
 import { TeamSizeSelector } from './team-size-selector'
 import { PlayerSelection } from './player-selection'
 import { TeamDistribution } from './team-distribution'
 
 import './team-setup-flow.css'
+import { useActiveTabValue } from '../lib'
 
 export function TeamSetupFlow() {
-  const { activeTab } = useTeamSetupFlowStore()
+  const activeTab = useActiveTabValue()
 
   const tabItems = [
     {
@@ -40,10 +40,7 @@ export function TeamSetupFlow() {
           <span>팀 분배</span>
         </div>
       ),
-      children: (
-        <></>
-        // <TeamDistribution onPrev={() => setActiveTab(TAB_MENUS.PLAYER_SELECTION)} selectedPlayers={selectedPlayers} teamCount={teamCount} />
-      )
+      children: <TeamDistribution />
     }
   ]
 

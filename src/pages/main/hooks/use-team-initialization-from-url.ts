@@ -1,16 +1,13 @@
 import { useEffect } from 'react'
-import { TAB_KEYS } from '@/constants'
-import type { TabKeys, Player } from '@/types'
-import { calculateTotalPlayers, createPlayersFromTeams, parseTeamsParam } from '../utils'
+import { useSetPlayersState, useSetTeamSetupFlowState } from '../lib'
+import { calculateTotalPlayers, createPlayersFromTeams, parseTeamsParam } from '../lib'
+import { useSetTeamOptionState } from '@/features'
 
-interface UseTeamParamsProps {
-  setTeamCount: (count: number) => void
-  setRequiredPlayers: (count: number) => void
-  setSelectedPlayers: (players: Player[]) => void
-  setActiveTab: (tab: TabKeys) => void
-}
+export function useTeamInitializationFromUrl() {
+  const { setActiveTab, setIsSharedView } = useSetTeamSetupFlowState()
+  const setTeamOption = useSetTeamOptionState()
+  const setPlayers = useSetPlayersState()
 
-export function useTeamInitializationFromUrl({ setTeamCount, setRequiredPlayers, setSelectedPlayers, setActiveTab }: UseTeamParamsProps) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const teamsParam = params.get('teams')
@@ -23,9 +20,9 @@ export function useTeamInitializationFromUrl({ setTeamCount, setRequiredPlayers,
     const totalPlayers = calculateTotalPlayers(teamsData)
     const players = createPlayersFromTeams(teamsData)
 
-    setTeamCount(teamsData.length)
-    setRequiredPlayers(totalPlayers)
-    setSelectedPlayers(players)
-    setActiveTab(TAB_KEYS.TEAM_DISTRIBUTION)
-  }, [setTeamCount, setRequiredPlayers, setSelectedPlayers, setActiveTab])
+    setTeamOption(teamsData.length, totalPlayers)
+    setPlayers(players)
+    setIsSharedView(true)
+    setActiveTab('team-distribution')
+  }, [setTeamOption, setPlayers, setActiveTab, setIsSharedView])
 }
