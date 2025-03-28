@@ -15,12 +15,13 @@ runs:
   steps:
     - name: Install dependencies
       uses: pnpm/action-setup@v4
+      with:
+        version: 9
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version-file: '.nvmrc'
-        registry-url: 'https://registry.npmjs.org'
+        node-version: 20
         cache: 'pnpm'
 
     - name: Create .env file for Vite
