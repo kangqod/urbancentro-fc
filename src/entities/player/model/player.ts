@@ -1,6 +1,7 @@
 import type { Player, ConditionType, PositionType } from './types'
 
 export const PLAYER_POSITIONS = {
+  ACE: 'ace',
   FORWARD: 'forward',
   MIDFIELDER: 'midfielder',
   DEFENDER: 'defender'

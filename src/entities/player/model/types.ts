@@ -1,3 +1,5 @@
+import { PLAYER_CONDITIONS, PLAYER_POSITIONS } from './player'
+
 export interface Player {
   id: string
   name: string
@@ -9,9 +11,9 @@ export interface Player {
   isAvailable: boolean
 }
 
-export type PositionType = 'forward' | 'midfielder' | 'defender'
+export type PositionType = (typeof PLAYER_POSITIONS)[keyof typeof PLAYER_POSITIONS]
 
-export type ConditionType = 'high' | 'midhigh' | 'mid' | 'midlow' | 'low'
+export type ConditionType = (typeof PLAYER_CONDITIONS)[keyof typeof PLAYER_CONDITIONS]
 
 export interface PlayerState {
   players: Player[]
