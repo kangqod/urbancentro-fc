@@ -101,3 +101,77 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
 
   return teams
 }
+
+export function balanceTeams2(players: Player[], mode: MatchFormatType): Team[] {
+  const excludedPairs: string[][] = [['지원', '지원 2']]
+  const teamSizes = mode.split(':').map(Number)
+  const numTeams = teamSizes.length
+
+  const positionMap: Record<string, Player[]> = {}
+  players.forEach((player) => {
+    if (!positionMap[player.position]) {
+      positionMap[player.position] = []
+    }
+    positionMap[player.position].push(player)
+  })
+
+  const teams: Team[] = Array.from({ length: numTeams }, (_, i) => ({
+    name: `팀 ${String.fromCharCode(65 + i)}`,
+    players: []
+  }))
+
+  const assignPlayersToTeams = (position: string) => {
+    if (!positionMap[position]?.length) return
+
+    const players = shuffleArray([...positionMap[position]])
+
+    for (let i = 0; i < numTeams && players.length > 0; i++) {
+      teams[i].players.push(players.shift()!)
+    }
+
+    while (players.length > 0) {
+      const targetTeam = teams.reduce(
+        (minTeam, currentTeam) => (currentTeam.players.length < minTeam.players.length ? currentTeam : minTeam),
+        teams[0]
+      )
+      targetTeam.players.push(players.shift()!)
+    }
+  }
+
+  // 1. Defender를 각 팀에 할당
+  assignPlayersToTeams(PLAYER_POSITIONS.DEFENDER)
+
+  // 2. Ace를 Defender 수를 기준으로 균형 있게 할당
+  const assignAcesToTeams = () => {
+    if (!positionMap[PLAYER_POSITIONS.ACE]?.length) return
+
+    const aces = shuffleArray([...positionMap[PLAYER_POSITIONS.ACE]])
+
+    while (aces.length > 0) {
+      const targetTeam = teams.reduce(
+        (minTeam, currentTeam) =>
+          currentTeam.players.filter((p) => p.position === PLAYER_POSITIONS.DEFENDER).length <
+          minTeam.players.filter((p) => p.position === PLAYER_POSITIONS.DEFENDER).length
+            ? currentTeam
+            : minTeam,
+        teams[0]
+      )
+      targetTeam.players.push(aces.shift()!)
+    }
+  }
+
+  assignAcesToTeams()
+
+  // 3. Forward와 Midfielder를 각 팀에 할당
+  assignPlayersToTeams(PLAYER_POSITIONS.FORWARD)
+  assignPlayersToTeams(PLAYER_POSITIONS.MIDFIELDER)
+
+  // 4. Ensure player separation
+  ensurePlayerSeparation(teams, excludedPairs)
+
+  // 5. Set player conditions and sort players
+  teams.forEach(setPlayerCondition)
+  teams.forEach((team) => team.players.sort((a, b) => a.year.localeCompare(b.year)))
+
+  return teams
+}
