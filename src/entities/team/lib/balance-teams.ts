@@ -1,4 +1,4 @@
-import { PLAYER_CONDITIONS, PLAYER_POSITIONS } from '@/entities'
+import { PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities'
 import type { Player, Team, MatchFormatType } from '@/entities'
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -47,11 +47,11 @@ function ensurePlayerSeparation(teams: Team[], excludedPairs: string[][]) {
           player1Team.players = player1Team.players.filter((p) => p.name !== player2Name)
           targetTeam.players.push(player2)
         }
-        // targetTeam에서 미드필더 한 명을 player1Team으로 이동
-        const midfielder = targetTeam.players.find((p) => p.position === PLAYER_POSITIONS.MIDFIELDER)
-        if (midfielder) {
-          targetTeam.players = targetTeam.players.filter((p) => p.id !== midfielder.id)
-          player1Team.players.push(midfielder)
+        // targetTeam에서 intermediate 한 명을 player1Team으로 이동
+        const intermediatePlayer = targetTeam.players.find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE)
+        if (intermediatePlayer) {
+          targetTeam.players = targetTeam.players.filter((p) => p.id !== intermediatePlayer.id)
+          player1Team.players.push(intermediatePlayer)
         }
       }
     }
@@ -65,15 +65,15 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
   const numTeams = teamSizes.length
   const playersPerTeam = teamSizes[0]
 
-  const positionMap: Record<string, Player[]> = {
+  const tierMap: Record<string, Player[]> = {
     ace: [],
-    forward: [],
-    midfielder: [],
-    defender: []
+    advanced: [],
+    intermediate: [],
+    beginner: []
   }
 
   players.forEach((player) => {
-    positionMap[player.position]?.push(player)
+    tierMap[player.tier]?.push(player)
   })
 
   const teams: Team[] = Array.from({ length: numTeams }, (_, i) => ({
@@ -85,8 +85,8 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
     team.players.push(player)
   }
 
-  const distributeByCount = (position: string) => {
-    const pool = shuffleArray(positionMap[position])
+  const distributeByCount = (tier: string) => {
+    const pool = shuffleArray(tierMap[tier])
     const perTeam = Math.floor(pool.length / numTeams)
     let remainder = pool.length % numTeams
 
@@ -98,51 +98,50 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
     })
   }
 
-  // ACE 먼저 배분
-  distributeByCount(PLAYER_POSITIONS.ACE)
+  // ace 먼저 배분
+  distributeByCount(PLAYER_TIERS.ACE)
 
-  // Defender 배분
-  distributeByCount(PLAYER_POSITIONS.DEFENDER)
+  // beginner 배분
+  distributeByCount(PLAYER_TIERS.BEGINNER)
 
-  // Forward도 defender 많은 팀 우선
-  positionMap[PLAYER_POSITIONS.FORWARD] = shuffleArray(positionMap[PLAYER_POSITIONS.FORWARD])
-  const forwardPool = [...positionMap[PLAYER_POSITIONS.FORWARD]]
+  // advanced 도 beginner 많은 팀 우선
+  tierMap[PLAYER_TIERS.ADVANCED] = shuffleArray(tierMap[PLAYER_TIERS.ADVANCED])
+  const advancedPool = [...tierMap[PLAYER_TIERS.ADVANCED]]
 
-  // 1. 팀을 defender 수 기준으로 정렬 (많은 팀 우선)
-  const defenderSortedTeams = [...teams].sort(
+  // 1. 팀을 beginner 수 기준으로 정렬 (많은 팀 우선)
+  const beginnerSortedTeams = [...teams].sort(
     (a, b) =>
-      b.players.filter((p) => p.position === PLAYER_POSITIONS.DEFENDER).length -
-      a.players.filter((p) => p.position === PLAYER_POSITIONS.DEFENDER).length
+      b.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length - a.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length
   )
 
   // 2. 기본적으로 균등하게 분배
-  const baseCount = Math.floor(forwardPool.length / teams.length)
-  let remaining = forwardPool.length % teams.length
+  const baseCount = Math.floor(advancedPool.length / teams.length)
+  let remaining = advancedPool.length % teams.length
 
-  // 3. 순차적으로 forward 배분
-  defenderSortedTeams.forEach((team) => {
+  // 3. 순차적으로 advanced 배분
+  beginnerSortedTeams.forEach((team) => {
     let assignCount = baseCount
-    // defender가 많은 팀일수록 하나 더 배정 (남은 forward가 있으면)
+    // beginner 가 많은 팀일수록 하나 더 배정 (남은 advanced가 있으면)
     if (remaining > 0) {
       assignCount++
       remaining--
     }
 
-    while (assignCount > 0 && team.players.length < playersPerTeam && forwardPool.length > 0) {
-      const player = forwardPool.shift()!
+    while (assignCount > 0 && team.players.length < playersPerTeam && advancedPool.length > 0) {
+      const player = advancedPool.shift()!
       addToTeam(player, team)
       assignCount--
     }
   })
 
-  // 나머지 미드필더
-  positionMap[PLAYER_POSITIONS.MIDFIELDER] = shuffleArray(positionMap[PLAYER_POSITIONS.MIDFIELDER])
-  const midPool = [...positionMap[PLAYER_POSITIONS.MIDFIELDER]]
-  while (midPool.length > 0) {
+  // 4. intermediate 분배
+  tierMap[PLAYER_TIERS.INTERMEDIATE] = shuffleArray(tierMap[PLAYER_TIERS.INTERMEDIATE])
+  const intermediatePool = [...tierMap[PLAYER_TIERS.INTERMEDIATE]]
+  while (intermediatePool.length > 0) {
     teams.sort((a, b) => playersPerTeam - a.players.length - (playersPerTeam - b.players.length))
     const team = teams.find((t) => t.players.length < playersPerTeam)
     if (team) {
-      addToTeam(midPool.shift()!, team)
+      addToTeam(intermediatePool.shift()!, team)
     } else {
       break
     }
@@ -155,31 +154,31 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
 
   // log
   const temp = [...structuredClone(teams)]
-  sortPlayersByPosition(temp).forEach((team) => {
-    const position = team.players.map((player) => player.position)
-    console.log('팀: ', team.name, ' 포지션: ', position.join(', '))
+  sortPlayersByTier(temp).forEach((team) => {
+    const tier = team.players.map((player) => player.tier)
+    console.log('Team: ', team.name, ', Tier: ', tier.join(', '))
   })
 
   return teams
 }
 
 function rebalanceAceDisadvantage(teams: Team[]) {
-  const aceLessTeams = teams.filter((team) => !team.players.some((p) => p.position === PLAYER_POSITIONS.ACE))
+  const aceLessTeams = teams.filter((team) => !team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
 
-  const aceTeams = teams.filter((team) => team.players.some((p) => p.position === PLAYER_POSITIONS.ACE))
+  const aceTeams = teams.filter((team) => team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
 
   aceLessTeams.forEach((targetTeam) => {
     for (const donorTeam of aceTeams) {
-      const donorForwardIndex = donorTeam.players.findIndex((p) => p.position === PLAYER_POSITIONS.FORWARD)
-      const targetMidfielderIndex = targetTeam.players.findIndex((p) => p.position === PLAYER_POSITIONS.MIDFIELDER)
+      const donorAdvancedIndex = donorTeam.players.findIndex((p) => p.tier === PLAYER_TIERS.ADVANCED)
+      const targetIntermediateIndex = targetTeam.players.findIndex((p) => p.tier === PLAYER_TIERS.INTERMEDIATE)
 
-      if (donorForwardIndex !== -1 && targetMidfielderIndex !== -1) {
-        const forward = donorTeam.players.splice(donorForwardIndex, 1)[0]
-        const midfielder = targetTeam.players.splice(targetMidfielderIndex, 1)[0]
+      if (donorAdvancedIndex !== -1 && targetIntermediateIndex !== -1) {
+        const advanced = donorTeam.players.splice(donorAdvancedIndex, 1)[0]
+        const intermediate = targetTeam.players.splice(targetIntermediateIndex, 1)[0]
 
         // 실제 객체 자체를 교환
-        donorTeam.players.push(midfielder)
-        targetTeam.players.push(forward)
+        donorTeam.players.push(intermediate)
+        targetTeam.players.push(advanced)
 
         break // 보정됐으니 다음 ace 없는 팀으로
       }
@@ -187,14 +186,14 @@ function rebalanceAceDisadvantage(teams: Team[]) {
   })
 }
 
-function sortPlayersByPosition(teams: Team[]) {
-  const positionOrder = [PLAYER_POSITIONS.ACE, PLAYER_POSITIONS.DEFENDER, PLAYER_POSITIONS.FORWARD, PLAYER_POSITIONS.MIDFIELDER]
+function sortPlayersByTier(teams: Team[]) {
+  const tierOrder = [PLAYER_TIERS.ACE, PLAYER_TIERS.BEGINNER, PLAYER_TIERS.ADVANCED, PLAYER_TIERS.INTERMEDIATE]
 
   teams.forEach((team) => {
     team.players.sort((a, b) => {
-      const positionA = positionOrder.indexOf(a.position)
-      const positionB = positionOrder.indexOf(b.position)
-      return positionA - positionB
+      const tierA = tierOrder.indexOf(a.tier)
+      const tierB = tierOrder.indexOf(b.tier)
+      return tierA - tierB
     })
   })
   return teams

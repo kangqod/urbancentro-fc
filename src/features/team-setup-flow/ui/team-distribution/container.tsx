@@ -1,6 +1,7 @@
 import { Card, Typography, Row, Col, Spin, Badge } from 'antd'
 import { ArrowBigUp } from 'lucide-react'
-import { PLAYER_CONDITIONS } from '@/entities'
+import { DEFAULT_YEAR, PLAYER_CONDITIONS } from '@/entities'
+import { useSetSelectedPlayerState } from '@/pages'
 import { useTeamsValue } from '../../lib'
 
 interface ContainerProps {
@@ -11,6 +12,7 @@ const { Text } = Typography
 
 export function Container({ isShuffle }: ContainerProps) {
   const teams = useTeamsValue()
+  const updateSelectedPlayer = useSetSelectedPlayerState()
 
   return (
     <>
@@ -33,7 +35,15 @@ export function Container({ isShuffle }: ContainerProps) {
               >
                 <div className="player-list">
                   {team.players.map((player) => (
-                    <div key={player.id} className="player-item">
+                    <div
+                      key={player.id}
+                      className="player-item"
+                      onClick={() => {
+                        if (player.isGuest) return
+                        if (player.year === DEFAULT_YEAR) return
+                        updateSelectedPlayer(player)
+                      }}
+                    >
                       <Text>
                         {player.year ? `${player.year.slice(-2)} ` : 'G '}
                         {player.name}
