@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { Form } from 'antd'
 import { PlayerClass } from '@/entities'
-import type { PositionType } from '@/entities'
+import type { TierType } from '@/entities'
 import { getSelectionStatus, usePlayerSelectionState, useRequiredPlayersValue, useSetActiveTabState } from '../../lib'
 
 import playerData from '@/shared/assets/data.json'
@@ -39,7 +39,7 @@ export function usePlayerSelection() {
     const transformedPlayers = playerData.map((player) => {
       return new PlayerClass({
         ...player,
-        position: player.position as PositionType
+        tier: player.tier as TierType
       })
     })
     setPlayers(transformedPlayers)

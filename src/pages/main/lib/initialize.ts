@@ -1,4 +1,4 @@
-import { DEFAULT_CONDITION, DEFAULT_POSITION, DEFAULT_YEAR, PlayerClass } from '@/entities'
+import { DEFAULT_CONDITION, DEFAULT_TIER, DEFAULT_YEAR, PlayerClass } from '@/entities'
 import type { ConditionType, Player } from '@/entities'
 
 type TeamData = [string, string[]]
@@ -25,7 +25,7 @@ export const createPlayersFromTeams = (teamsData: TeamData[]): Player[] => {
         name: playerName,
         number: 0,
         year: year || DEFAULT_YEAR,
-        position: DEFAULT_POSITION,
+        tier: DEFAULT_TIER,
         condition: (condition || DEFAULT_CONDITION) as ConditionType,
         isGuest: true,
         isAvailable: true

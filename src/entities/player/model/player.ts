@@ -1,10 +1,10 @@
-import type { Player, ConditionType, PositionType } from './types'
+import type { Player, ConditionType, TierType } from './types'
 
-export const PLAYER_POSITIONS = {
+export const PLAYER_TIERS = {
   ACE: 'ace',
-  FORWARD: 'forward',
-  MIDFIELDER: 'midfielder',
-  DEFENDER: 'defender'
+  ADVANCED: 'advanced',
+  INTERMEDIATE: 'intermediate',
+  BEGINNER: 'beginner'
 } as const
 
 export const PLAYER_CONDITIONS = {
@@ -17,14 +17,14 @@ export const PLAYER_CONDITIONS = {
 
 export const DEFAULT_YEAR = '2099'
 export const DEFAULT_NUMBER = 99
-export const DEFAULT_POSITION = PLAYER_POSITIONS.MIDFIELDER
+export const DEFAULT_TIER = PLAYER_TIERS.INTERMEDIATE
 export const DEFAULT_CONDITION = PLAYER_CONDITIONS.MID
 
 export class PlayerClass implements Player {
   id: string
   name: string
   year: string
-  position: PositionType
+  tier: TierType
   condition: ConditionType
   number: number
   isGuest: boolean
@@ -35,7 +35,7 @@ export class PlayerClass implements Player {
     this.name = data.name || ''
     this.year = data.year || DEFAULT_YEAR
     this.number = data.number || DEFAULT_NUMBER
-    this.position = data.position || DEFAULT_POSITION
+    this.tier = data.tier || DEFAULT_TIER
     this.condition = data.condition || DEFAULT_CONDITION
     this.isGuest = data.isGuest || false
     this.isAvailable = data.year !== DEFAULT_YEAR

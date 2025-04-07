@@ -1,4 +1,4 @@
-import { DEFAULT_CONDITION, PLAYER_CONDITIONS, PLAYER_POSITIONS, PlayerClass } from '@/entities'
+import { DEFAULT_CONDITION, DEFAULT_TIER, PLAYER_CONDITIONS, PlayerClass } from '@/entities'
 import type { ConditionType, Team } from '@/entities'
 
 export function getSelectionStatus(count: number, requiredPlayers: number) {
@@ -38,7 +38,7 @@ export function parseSharedTeams(teamsParam: string | null): Team[] | null {
           id: `shared-${index}-${playerIndex}`,
           name,
           year,
-          position: PLAYER_POSITIONS.MIDFIELDER,
+          tier: DEFAULT_TIER,
           condition: (condition || DEFAULT_CONDITION) as ConditionType,
           isGuest: true,
           isAvailable: true

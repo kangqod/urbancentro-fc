@@ -1,5 +1,5 @@
 import { FormInstance } from 'antd'
-import { DEFAULT_YEAR, DEFAULT_NUMBER, DEFAULT_POSITION, DEFAULT_CONDITION, PlayerClass } from '@/entities'
+import { DEFAULT_YEAR, DEFAULT_NUMBER, DEFAULT_CONDITION, PlayerClass, DEFAULT_TIER } from '@/entities'
 import type { Player } from '@/entities'
 import { useSetPlayersState } from '../../lib'
 
@@ -16,7 +16,7 @@ export function useGuestModal({ form, onOpenModal }: UseGuestModalProps) {
       name: values.name,
       year: DEFAULT_YEAR,
       number: DEFAULT_NUMBER,
-      position: DEFAULT_POSITION,
+      tier: DEFAULT_TIER,
       condition: DEFAULT_CONDITION,
       isGuest: true,
       isAvailable: true
