@@ -4,7 +4,7 @@ import { PlayerClass } from '@/entities'
 import type { PositionType } from '@/entities'
 import { getSelectionStatus, usePlayerSelectionState, useRequiredPlayersValue, useSetActiveTabState } from '../../lib'
 
-import playerData from '../../model/data.json'
+import playerData from '@/shared/assets/data.json'
 
 export function usePlayerSelection() {
   const requiredPlayers = useRequiredPlayersValue()

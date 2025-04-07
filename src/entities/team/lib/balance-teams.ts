@@ -12,6 +12,9 @@ function setPlayerCondition(team: Team) {
 
   const lastIndex = team.players.length - 1
   for (let i = 0; i <= lastIndex; i++) {
+    if (team.players[i].name === '지원' || team.players[i].name === '지원 2') {
+      continue
+    }
     if (i === 0 || i === lastIndex) {
       team.players[i].condition = PLAYER_CONDITIONS.HIGH
       continue
@@ -57,15 +60,20 @@ function ensurePlayerSeparation(teams: Team[], excludedPairs: string[][]) {
 
 export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
   const excludedPairs: string[][] = [['지원', '지원 2']]
+
   const teamSizes = mode.split(':').map(Number)
   const numTeams = teamSizes.length
+  const playersPerTeam = teamSizes[0]
 
-  const positionMap: Record<string, Player[]> = {}
+  const positionMap: Record<string, Player[]> = {
+    ace: [],
+    forward: [],
+    midfielder: [],
+    defender: []
+  }
+
   players.forEach((player) => {
-    if (!positionMap[player.position]) {
-      positionMap[player.position] = []
-    }
-    positionMap[player.position].push(player)
+    positionMap[player.position]?.push(player)
   })
 
   const teams: Team[] = Array.from({ length: numTeams }, (_, i) => ({
@@ -73,31 +81,121 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
     players: []
   }))
 
-  const assignPlayersToTeams = (position: string) => {
-    if (!positionMap[position]?.length) return
+  const addToTeam = (player: Player, team: Team) => {
+    team.players.push(player)
+  }
 
-    const players = shuffleArray([...positionMap[position]])
+  const distributeByCount = (position: string) => {
+    const pool = shuffleArray(positionMap[position])
+    const perTeam = Math.floor(pool.length / numTeams)
+    let remainder = pool.length % numTeams
 
-    for (let i = 0; i < numTeams && players.length > 0; i++) {
-      teams[i].players.push(players.shift()!)
+    teams.forEach((team) => {
+      const count = perTeam + (remainder-- > 0 ? 1 : 0)
+      for (let i = 0; i < count && pool.length > 0; i++) {
+        addToTeam(pool.shift()!, team)
+      }
+    })
+  }
+
+  // ACE 먼저 배분
+  distributeByCount(PLAYER_POSITIONS.ACE)
+
+  // Defender 배분
+  distributeByCount(PLAYER_POSITIONS.DEFENDER)
+
+  // Forward도 defender 많은 팀 우선
+  positionMap[PLAYER_POSITIONS.FORWARD] = shuffleArray(positionMap[PLAYER_POSITIONS.FORWARD])
+  const forwardPool = [...positionMap[PLAYER_POSITIONS.FORWARD]]
+
+  // 1. 팀을 defender 수 기준으로 정렬 (많은 팀 우선)
+  const defenderSortedTeams = [...teams].sort(
+    (a, b) =>
+      b.players.filter((p) => p.position === PLAYER_POSITIONS.DEFENDER).length -
+      a.players.filter((p) => p.position === PLAYER_POSITIONS.DEFENDER).length
+  )
+
+  // 2. 기본적으로 균등하게 분배
+  const baseCount = Math.floor(forwardPool.length / teams.length)
+  let remaining = forwardPool.length % teams.length
+
+  // 3. 순차적으로 forward 배분
+  defenderSortedTeams.forEach((team) => {
+    let assignCount = baseCount
+    // defender가 많은 팀일수록 하나 더 배정 (남은 forward가 있으면)
+    if (remaining > 0) {
+      assignCount++
+      remaining--
     }
 
-    while (players.length > 0) {
-      const targetTeam = teams.reduce(
-        (minTeam, currentTeam) => (currentTeam.players.length < minTeam.players.length ? currentTeam : minTeam),
-        teams[0]
-      )
-      targetTeam.players.push(players.shift()!)
+    while (assignCount > 0 && team.players.length < playersPerTeam && forwardPool.length > 0) {
+      const player = forwardPool.shift()!
+      addToTeam(player, team)
+      assignCount--
+    }
+  })
+
+  // 나머지 미드필더
+  positionMap[PLAYER_POSITIONS.MIDFIELDER] = shuffleArray(positionMap[PLAYER_POSITIONS.MIDFIELDER])
+  const midPool = [...positionMap[PLAYER_POSITIONS.MIDFIELDER]]
+  while (midPool.length > 0) {
+    teams.sort((a, b) => playersPerTeam - a.players.length - (playersPerTeam - b.players.length))
+    const team = teams.find((t) => t.players.length < playersPerTeam)
+    if (team) {
+      addToTeam(midPool.shift()!, team)
+    } else {
+      break
     }
   }
 
-  assignPlayersToTeams(PLAYER_POSITIONS.DEFENDER)
-  assignPlayersToTeams(PLAYER_POSITIONS.FORWARD)
-  assignPlayersToTeams(PLAYER_POSITIONS.MIDFIELDER)
-
   ensurePlayerSeparation(teams, excludedPairs)
+  rebalanceAceDisadvantage(teams)
   teams.forEach(setPlayerCondition)
   teams.forEach((team) => team.players.sort((a, b) => a.year.localeCompare(b.year)))
 
+  // log
+  const temp = [...structuredClone(teams)]
+  sortPlayersByPosition(temp).forEach((team) => {
+    const position = team.players.map((player) => player.position)
+    console.log('팀: ', team.name, ' 포지션: ', position.join(', '))
+  })
+
+  return teams
+}
+
+function rebalanceAceDisadvantage(teams: Team[]) {
+  const aceLessTeams = teams.filter((team) => !team.players.some((p) => p.position === PLAYER_POSITIONS.ACE))
+
+  const aceTeams = teams.filter((team) => team.players.some((p) => p.position === PLAYER_POSITIONS.ACE))
+
+  aceLessTeams.forEach((targetTeam) => {
+    for (const donorTeam of aceTeams) {
+      const donorForwardIndex = donorTeam.players.findIndex((p) => p.position === PLAYER_POSITIONS.FORWARD)
+      const targetMidfielderIndex = targetTeam.players.findIndex((p) => p.position === PLAYER_POSITIONS.MIDFIELDER)
+
+      if (donorForwardIndex !== -1 && targetMidfielderIndex !== -1) {
+        const forward = donorTeam.players.splice(donorForwardIndex, 1)[0]
+        const midfielder = targetTeam.players.splice(targetMidfielderIndex, 1)[0]
+
+        // 실제 객체 자체를 교환
+        donorTeam.players.push(midfielder)
+        targetTeam.players.push(forward)
+
+        break // 보정됐으니 다음 ace 없는 팀으로
+      }
+    }
+  })
+}
+
+function sortPlayersByPosition(teams: Team[]) {
+  const positionOrder = [PLAYER_POSITIONS.ACE, PLAYER_POSITIONS.DEFENDER, PLAYER_POSITIONS.FORWARD, PLAYER_POSITIONS.MIDFIELDER]
+
+  teams.forEach((team) => {
+    team.players.sort((a, b) => {
+      const positionA = positionOrder.indexOf(a.position)
+      const positionB = positionOrder.indexOf(b.position)
+      return positionA - positionB
+    })
+  })
   return teams
 }
