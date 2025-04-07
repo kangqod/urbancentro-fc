@@ -156,7 +156,7 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
   const temp = [...structuredClone(teams)]
   sortPlayersByTier(temp).forEach((team) => {
     const tier = team.players.map((player) => player.tier)
-    console.log('Team: ', team.name, ' Tier: ', tier.join(', '))
+    console.log('Team: ', team.name, ', Tier: ', tier.join(', '))
   })
 
   return teams

@@ -5,10 +5,12 @@ export interface Player {
   name: string
   year: string
   tier: TierType
+  attributes: string[]
   condition: ConditionType
   number: number
   isGuest: boolean
   isAvailable: boolean
+  strength?: string
 }
 
 export type TierType = (typeof PLAYER_TIERS)[keyof typeof PLAYER_TIERS]
@@ -18,4 +20,5 @@ export type ConditionType = (typeof PLAYER_CONDITIONS)[keyof typeof PLAYER_CONDI
 export interface PlayerState {
   players: Player[]
   availablePlayerCount: number
+  selectedPlayer: Player | null
 }
