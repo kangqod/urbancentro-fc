@@ -25,9 +25,8 @@ jobs:
         with:
           VITE_KAKAO_JS_KEY: ${{ secrets.VITE_KAKAO_JS_KEY }}
 
-      - name: Generate build metadata
-        run: |
-          echo "{\"date\": \"$(date -u +'%Y-%m-%d %H:%M:%S UTC')\"}" > ./public/build-meta.json
+      - name: Set build date
+        run: echo "VITE_BUILD_DATE=$(date +'%Y-%m-%d')" >> .env.production
         
       - name: Build project
         run: pnpm build
