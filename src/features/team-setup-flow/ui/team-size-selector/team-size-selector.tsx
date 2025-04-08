@@ -1,6 +1,7 @@
 import { Card, Button, Typography, Row, Col } from 'antd'
 import { Users, ArrowRight } from 'lucide-react'
 import { MATCH_FORMAT_CONFIG } from '@/entities'
+import { ReleaseDate } from '@/shared'
 import { useTeamSizeSelector } from './team-size-selector.hooks'
 
 import './team-size-selector.css'
@@ -26,6 +27,7 @@ export function TeamSizeSelector() {
       <div className="team-setup-header">
         <Title level={4}>팀 구성 선택</Title>
         <Text type="secondary">원하는 팀 구성을 선택해주세요</Text>
+        <ReleaseDate />
       </div>
 
       <Row gutter={[16, 16]} className="team-option-row">

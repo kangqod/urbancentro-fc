@@ -1,13 +1,16 @@
 import { Typography } from 'antd'
+import { formatDateToYYYYMMDD } from '../lib'
 
-const RELEASE_DATE = '2025-04-07'
+import './release-date.css'
+
+const TODAY = formatDateToYYYYMMDD(new Date())
 
 export function ReleaseDate() {
   return (
     <>
       <br />
       <Typography.Text type="secondary" className="release-date-text">
-        최근 업데이트 : {import.meta.env.VITE_BUILD_DATE || RELEASE_DATE}
+        최근 업데이트 : {import.meta.env.VITE_BUILD_DATE || TODAY}
       </Typography.Text>
     </>
   )

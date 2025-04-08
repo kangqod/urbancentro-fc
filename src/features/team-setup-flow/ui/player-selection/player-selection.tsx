@@ -1,6 +1,6 @@
 import { Card, Button, Typography, Row, Col, Checkbox, Badge, Alert } from 'antd'
 import { ArrowRight, Plus, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
-import { PRIMARY_COLOR } from '@/shared'
+import { PRIMARY_COLOR, ReleaseDate } from '@/shared'
 import { GuestModal } from './guest-modal'
 import { ToastMessage } from './toast-message'
 import { usePlayerSelection } from './player-selection.hook'
@@ -20,6 +20,7 @@ export function PlayerSelection() {
       <div className="section-header">
         <Title level={4}>선수 선택</Title>
         <Text type="secondary">참여할 선수를 선택해주세요</Text>
+        <ReleaseDate />
       </div>
 
       <div className="control-panel">

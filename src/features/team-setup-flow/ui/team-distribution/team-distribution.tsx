@@ -1,8 +1,8 @@
 import { Typography } from 'antd'
+import { ReleaseDate } from '@/shared'
 import { SharedView } from './shared-view'
 import { DefaultView } from './default-view'
 import { useTeamDistribution } from './team-distribution.hooks'
-import { ReleaseDate } from './release-date'
 
 import './team-distribution.css'
 

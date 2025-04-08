@@ -1,14 +1,26 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router'
+import { Provider } from './Provider'
+import { Home } from './ui'
+
 import '@ant-design/v5-patch-for-react-19'
 
-import { Main } from '@/pages'
-import { Provider } from './Provider'
+const router = createBrowserRouter([
+  {
+    path: '/',
+    Component: Home
+  },
+  {
+    path: '/urbancentro-fc',
+    Component: Provider
+  }
+])
 
-createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root')
+
+createRoot(root!).render(
   <StrictMode>
-    <Provider>
-      <Main />
-    </Provider>
+    <RouterProvider router={router} />
   </StrictMode>
 )

@@ -6,21 +6,33 @@
   padding: 4px 8px;
 }
 
-/* .ant-tabs .ant-tabs-content-holder {
-  padding-inline: 1rem;
-} */
-
-.ant-tabs .ant-tabs-tab .ant-tabs-tab-btn,
-.ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible) {
-  color: #ccc;
-}
-
 .ant-tabs {
   background-color: white;
 }
 .ant-tabs > .ant-tabs-nav {
   background-color: #f9fafb;
 }
+.ant-tabs .ant-tabs-tab .ant-tabs-tab-btn,
+.ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible) {
+  color: #ccc;
+}
+
+.dark-mode .ant-tabs {
+  background-color: #141414;
+}
+.dark-mode .ant-tabs > .ant-tabs-nav {
+  background-color: #2a2a2a;
+}
+.dark-mode .ant-tabs .ant-tabs-tab .ant-tabs-tab-btn,
+.dark-mode .ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible) {
+  color: #666;
+}
+
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #dc5b1d;
+  text-shadow: 0 0 0.25px currentcolor;
+}
+
 .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
   padding-block: 10px;
 }
@@ -32,4 +44,3 @@
 .tab-progress {
   width: 100%;
 }
-

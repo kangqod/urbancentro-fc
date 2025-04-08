@@ -15,6 +15,10 @@
   border: 2px solid #f0f0f0;
 }
 
+.dark-mode .team-option-card {
+  border: 2px solid #444;
+}
+
 .ant-card.team-option-card .ant-card-body {
   padding: 0;
 }
