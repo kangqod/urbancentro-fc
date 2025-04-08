@@ -21,214 +21,214 @@
     "name": "김정표",
     "tier": "ace",
     "strength": "골 결정력",
-    "attributes": ["데이터"]
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1984",
     "number": 30,
     "name": "최현석",
     "tier": "intermediate",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1985",
     "number": 9,
     "name": "전인정",
     "tier": "advanced",
-    "strength": "-",
-    "attributes": []
+    "strength": "골 결정력",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1986",
     "number": 11,
     "name": "김성일",
     "tier": "intermediate",
-    "strength": "-",
-    "attributes": []
+    "strength": "골 결정력",
+    "attributes": ["유스 출신"]
   },
   {
     "year": "1986",
-    "number": 51,
+    "number": 0,
     "name": "송승근",
     "tier": "beginner",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1986",
     "number": 28,
     "name": "조용일",
     "tier": "beginner",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1987",
     "number": 33,
     "name": "강병용",
     "tier": "beginner",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1987",
     "number": 20,
     "name": "박준우",
     "tier": "intermediate",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1987",
     "number": 17,
     "name": "양성호",
     "tier": "beginner",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1987",
     "number": 19,
     "name": "홍승우",
     "tier": "intermediate",
-    "strength": "-",
+    "strength": "업데이트 중",
     "attributes": ["라민 야말"]
   },
   {
     "year": "1988",
-    "number": 52,
+    "number": 0,
     "name": "우상욱",
     "tier": "intermediate",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1989",
     "number": 0,
     "name": "박근휘",
     "tier": "ace",
-    "strength": "-",
-    "attributes": []
+    "strength": "골 결정력",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1989",
     "number": 8,
     "name": "김동수",
     "tier": "intermediate",
-    "strength": "-",
-    "attributes": []
+    "strength": "몸싸움",
+    "attributes": ["회장", "파워슛"]
   },
   {
     "year": "1989",
     "number": 0,
     "name": "박준범",
     "tier": "intermediate",
-    "strength": "중원 마에스트로",
-    "attributes": ["피지컬 3대장"]
+    "strength": "몸싸움",
+    "attributes": ["부회장"]
   },
   {
     "year": "1989",
     "number": 1,
     "name": "윤용준",
     "tier": "intermediate",
-    "strength": "데이터가 부족합니다.",
-    "attributes": ["데이터가 부족합니다", "빠른 참석 요망"]
+    "strength": "데이터 부족",
+    "attributes": ["빠른 참석 요망"]
   },
   {
     "year": "1989",
     "number": 4,
     "name": "이원식",
     "tier": "advanced",
-    "strength": "다리 길이",
-    "attributes": []
+    "strength": "피지컬",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1989",
     "number": 12,
     "name": "이한별",
     "tier": "advanced",
-    "strength": "체력",
-    "attributes": []
+    "strength": "무한 체력",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1989",
     "number": 22,
     "name": "임은철",
     "tier": "advanced",
-    "strength": "-",
-    "attributes": []
+    "strength": "몸싸움",
+    "attributes": ["넓은 시야"]
   },
   {
     "year": "1989",
     "number": 31,
     "name": "장세원",
     "tier": "advanced",
-    "strength": "-",
-    "attributes": ["빠른 참석 요망"]
+    "strength": "패스",
+    "attributes": ["플레이메이커", "빠른 참석 요망"]
   },
   {
     "year": "1989",
     "number": 42,
     "name": "최승빈",
     "tier": "ace",
-    "strength": "-",
-    "attributes": []
+    "strength": "화려한 개인기",
+    "attributes": ["플레이메이커", "실수하면 소리커짐"]
   },
   {
     "year": "1989",
     "number": 7,
     "name": "이원재",
     "tier": "advanced",
-    "strength": "-",
-    "attributes": [""]
+    "strength": "공격 전개",
+    "attributes": ["플레이메이커", "넓은 시야"]
   },
   {
     "year": "1990",
     "number": 5,
     "name": "박치환",
     "tier": "beginner",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1990",
     "number": 13,
     "name": "이민수",
     "tier": "beginner",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["카시야스"]
   },
   {
     "year": "1990",
     "number": 24,
     "name": "임시현",
     "tier": "intermediate",
-    "strength": "-",
-    "attributes": []
+    "strength": "업데이트 중",
+    "attributes": ["업데이트 중"]
   },
   {
     "year": "1991",
     "number": 6,
     "name": "김백상",
     "tier": "intermediate",
-    "strength": "-",
-    "attributes": []
+    "strength": "유머",
+    "attributes": ["화려한 발재간", "잦은 부상"]
   },
   {
     "year": "1991",
     "number": 0,
     "name": "김혁준",
     "tier": "beginner",
-    "strength": "-",
-    "attributes": []
+    "strength": "체력",
+    "attributes": ["군무원", "열정"]
   },
   {
     "year": "1993",
     "number": 0,
     "name": "황윤하",
     "tier": "advanced",
-    "strength": "중원 장악",
-    "attributes": []
+    "strength": "젊음",
+    "attributes": ["플레이메이커"]
   }
 ]

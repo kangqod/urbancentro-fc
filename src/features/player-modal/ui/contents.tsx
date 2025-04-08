@@ -1,8 +1,8 @@
 import { Grid, Descriptions, Tag, Typography } from 'antd'
-import { Info, Crown, Flame, Zap, ArrowBigUp, ArrowBigRight } from 'lucide-react'
-import { DEFAULT_ATTRIBUTES, DEFAULT_STRENGTH, PLAYER_CONDITIONS } from '@/entities'
+import { Info, Shirt, Crown, Flame, Zap, ArrowBigUp, ArrowBigRight } from 'lucide-react'
+import { DEFAULT_ATTRIBUTES, DEFAULT_NUMBER, DEFAULT_STRENGTH, PLAYER_CONDITIONS } from '@/entities'
 import type { ConditionType, Player as PlayerType } from '@/entities'
-import { capitalizeFirstLetter, getTierColor, TAG_COLOR_MAP } from '../lib'
+import { capitalizeFirstLetter, getTierColor } from '../lib'
 
 interface PlayerProps {
   player: PlayerType
@@ -17,7 +17,7 @@ export function Contents({ player, onClose }: PlayerProps) {
   return (
     <div className="player-contents" onClick={onClose}>
       <Descriptions
-        column={screens.xs ? 1 : 2}
+        column={screens.xs ? 1 : 3}
         size="middle"
         layout="horizontal"
         styles={{ label: { fontWeight: 500 } }}
@@ -32,6 +32,16 @@ export function Contents({ player, onClose }: PlayerProps) {
           }
         >
           <Tag color={getTierColor(player.tier)}>{capitalizeFirstLetter(player.tier)}</Tag>
+        </Descriptions.Item>
+        <Descriptions.Item
+          label={
+            <div className="field-label">
+              <Shirt className="icon shirt-icon" />
+              등번호
+            </div>
+          }
+        >
+          {player.number === DEFAULT_NUMBER ? '없음' : player.number}
         </Descriptions.Item>
         <Descriptions.Item
           label={
@@ -66,9 +76,7 @@ export function Contents({ player, onClose }: PlayerProps) {
           ) : (
             <ul className="player-attributes">
               {player.attributes.map((attr, index) => (
-                <li key={index}>
-                  <Tag color={TAG_COLOR_MAP[index]}>{attr}</Tag>
-                </li>
+                <li key={index}>{attr}</li>
               ))}
             </ul>
           )}

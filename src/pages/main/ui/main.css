@@ -7,6 +7,14 @@ body {
   overflow-x: hidden;
 }
 
+body.dark-mode {
+  background-color: #141414;
+}
+
+body.light-mode {
+  background-color: #ffffff;
+}
+
 #root {
   width: 100%;
   max-width: 1280px;
@@ -22,7 +30,22 @@ body {
 
 .app-layout {
   min-height: 100vh;
+}
+
+body.dark-mode .app-layout {
+  background-color: #141414;
+}
+
+body.light-mode .app-layout {
   background-color: white;
+}
+
+.app-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
 }
 
 .app-content {
@@ -31,13 +54,37 @@ body {
   padding: 0;
 }
 
+.theme-button {
+  position: absolute;
+  right: 2rem;
+}
+
 .next-button-container {
   display: flex;
   justify-content: center;
   margin-top: 2rem;
   border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.dark-mode .next-button-container {
+  border-top: 1px solid #3a3a3a;
+  background-color: #2a2a2a;
 }
 
 .next-button-container button {
   width: 130px;
+}
+
+@media (max-width: 576px) {
+  .app-header {
+    justify-content: space-between;
+    padding-inline: 2rem;
+  }
+
+  .theme-button {
+    position: relative;
+    right: 0;
+    top: 0;
+  }
 }
