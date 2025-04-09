@@ -16,13 +16,25 @@ export function Footer({ isShuffle, onClickShuffle }: FooterProps) {
 
       <div className="share-icons">
         <Tooltip title="공유하기">
-          <Button type="text" icon={<Share2 size={24} />} onClick={handleNativeShare} className="share-icon-button" />
+          <Button type="text" icon={<Share2 size={24} />} loading={isShuffle} onClick={handleNativeShare} className="share-icon-button" />
         </Tooltip>
         <Tooltip title="카카오톡 공유">
-          <Button type="text" icon={<MessageCircle size={24} />} onClick={handleShareKakao} className="share-icon-button kakao" />
+          <Button
+            type="text"
+            icon={<MessageCircle size={24} />}
+            loading={isShuffle}
+            onClick={handleShareKakao}
+            className="share-icon-button kakao"
+          />
         </Tooltip>
         <Tooltip title="클립보드에 복사">
-          <Button type="text" icon={<Clipboard size={24} />} onClick={handleCopyToClipboard} className="share-icon-button clipboard" />
+          <Button
+            type="text"
+            icon={<Clipboard size={24} />}
+            loading={isShuffle}
+            onClick={handleCopyToClipboard}
+            className="share-icon-button clipboard"
+          />
         </Tooltip>
       </div>
 
@@ -40,7 +52,6 @@ export function Footer({ isShuffle, onClickShuffle }: FooterProps) {
           type="primary"
           size="large"
           icon={<RotateCw size={16} />}
-          // onClick={() => distributePlayers(false)}
           onClick={onClickShuffle}
           loading={isShuffle}
           className="action-button shuffle-button"

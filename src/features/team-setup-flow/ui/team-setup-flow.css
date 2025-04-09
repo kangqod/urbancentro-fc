@@ -7,6 +7,7 @@
 }
 
 .ant-tabs {
+  flex: 1;
   background-color: white;
 }
 .ant-tabs > .ant-tabs-nav {
@@ -41,6 +42,16 @@
   padding-block: 0;
 }
 
-.tab-progress {
-  width: 100%;
+.ant-tabs .ant-tabs-content-holder {
+  display: flex;
+}
+
+.ant-tabs .ant-tabs-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-tabs .ant-tabs-content .ant-tabs-tabpane:not(.ant-tabs-tabpane-hidden) {
+  display: flex;
+  flex: 1;
 }

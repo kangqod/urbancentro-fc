@@ -1,7 +1,8 @@
 .team-distribution-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  flex: 1;
+  row-gap: 1.5rem;
 }
 
 .header {
@@ -40,6 +41,7 @@
   padding: 0.5rem;
   background-color: #f9fafb;
   border-radius: 0.25rem;
+  cursor: pointer;
 }
 
 .dark-mode .player-item {
