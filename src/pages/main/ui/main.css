@@ -64,13 +64,13 @@ body.light-mode .app-layout {
   display: flex;
   justify-content: center;
   margin-block-start: auto;
-  border-top: 1px solid #e5e7eb;
   background-color: #f9fafb;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .dark-mode .next-button-container {
-  border-top: 1px solid #3a3a3a;
   background-color: #2a2a2a;
+  box-shadow: 0 -2px 8px rgba(255, 255, 255, 0.2);
 }
 
 .next-button-container button {
