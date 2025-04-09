@@ -3,6 +3,7 @@
   flex-direction: column;
   flex: 1;
   row-gap: 1.5rem;
+  margin-block-end: 8rem;
 }
 
 .team-setup-header {

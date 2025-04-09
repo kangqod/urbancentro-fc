@@ -3,6 +3,7 @@
   flex-direction: column;
   flex: 1;
   row-gap: 1.5rem;
+  margin-block-end: 8rem;
 }
 
 .section-header {
@@ -85,7 +86,9 @@
 .next-button-container {
   flex-shrink: 0;
   padding: 1rem 0;
-  position: sticky;
+  position: fixed;
+  width: 100%;
+  max-width: 1280px;
   bottom: 0;
   z-index: 1;
   background: white;
