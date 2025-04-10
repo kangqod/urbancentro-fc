@@ -1,4 +1,4 @@
-import { ConfigProvider, theme } from 'antd'
+import { ConfigProvider, theme, App as AntdApp } from 'antd'
 import { PRIMARY_COLOR } from '@/shared'
 import { Main } from '@/pages'
 import { useThemeValue } from './lib'
@@ -16,7 +16,9 @@ export function Provider() {
         }
       }}
     >
-      <Main />
+      <AntdApp>
+        <Main />
+      </AntdApp>
     </ConfigProvider>
   )
 }

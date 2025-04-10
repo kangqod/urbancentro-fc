@@ -14,8 +14,13 @@ const initialState: ThemeState = {
 export const useThemeStore = create<ThemeStore>((set) => ({
   ...initialState,
   setTheme: (value) =>
-    set((state) => ({
-      isDarkMode: value ?? !state.isDarkMode
-    })),
-  resetThemeState: () => set(initialState)
+    set((state) => {
+      const newTheme = value ?? !state.isDarkMode
+      localStorage.setItem(KEY_DARK_MODE, String(newTheme)) // 로컬 스토리지에 저장
+      return { isDarkMode: newTheme }
+    }),
+  resetThemeState: () => {
+    localStorage.removeItem(KEY_DARK_MODE)
+    set(initialState)
+  }
 }))
