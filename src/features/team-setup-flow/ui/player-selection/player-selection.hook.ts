@@ -19,7 +19,7 @@ export function usePlayerSelection() {
   const [form] = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
 
-  const isDisabled = availablePlayerCount !== requiredPlayers || detailMode
+  const isDisabled = availablePlayerCount !== requiredPlayers
 
   const status = useMemo(() => getSelectionStatus(availablePlayerCount, requiredPlayers), [availablePlayerCount, requiredPlayers])
 
