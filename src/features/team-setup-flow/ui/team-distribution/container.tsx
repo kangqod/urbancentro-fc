@@ -14,6 +14,8 @@ export function Container({ isShuffle }: ContainerProps) {
   const teams = useTeamsValue()
   const updateSelectedPlayer = useSetSelectedPlayerState()
 
+  const columnSpan = teams.length % 2 === 0 ? 12 : 8
+
   return (
     <>
       {isShuffle ? (
@@ -23,7 +25,7 @@ export function Container({ isShuffle }: ContainerProps) {
       ) : (
         <Row gutter={[8, 8]} className="team-row">
           {teams.map((team) => (
-            <Col xs={8} md={8} key={team.name}>
+            <Col xs={columnSpan} md={columnSpan} lg={4} key={team.name}>
               <Card
                 title={
                   <div className="team-header">

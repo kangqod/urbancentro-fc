@@ -40,5 +40,12 @@ export const MATCH_FORMAT_CONFIG = {
     DESCRIPTION: '총 21명',
     TEAM_COUNT: 3,
     PLAYERS_PER_TEAM: 7
-  }
+  },
+  FIVE_FOUR_TEAMS: {
+    ID: '5:5:5:5',
+    TITLE: '5 vs 5 vs 5 vs 5',
+    DESCRIPTION: '총 20명',
+    TEAM_COUNT: 4,
+    PLAYERS_PER_TEAM: 5
+  },
 } as const
