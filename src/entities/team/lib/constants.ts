@@ -47,5 +47,7 @@ export const MATCH_FORMAT_CONFIG = {
     DESCRIPTION: '총 20명',
     TEAM_COUNT: 4,
     PLAYERS_PER_TEAM: 5
-  },
+  }
 } as const
+
+export const HIGH_CONDITION_PLAYERS = [{ name: '조용일', year: '1986' }]
