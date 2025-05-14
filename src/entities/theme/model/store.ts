@@ -7,8 +7,16 @@ interface ThemeStore extends ThemeState {
 
 export const KEY_DARK_MODE = 'darkMode'
 
+function getInitialDarkMode() {
+  const stored = localStorage.getItem(KEY_DARK_MODE)
+  if (stored === null) {
+    return true
+  }
+  return stored === 'true'
+}
+
 const initialState: ThemeState = {
-  isDarkMode: localStorage.getItem(KEY_DARK_MODE) === 'true' || false
+  isDarkMode: getInitialDarkMode()
 }
 
 export const useThemeStore = create<ThemeStore>((set) => ({
