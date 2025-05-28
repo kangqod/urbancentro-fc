@@ -1,4 +1,4 @@
-import { HIGH_CONDITION_PLAYERS, PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities'
+import { RAINBOW_PLAYERS, PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities'
 import type { Player, Team, MatchFormatType } from '@/entities'
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -10,7 +10,7 @@ function setPlayerCondition(team: Team) {
     player.condition = PLAYER_CONDITIONS.MID
 
     // 특정 선수는 컨디션을 HIGH로 설정
-    if (HIGH_CONDITION_PLAYERS.some((p) => p.name === player.name && p.year === player.year)) {
+    if (RAINBOW_PLAYERS.some((p) => p.name === player.name && p.year === player.year)) {
       player.condition = PLAYER_CONDITIONS.HIGH
     }
   })

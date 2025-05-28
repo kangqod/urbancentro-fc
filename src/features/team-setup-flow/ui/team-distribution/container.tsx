@@ -1,6 +1,6 @@
 import { Card, Typography, Row, Col, Spin, Badge } from 'antd'
 import { ArrowBigUp } from 'lucide-react'
-import { DEFAULT_YEAR, HIGH_CONDITION_PLAYERS, PLAYER_CONDITIONS } from '@/entities'
+import { DEFAULT_YEAR, RAINBOW_PLAYERS, PLAYER_CONDITIONS } from '@/entities'
 import { useSetSelectedPlayerState } from '@/pages'
 import { useTeamsValue } from '../../lib'
 
@@ -40,7 +40,7 @@ export function Container({ isShuffle }: ContainerProps) {
                     <div
                       key={player.id}
                       className={`player-item${
-                        HIGH_CONDITION_PLAYERS.some((p) => p.name === player.name && p.year === player.year) ? ' rainbow' : ''
+                        RAINBOW_PLAYERS.some((p) => p.name === player.name && p.year === player.year) ? ' rainbow' : ''
                       }`}
                       onClick={() => {
                         if (player.isGuest) return

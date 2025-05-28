@@ -37,7 +37,7 @@
     "name": "전인정",
     "tier": "advanced",
     "strength": "골 결정력",
-    "attributes": ["업데이트 중"]
+    "attributes": ["분석 중"]
   },
   {
     "year": "1986",
@@ -51,9 +51,9 @@
     "year": "1986",
     "number": 0,
     "name": "송승근",
-    "tier": "beginner",
-    "strength": "업데이트 중",
-    "attributes": ["빠르게 폼이 올라오는 중"]
+    "tier": "intermediate",
+    "strength": "빠른 침투",
+    "attributes": ["분석 중"]
   },
   {
     "year": "1986",
@@ -68,24 +68,24 @@
     "number": 33,
     "name": "강병용",
     "tier": "beginner",
-    "strength": "업데이트 중",
-    "attributes": ["업데이트 중"]
+    "strength": "분석 중",
+    "attributes": ["분석 중"]
   },
   {
     "year": "1987",
     "number": 20,
     "name": "박준우",
     "tier": "intermediate",
-    "strength": "업데이트 중",
-    "attributes": ["업데이트 중"]
+    "strength": "공격전개",
+    "attributes": ["분석 중"]
   },
   {
     "year": "1987",
     "number": 0,
     "name": "김용경",
     "tier": "beginner",
-    "strength": "업데이트 중",
-    "attributes": ["업데이트 중"]
+    "strength": "분석 중",
+    "attributes": ["분석 중"]
   },
   {
     "year": "1987",
@@ -93,14 +93,14 @@
     "name": "양성호",
     "tier": "beginner",
     "strength": "든든한 수비",
-    "attributes": ["업데이트 중"]
+    "attributes": ["분석 중"]
   },
   {
     "year": "1987",
     "number": 19,
     "name": "홍승우",
     "tier": "intermediate",
-    "strength": "업데이트 중",
+    "strength": "드리블",
     "attributes": ["라민 야말"]
   },
   {
@@ -109,7 +109,7 @@
     "name": "우상욱",
     "tier": "intermediate",
     "strength": "체력",
-    "attributes": ["업데이트 중"]
+    "attributes": ["분석 중"]
   },
   {
     "year": "1989",
@@ -117,7 +117,7 @@
     "name": "박근휘",
     "tier": "ace",
     "strength": "골 결정력",
-    "attributes": ["업데이트 중"]
+    "attributes": ["출산 진심으로 축하드려요 🎉"]
   },
   {
     "year": "1989",
@@ -196,15 +196,15 @@
     "number": 5,
     "name": "박치환",
     "tier": "beginner",
-    "strength": "업데이트 중",
-    "attributes": ["업데이트 중"]
+    "strength": "체력",
+    "attributes": ["육아 고수"]
   },
   {
     "year": "1990",
     "number": 13,
     "name": "이민수",
     "tier": "beginner",
-    "strength": "업데이트 중",
+    "strength": "든든한 수비",
     "attributes": ["카시야스"]
   },
   {
