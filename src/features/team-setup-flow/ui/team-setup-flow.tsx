@@ -1,6 +1,6 @@
 import { Tabs } from 'antd'
 import { Users, UserPlus, Shuffle } from 'lucide-react'
-import { TAB_GAP, TAB_ICON_SIZE } from '../constants'
+import { TAB_GAP, TAB_ICON_SIZE } from '../lib'
 import { TeamSizeSelector } from './team-size-selector'
 import { PlayerSelection } from './player-selection'
 import { TeamDistribution } from './team-distribution'

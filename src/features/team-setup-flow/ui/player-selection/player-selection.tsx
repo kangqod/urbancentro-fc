@@ -1,5 +1,6 @@
 import { Card, Button, Typography, Row, Col, Checkbox, Badge, Alert, Switch } from 'antd'
 import { NotepadText, ArrowRight, Plus, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
+import { Tesseract } from '@/features/tesseract'
 import { PRIMARY_COLOR, ReleaseDate } from '@/shared'
 import { GuestModal } from './guest-modal'
 import { ToastMessage } from './toast-message'
@@ -40,6 +41,9 @@ export function PlayerSelection() {
           <Button type="dashed" icon={<Plus size={ICON_SIZE} />} onClick={handleModalOpen(true)} className="guest-add-button">
             게스트 추가
           </Button>
+          <div>
+            <Tesseract />
+          </div>
           <div className="detail-switch-container" onClick={handleDetailModeClick}>
             <NotepadText size={ICON_SIZE} />
             <Text>상세 보기</Text>

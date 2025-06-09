@@ -21,4 +21,5 @@ export interface PlayerState {
   players: Player[]
   availablePlayerCount: number
   selectedPlayer: Player | null
+  isOCR: boolean
 }
