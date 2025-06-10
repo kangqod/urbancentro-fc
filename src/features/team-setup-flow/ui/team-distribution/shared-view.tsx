@@ -5,10 +5,5 @@ interface SharedViewProps {
 }
 
 export function SharedView({ isShuffle }: SharedViewProps) {
-  return (
-    <>
-      <Container isShuffle={isShuffle} />
-      <div className="button-container" />
-    </>
-  )
+  return <Container isShuffle={isShuffle} />
 }

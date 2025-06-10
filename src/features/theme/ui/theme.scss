@@ -1,0 +1,12 @@
+.theme-button {
+  position: absolute;
+  right: 2rem;
+}
+
+@media (max-width: 576px) {
+  .theme-button {
+    position: relative;
+    right: 0;
+    top: 0;
+  }
+}

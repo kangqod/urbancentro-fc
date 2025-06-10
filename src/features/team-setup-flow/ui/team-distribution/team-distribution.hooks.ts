@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from 'react'
 import { message } from 'antd'
 import { balanceTeams } from '@/entities'
 import type { MatchFormatType, Team } from '@/entities'
-import { parseSharedTeams, useTeamDistributionValue, useTeamsState, useGetAvailablePlayersState } from '../../lib'
+import { parseSharedTeams, useTeamDistributionValue, useTeamsState, useGetAvailablePlayersState, TEAMS_PARAMS } from '../../lib'
+import { TabMenu } from '../../model'
 
 export function useTeamDistribution() {
   const { isSharedView, activeTab } = useTeamDistributionValue()
@@ -18,7 +19,7 @@ export function useTeamDistribution() {
   const distributeTeamsFromSharedLink = async () => {
     try {
       const searchParams = new URLSearchParams(window.location.search)
-      const teamsParam = searchParams.get('teams')
+      const teamsParam = searchParams.get(TEAMS_PARAMS)
       const sharedTeams = parseSharedTeams(teamsParam)
 
       if (sharedTeams) {
@@ -65,7 +66,7 @@ export function useTeamDistribution() {
   }
 
   useEffect(() => {
-    if (!isFirstRenderRef.current && activeTab === 'team-distribution') {
+    if (!isFirstRenderRef.current && activeTab === TabMenu.TeamDistribution) {
       handleDistributePlayers()
       isFirstRenderRef.current = true
     } else {

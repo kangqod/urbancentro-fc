@@ -1,0 +1,13 @@
+.tab-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+@media (max-width: 576px) {
+  .tab-header > h4 {
+    margin-block: 0.5em;
+  }
+}

@@ -3,7 +3,7 @@ import type { Player as PlayerType } from '@/entities'
 import { Title } from './title'
 import { Contents } from './contents'
 
-import './player-modal.css'
+import './player-modal.scss'
 
 interface PlayerModalProps {
   player: PlayerType | null

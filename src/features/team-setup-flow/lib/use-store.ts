@@ -1,5 +1,5 @@
 import { useShallow } from 'zustand/react/shallow'
-import { usePlayerStore, useTeamStore } from '@/entities'
+import { type PlayerState, usePlayerStore, useTeamStore } from '@/entities'
 import { useTeamSetupFlowStore } from '../model/store'
 
 export function useActiveTabValue() {
@@ -51,13 +51,23 @@ export function useTeamDistributionValue() {
   return useTeamSetupFlowStore(useShallow(({ isSharedView, activeTab }) => ({ isSharedView, activeTab })))
 }
 
-export function usePlayerSelectionState() {
+export function usePlayersValue() {
+  return usePlayerStore(useShallow(({ players }) => players))
+}
+
+export function useSetPlayerSelectionState() {
   return usePlayerStore(
-    useShallow(({ players, availablePlayerCount, setPlayers, togglePlayerAvailability }) => ({
-      players,
-      availablePlayerCount,
+    useShallow(({ setPlayers, togglePlayerAvailability }) => ({
       setPlayers,
       togglePlayerAvailability
     }))
   )
+}
+
+export function useAvailablePlayerCountValue() {
+  return usePlayerStore(({ availablePlayerCount }) => availablePlayerCount)
+}
+
+export function useSetSelectedPlayerState(): (player?: PlayerState['selectedPlayer']) => void {
+  return usePlayerStore(useShallow(({ setSelectedPlayer }) => setSelectedPlayer))
 }

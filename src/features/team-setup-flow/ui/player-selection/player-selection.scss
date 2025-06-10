@@ -6,12 +6,6 @@
   margin-block-end: 8rem;
 }
 
-.section-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  flex-shrink: 0;
-}
-
 .control-panel {
   display: flex;
   justify-content: space-between;
@@ -42,7 +36,8 @@
   padding-inline: 1rem;
 }
 
-.guest-add-button, .detail-button {
+.guest-add-button,
+.detail-button {
   display: flex;
   align-items: center;
 }
@@ -104,37 +99,6 @@
   padding: 0 1rem;
 }
 
-.next-button-container {
-  flex-shrink: 0;
-  padding: 1rem 0;
-  position: fixed;
-  width: 100%;
-  max-width: 1280px;
-  bottom: 0;
-  z-index: 1;
-  background: white;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.dark-mode .next-button-container {
-  background: #2a2a2a;
-  box-shadow: 0 -2px 8px rgba(255, 255, 255, 0.15);
-}
-
-.button-group {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.prev-button,
-.next-button {
-  display: flex;
-  align-items: center;
-  height: 48px;
-  padding: 0 2rem;
-}
-
 .prev-button {
   background-color: #f0f0f0;
 }
@@ -193,10 +157,4 @@
 
 .dark-mode .players-scroll-container::-webkit-scrollbar-thumb:hover {
   background: #777;
-}
-
-@media (max-width: 576px) {
-  .section-header h4 {
-    margin-block: 0.5em;
-  }
 }

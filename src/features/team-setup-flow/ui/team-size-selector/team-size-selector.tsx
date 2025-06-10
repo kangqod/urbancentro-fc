@@ -1,10 +1,10 @@
 import { Card, Button, Typography, Row, Col } from 'antd'
 import { Users, ArrowRight } from 'lucide-react'
 import { MATCH_FORMAT_CONFIG } from '@/entities'
-import { ReleaseDate } from '@/shared'
+import { TabFooter, TabHeader } from '@/shared'
 import { useTeamSizeSelector } from './team-size-selector.hooks'
 
-import './team-size-selector.css'
+import './team-size-selector.scss'
 
 const { Title, Text } = Typography
 
@@ -24,11 +24,7 @@ export function TeamSizeSelector() {
 
   return (
     <div className="team-setup-container">
-      <div className="team-setup-header">
-        <Title level={4}>팀 구성 선택</Title>
-        <Text type="secondary">원하는 팀 구성을 선택해주세요</Text>
-        <ReleaseDate />
-      </div>
+      <TabHeader title="팀 구성 선택" description="원하는 팀 구성을 선택해주세요" />
 
       <Row gutter={[16, 16]} className="team-option-row">
         {TEAM_OPTIONS.map((option) => (
@@ -50,7 +46,7 @@ export function TeamSizeSelector() {
         ))}
       </Row>
 
-      <div className="next-button-container">
+      <TabFooter>
         <Button
           type="primary"
           size="large"
@@ -61,7 +57,7 @@ export function TeamSizeSelector() {
         >
           다음
         </Button>
-      </div>
+      </TabFooter>
     </div>
   )
 }

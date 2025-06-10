@@ -1,0 +1,23 @@
+@use '@/shared/assets/variables' as var;
+
+.upload-spin {
+  &.ant-spin .ant-spin-dot-holder {
+    color: var.$primary-color;
+  }
+}
+
+.dark-mode {
+  .upload-spin {
+    &.ant-spin-show-text .ant-spin-text {
+      color: var.$white-color;
+    }
+  }
+}
+
+.light-mode {
+  .upload-spin {
+    &.ant-spin-show-text .ant-spin-text {
+      color: var.$black-color;
+    }
+  }
+}

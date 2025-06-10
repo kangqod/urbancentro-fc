@@ -1,0 +1,88 @@
+@use '@/shared/assets/variables' as var;
+
+.tab-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 4px;
+  padding: 4px 8px;
+}
+
+.ant-tabs {
+  flex: 1;
+  background-color: white;
+
+  & > .ant-tabs-nav {
+    background-color: #f9fafb;
+  }
+
+  .ant-tabs-tab .ant-tabs-tab-btn,
+  .ant-tabs-tab-btn:focus:not(:focus-visible) {
+    color: #ccc;
+  }
+
+  .ant-tabs-tabpane:focus-visible {
+    outline: none;
+  }
+
+  > .ant-tabs-nav .ant-tabs-nav-wrap {
+    height: 78px;
+    padding-block: 10px;
+  }
+
+  &.ant-tabs-large > .ant-tabs-nav .ant-tabs-tab {
+    padding-block: 0;
+  }
+
+  .ant-tabs-content-holder {
+    display: flex;
+  }
+
+  .ant-tabs-content {
+    display: flex;
+    flex-direction: column;
+
+    .ant-tabs-tabpane:not(.ant-tabs-tabpane-hidden) {
+      display: flex;
+      flex: 1;
+    }
+  }
+}
+
+.dark-mode {
+  .ant-tabs {
+    background-color: var.$header-background-color-dark;
+
+    > .ant-tabs-nav {
+      background-color: #2a2a2a;
+    }
+
+    .ant-tabs-tab .ant-tabs-tab-btn,
+    .ant-tabs-tab-btn:focus:not(:focus-visible) {
+      color: #666;
+    }
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: #ff681f;
+      text-shadow: 0 0 0.25px currentcolor;
+    }
+  }
+}
+
+.light-mode {
+  .ant-tabs {
+    background-color: var.$header-background-color-light;
+
+    > .ant-tabs-nav {
+      background-color: #f9fafb;
+    }
+
+    .ant-tabs-tab .ant-tabs-tab-btn,
+    .ant-tabs-tab-btn:focus:not(:focus-visible) {
+      color: #ccc;
+    }
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: #ff681f;
+      text-shadow: 0 0 0.25px currentcolor;
+    }
+  }
+}

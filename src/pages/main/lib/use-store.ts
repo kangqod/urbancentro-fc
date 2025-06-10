@@ -1,6 +1,6 @@
 import { useShallow } from 'zustand/react/shallow'
-import { usePlayerStore, useTeamStore, useThemeStore } from '@/entities'
-import type { Player, PlayerState } from '@/entities'
+import { usePlayerStore, useTeamStore } from '@/entities'
+import type { PlayerState } from '@/entities'
 import { useTeamSetupFlowStore } from '@/features'
 
 export function useSetTeamSetupFlowState() {
@@ -26,12 +26,4 @@ export function useSelectedPlayerValue() {
 
 export function useSetSelectedPlayerState(): (player?: PlayerState['selectedPlayer']) => void {
   return usePlayerStore(useShallow(({ setSelectedPlayer }) => setSelectedPlayer))
-}
-
-export function useSelectedPlayerState(): [Player | null, (player?: PlayerState['selectedPlayer']) => void] {
-  return usePlayerStore(useShallow(({ selectedPlayer, setSelectedPlayer }) => [selectedPlayer, setSelectedPlayer]))
-}
-
-export function useThemeState(): [boolean, (value?: boolean) => void] {
-  return useThemeStore(useShallow(({ isDarkMode, setTheme }) => [isDarkMode, setTheme]))
 }

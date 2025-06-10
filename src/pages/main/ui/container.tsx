@@ -1,14 +1,8 @@
 import { TeamSetupFlow } from '@/features'
-import { PlayerDetailModal } from './player-detail-modal'
-import { useTeamContainer } from './container.hooks'
+import { useTeamInitializationFromUrl } from '../lib'
 
 export function Container() {
-  useTeamContainer()
+  useTeamInitializationFromUrl()
 
-  return (
-    <>
-      <TeamSetupFlow />
-      <PlayerDetailModal />
-    </>
-  )
+  return <TeamSetupFlow />
 }

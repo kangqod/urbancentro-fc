@@ -1,8 +1,7 @@
 import { Card, Typography, Row, Col, Spin, Badge } from 'antd'
 import { ArrowBigUp } from 'lucide-react'
 import { DEFAULT_YEAR, RAINBOW_PLAYERS, PLAYER_CONDITIONS } from '@/entities'
-import { useSetSelectedPlayerState } from '@/pages'
-import { useTeamsValue } from '../../lib'
+import { useTeamsValue, useSetSelectedPlayerState } from '../../lib'
 
 interface ContainerProps {
   isShuffle: boolean
@@ -19,16 +18,14 @@ export function Container({ isShuffle }: ContainerProps) {
   return (
     <>
       {isShuffle ? (
-        <div className="loading-container">
-          <Spin size="large" style={{ fontSize: '48px' }} />
-        </div>
+        <Spin size="large" fullscreen className="shuffle-loading" />
       ) : (
         <Row gutter={[8, 8]} className="team-row">
           {teams.map((team) => (
             <Col xs={columnSpan} md={columnSpan} lg={4} key={team.name}>
               <Card
                 title={
-                  <div className="team-header">
+                  <div className="team-card-header">
                     <span>{team.name}</span>
                     <Badge count={team.players.length} />
                   </div>

@@ -37,7 +37,7 @@
     "name": "전인정",
     "tier": "advanced",
     "strength": "골 결정력",
-    "attributes": ["분석 중"]
+    "attributes": ["빠른 침투"]
   },
   {
     "year": "1986",
@@ -45,15 +45,15 @@
     "name": "김성일",
     "tier": "intermediate",
     "strength": "골 결정력",
-    "attributes": ["유스 출신"]
+    "attributes": ["유스 출신", "검단 메시"]
   },
   {
     "year": "1986",
     "number": 0,
     "name": "송승근",
-    "tier": "intermediate",
+    "tier": "beginner",
     "strength": "빠른 침투",
-    "attributes": ["분석 중"]
+    "attributes": ["좋은 출석률"]
   },
   {
     "year": "1986",
@@ -68,24 +68,24 @@
     "number": 33,
     "name": "강병용",
     "tier": "beginner",
-    "strength": "분석 중",
-    "attributes": ["분석 중"]
+    "strength": "수비",
+    "attributes": ["일단 치고 달림"]
   },
   {
     "year": "1987",
     "number": 20,
     "name": "박준우",
     "tier": "intermediate",
-    "strength": "공격전개",
-    "attributes": ["분석 중"]
+    "strength": "플레이메이커",
+    "attributes": ["공격 전개"]
   },
   {
     "year": "1987",
     "number": 0,
     "name": "김용경",
     "tier": "beginner",
-    "strength": "분석 중",
-    "attributes": ["분석 중"]
+    "strength": "든든한 수비",
+    "attributes": ["넓은 시야"]
   },
   {
     "year": "1987",
@@ -93,7 +93,7 @@
     "name": "양성호",
     "tier": "beginner",
     "strength": "든든한 수비",
-    "attributes": ["분석 중"]
+    "attributes": ["패스 좋음"]
   },
   {
     "year": "1987",
@@ -108,8 +108,8 @@
     "number": 0,
     "name": "우상욱",
     "tier": "intermediate",
-    "strength": "체력",
-    "attributes": ["분석 중"]
+    "strength": "든든한 수비",
+    "attributes": ["체력 좋음"]
   },
   {
     "year": "1989",
@@ -221,7 +221,7 @@
     "name": "김백상",
     "tier": "intermediate",
     "strength": "유머",
-    "attributes": ["화려한 발재간", "잦은 부상"]
+    "attributes": ["화려한 발재간"]
   },
   {
     "year": "1991",
@@ -236,7 +236,7 @@
     "number": 0,
     "name": "황윤하",
     "tier": "advanced",
-    "strength": "젊음",
-    "attributes": ["플레이메이커"]
+    "strength": "체력",
+    "attributes": ["젊음", "플레이메이커"]
   }
 ]

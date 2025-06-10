@@ -1,1 +1,1 @@
-export * from './ui/Tesseract'
+export * from './ui/tesseract'

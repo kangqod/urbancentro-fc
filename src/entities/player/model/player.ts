@@ -44,7 +44,7 @@ export class PlayerClass implements Player {
     this.attributes = data.attributes || DEFAULT_ATTRIBUTES
     this.condition = data.condition || DEFAULT_CONDITION
     this.isGuest = data.isGuest || false
-    this.isAvailable = data.year !== DEFAULT_YEAR
+    this.isAvailable = data.isAvailable ?? data.year !== DEFAULT_YEAR
   }
 
   static createFromData(data: Partial<Player>): PlayerClass {

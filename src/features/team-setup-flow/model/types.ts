@@ -1,12 +1,12 @@
-export type TabMenuType = 'team-setup' | 'player-selection' | 'team-distribution'
+import { TabMenu } from './store'
 
 export interface TeamSetupFlowState {
-  activeTab: TabMenuType
+  activeTab: TabMenu
   isSharedView: boolean
 }
 
 export interface TeamSetupFlowStore extends TeamSetupFlowState {
-  setActiveTab: (tab: TabMenuType) => void
+  setActiveTab: (tab: TabMenu) => void
   setIsSharedView: (value: boolean) => void
   resetFlowState: () => void
 }
