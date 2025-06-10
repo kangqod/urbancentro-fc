@@ -28,7 +28,7 @@ export function useTesseract() {
           key: 'ocr',
           type: 'error',
           style: {
-            marginTop: '40px'
+            marginTop: '50px'
           },
           content: '선수 정보를 찾을 수 없습니다.'
         })
@@ -41,16 +41,16 @@ export function useTesseract() {
         key: 'ocr',
         type: 'success',
         style: {
-          marginTop: '40px'
+          marginTop: '50px'
         },
-        content: `${result.length} 명의 선수가 확인되었습니다.`
+        content: `${result.length} 명의 선수가 반영되었습니다.`
       })
     } catch (error) {
       messageApi.open({
         key: 'ocr',
         type: 'error',
         style: {
-          marginTop: '40px'
+          marginTop: '50px'
         },
         content: `OCR 처리 중 오류 발생하였습니다.`
       })

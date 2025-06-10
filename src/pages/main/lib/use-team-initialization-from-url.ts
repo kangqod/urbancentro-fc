@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSetPlayersState, useSetTeamSetupFlowState } from '../lib'
 import { calculateTotalPlayers, createPlayersFromTeams, parseTeamsParam } from '../lib'
-import { useSetTeamOptionState } from '@/features'
+import { TabMenu, TEAMS_PARAMS, useSetTeamOptionState } from '@/features'
 
 export function useTeamInitializationFromUrl() {
   const { setActiveTab, setIsSharedView } = useSetTeamSetupFlowState()
@@ -10,11 +10,12 @@ export function useTeamInitializationFromUrl() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    const teamsParam = params.get('teams')
+    const teamsParam = params.get(TEAMS_PARAMS)
 
     if (!teamsParam) return
 
     const teamsData = parseTeamsParam(teamsParam)
+
     if (teamsData.length === 0) return
 
     const totalPlayers = calculateTotalPlayers(teamsData)
@@ -23,6 +24,6 @@ export function useTeamInitializationFromUrl() {
     setTeamOption(teamsData.length, totalPlayers)
     setPlayers(players)
     setIsSharedView(true)
-    setActiveTab('team-distribution')
+    setActiveTab(TabMenu.TeamDistribution)
   }, [setTeamOption, setPlayers, setActiveTab, setIsSharedView])
 }

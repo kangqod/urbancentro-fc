@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MATCH_FORMAT_CONFIG } from '@/entities'
 import { useSetActiveTabState, useSetTeamOptionState } from '../../lib'
+import { TabMenu } from '../../model'
 
 export function useTeamSizeSelector() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
@@ -17,7 +18,7 @@ export function useTeamSizeSelector() {
   }
 
   function handleNextClick() {
-    setActiveTab('player-selection')
+    setActiveTab(TabMenu.PlayerSelection)
   }
 
   return {

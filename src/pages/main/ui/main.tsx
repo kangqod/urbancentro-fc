@@ -1,10 +1,9 @@
 import { Layout } from 'antd'
-import { Header } from '@/widgets'
+import { KakaoLoader, Theme } from '@/features'
+import { Header, PlayerDetailModal } from '@/widgets'
 import { Container } from './container'
-import { Theme } from './theme'
-import { KakaoLoader } from './kakao-loader'
 
-import './main.css'
+import './main.scss'
 
 const { Content } = Layout
 
@@ -18,6 +17,7 @@ export function Main() {
       <Content className="app-content">
         <Container />
       </Content>
+      <PlayerDetailModal />
       <KakaoLoader />
     </Layout>
   )

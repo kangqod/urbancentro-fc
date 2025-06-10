@@ -1,21 +1,21 @@
 import { useEffect } from 'react'
 import { message } from 'antd'
-import { usePlayerStore, useTeamStore } from '@/entities'
-import { getSelectionStatus } from '../../lib'
-import { useTeamSetupFlowStore } from '../../model/store'
+import { getSelectionStatus, useAvailablePlayerCountValue, useRequiredPlayersValue, useActiveTabValue } from '../../lib'
+import { TabMenu } from '../../model'
 
 export function useToastMessage() {
   const [messageApi, contextHolder] = message.useMessage()
-  const { requiredPlayers } = useTeamStore()
-  const { availablePlayerCount } = usePlayerStore()
-  const { activeTab } = useTeamSetupFlowStore()
+
+  const activeTab = useActiveTabValue()
+  const requiredPlayers = useRequiredPlayersValue()
+  const availablePlayerCount = useAvailablePlayerCountValue()
 
   useEffect(() => {
     const newStatus = getSelectionStatus(availablePlayerCount, requiredPlayers)
-    if (activeTab === 'player-selection') {
+    if (activeTab === TabMenu.PlayerSelection) {
       // PLAYER_SELECTION 탭일 때만
       messageApi.open({
-        key: 'player-selection',
+        key: TabMenu.PlayerSelection,
         type: newStatus.type as 'warning' | 'error' | 'success',
         content: newStatus.message
       })

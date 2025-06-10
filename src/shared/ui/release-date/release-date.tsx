@@ -1,7 +1,7 @@
 import { Typography } from 'antd'
-import { formatDateToYYYYMMDD } from '../lib'
+import { formatDateToYYYYMMDD } from '../../lib'
 
-import './release-date.css'
+import './release-date.scss'
 
 const TODAY = formatDateToYYYYMMDD(new Date())
 

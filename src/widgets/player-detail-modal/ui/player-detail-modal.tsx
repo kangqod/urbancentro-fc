@@ -1,14 +1,10 @@
 import { lazy, Suspense } from 'react'
-import { useSelectedPlayerState } from '../lib'
+import usePlayerDetailModal from './player-detail-modal.hooks'
 
 const PlayerModal = lazy(() => import('@/features').then((module) => ({ default: module.PlayerModal })))
 
 export function PlayerDetailModal() {
-  const [selectedPlayer, updateSelectedPlayer] = useSelectedPlayerState()
-
-  function handleModalClose() {
-    updateSelectedPlayer()
-  }
+  const { selectedPlayer, handleModalClose } = usePlayerDetailModal()
 
   return (
     <Suspense fallback={<></>}>

@@ -1,7 +1,7 @@
 import { message } from 'antd'
 import { PLAYER_CONDITIONS, shareKakao } from '@/entities'
 import { getTeamsText, useTeamsValue } from '../../lib'
-import { useTeamSetupFlowStore } from '../../model'
+import { TabMenu, useTeamSetupFlowStore } from '../../model'
 
 export function useFooter() {
   const teams = useTeamsValue()
@@ -60,7 +60,7 @@ export function useFooter() {
   }
 
   function handlePrevClick() {
-    setActiveTab('player-selection')
+    setActiveTab(TabMenu.PlayerSelection)
   }
 
   return {

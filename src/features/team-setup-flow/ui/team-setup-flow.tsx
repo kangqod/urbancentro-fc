@@ -1,21 +1,21 @@
 import { Tabs } from 'antd'
 import { Users, UserPlus, Shuffle } from 'lucide-react'
-import { TAB_GAP, TAB_ICON_SIZE } from '../lib'
+import { TAB_GAP, TAB_ICON_SIZE, useActiveTabValue } from '../lib'
+import { TabMenu } from '../model'
 import { TeamSizeSelector } from './team-size-selector'
 import { PlayerSelection } from './player-selection'
 import { TeamDistribution } from './team-distribution'
 
-import './team-setup-flow.css'
-import { useActiveTabValue } from '../lib'
+import './team-setup-flow.scss'
 
 export function TeamSetupFlow() {
   const activeTab = useActiveTabValue()
 
   const tabItems = [
     {
-      key: 'team-setup',
+      key: TabMenu.TeamSetup,
       label: (
-        <div className="tab-label">
+        <div className="tab-menu">
           <Users size={TAB_ICON_SIZE} />
           <span>팀 구성</span>
         </div>
@@ -23,9 +23,9 @@ export function TeamSetupFlow() {
       children: <TeamSizeSelector />
     },
     {
-      key: 'player-selection',
+      key: TabMenu.PlayerSelection,
       label: (
-        <div className="tab-label">
+        <div className="tab-menu">
           <UserPlus size={TAB_ICON_SIZE} />
           <span>선수 선택</span>
         </div>
@@ -33,9 +33,9 @@ export function TeamSetupFlow() {
       children: <PlayerSelection />
     },
     {
-      key: 'team-distribution',
+      key: TabMenu.TeamDistribution,
       label: (
-        <div className="tab-label">
+        <div className="tab-menu">
           <Shuffle size={TAB_ICON_SIZE} />
           <span>팀 분배</span>
         </div>

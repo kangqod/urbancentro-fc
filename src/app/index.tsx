@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from './Provider'
 
 import '@ant-design/v5-patch-for-react-19'
+import './index.scss'
 
 const root = document.getElementById('root')
 

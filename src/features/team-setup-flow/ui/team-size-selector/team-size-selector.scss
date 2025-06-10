@@ -1,3 +1,5 @@
+@use '@/shared/assets/variables' as var;
+
 .team-setup-container {
   display: flex;
   flex-direction: column;
@@ -6,27 +8,29 @@
   margin-block-end: 8rem;
 }
 
-.team-setup-header {
-  text-align: center;
-}
-
 .team-option-card {
   text-align: center;
   height: 100%;
   transition: all 0.3s ease;
-  border: 2px solid #f0f0f0;
+  border: 2px solid #ccc;
+
+  &.selected {
+    border: 2px solid var.$primary-color;
+  }
 }
 
-.dark-mode .team-option-card {
-  border: 2px solid #444;
+.dark-mode {
+  .team-option-card {
+    border: 2px solid #444;
+
+    &.selected {
+      border: 2px solid var.$primary-color;
+    }
+  }
 }
 
 .ant-card.team-option-card .ant-card-body {
   padding: 0;
-}
-
-.team-option-card.selected {
-  border: 2px solid var(--primary-color, #ff681f);
 }
 
 .team-option-content {
@@ -38,7 +42,7 @@
 }
 
 .icon-selected {
-  color: var(--primary-color, #ff681f);
+  color: var.$primary-color;
 }
 
 .icon-default {
@@ -49,19 +53,6 @@
   margin: 0 !important;
 }
 
-.next-button {
-  height: 48px;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-}
-
 .team-option-row {
   padding-inline: 1rem;
-}
-
-@media (max-width: 576px) {
-  .team-setup-header h4 {
-    margin-block: 0.5em;
-  }
 }
