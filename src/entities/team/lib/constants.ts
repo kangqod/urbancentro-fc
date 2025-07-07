@@ -54,3 +54,5 @@ export const RAINBOW_PLAYERS = [
   { name: '조용일', year: '1986' },
   { name: '박근휘', year: '1989' }
 ]
+
+export const BEST_PLAYERS = [{ name: '박준범', year: '1989' }]

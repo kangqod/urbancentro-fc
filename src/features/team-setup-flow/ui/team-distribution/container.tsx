@@ -1,6 +1,6 @@
 import { Card, Typography, Row, Col, Spin, Badge } from 'antd'
 import { ArrowBigUp } from 'lucide-react'
-import { DEFAULT_YEAR, RAINBOW_PLAYERS, PLAYER_CONDITIONS } from '@/entities'
+import { DEFAULT_YEAR, RAINBOW_PLAYERS, PLAYER_CONDITIONS, BEST_PLAYERS } from '@/entities'
 import { useTeamsValue, useSetSelectedPlayerState } from '../../lib'
 
 interface ContainerProps {
@@ -38,7 +38,7 @@ export function Container({ isShuffle }: ContainerProps) {
                       key={player.id}
                       className={`player-item${
                         RAINBOW_PLAYERS.some((p) => p.name === player.name && p.year === player.year) ? ' rainbow' : ''
-                      }`}
+                      }${BEST_PLAYERS.some((p) => p.name === player.name && p.year === player.year) ? ' best-player' : ''}`}
                       onClick={() => {
                         if (player.isGuest) return
                         if (player.year === DEFAULT_YEAR) return
