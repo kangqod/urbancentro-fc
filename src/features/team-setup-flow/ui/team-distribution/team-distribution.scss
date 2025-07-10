@@ -46,8 +46,9 @@
 
 .player-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  position: relative;
   padding: 0.5rem;
   background-color: #f9fafb;
   border-radius: 0.25rem;
@@ -81,7 +82,6 @@
       padding: 3px;
     }
   }
-
 }
 
 .dark-mode {
@@ -208,46 +208,104 @@
   }
 }
 
-@keyframes border-flow {
+//-------------------------
+
+@keyframes animate {
   0% {
-    background-position: 0% 50%;
+    box-shadow: 0 0 10px #00ff0077, inset 0 0 10px #00ff0077;
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    box-shadow: 0 0 7px #00ff0077, inset 0 0 12px #00ff0077;
+  }
+  40% {
+    box-shadow: 0 0 7px #00ff0077, inset 0 0 15px #00ff0077;
+  }
+  60% {
+    box-shadow: 0 0 15px #00ff0077, inset 0 0 15px #00ff0077;
+  }
+  80% {
+    box-shadow: 0 0 20px #00ff0077, inset 0 0 20px #00ff0077;
   }
   100% {
-    background-position: 100% 50%;
+    box-shadow: 0 0 10px #00ff0077, inset 0 0 10px #00ff0077;
+    filter: hue-rotate(360deg);
   }
 }
-
-@keyframes aura-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 10px rgba(255, 0, 128, 0.4),
-      0 0 20px rgba(128, 0, 255, 0.4),
-      0 0 40px rgba(0, 128, 255, 0.4);
-  }
-  50% {
-    box-shadow:
-      0 0 20px rgba(255, 0, 128, 0.6),
-      0 0 40px rgba(128, 0, 255, 0.6),
-      0 0 60px rgba(0, 128, 255, 0.6);
-  }
+.card-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.card {
+  position: absolute;
+  width: inherit;
+  height: 44px;
+  left: -14px;
+  right: -10px;
+  filter: url(#wavy) blur(1px);
+}
+.card:before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: 0px;
+  left: 0px;
+  right: -25px;
+  border: 4px solid #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #0f0, inset 0 0 10px #0f0;
+  animation: animate 5s linear infinite;
+}
+.card:after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: 0px;
+  left: 0px;
+  right: -25px;
+  border: 4px solid #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #fff, inset 0 0 10px #fff;
+}
+.svg-wavy {
+  width: 0;
+  height: 0;
 }
 
-.best-player {
-  border: 2px solid transparent;
-  background-image: linear-gradient(#f9fafb, #f9fafb),
-    linear-gradient(270deg, #ff007f, #7f00ff, #00bfff, #ff007f);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  background-size: 300% 300%;
-  animation: border-flow 6s linear infinite, aura-pulse 3s ease-in-out infinite;
-
-  .ant-card-body {
-    background-color: transparent;
-    padding: 0;
+body:not(.dark-mode) {
+  @keyframes animate-light {
+    0% {
+      box-shadow: 0 0 10px #ff681f77, inset 0 0 10px #ff681f77;
+      filter: hue-rotate(0deg);
+    }
+    20% {
+      box-shadow: 0 0 7px #ff681f77, inset 0 0 12px #ff681f77;
+    }
+    40% {
+      box-shadow: 0 0 7px #ff681f77, inset 0 0 15px #ff681f77;
+    }
+    60% {
+      box-shadow: 0 0 15px #ff681f77, inset 0 0 15px #ff681f77;
+    }
+    80% {
+      box-shadow: 0 0 20px #ff681f77, inset 0 0 20px #ff681f77;
+    }
+    100% {
+      box-shadow: 0 0 10px #ff681f77, inset 0 0 10px #ff681f77;
+      filter: hue-rotate(360deg);
+    }
   }
-}
+  .card:before {
+    border: 4px solid #ff681f;
+    box-shadow: 0 0 10px #ff681f, inset 0 0 10px #ff681f;
+    animation: animate-light 5s linear infinite;
+  }
 
-.dark-mode .best-player {
-  background-image: linear-gradient(#2a2a2a, #2a2a2a),
-    linear-gradient(270deg, #ff007f, #7f00ff, #00bfff, #ff007f);
+  .card:after {
+    border: 4px solid #ff681f;
+    box-shadow: 0 0 10px #ff681f, inset 0 0 10px #ff681f;
+  }
 }

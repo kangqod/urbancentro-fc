@@ -1,4 +1,4 @@
-import { RAINBOW_PLAYERS, PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities'
+import { RAINBOW_PLAYERS, BEST_PLAYERS, PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities'
 import type { Player, Team, MatchFormatType } from '@/entities'
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -9,10 +9,7 @@ function setPlayerCondition(team: Team) {
   team.players.forEach((player) => {
     player.condition = PLAYER_CONDITIONS.MID
 
-    // 특정 선수는 컨디션을 HIGH로 설정
-    if (RAINBOW_PLAYERS.some((p) => p.name === player.name && p.year === player.year)) {
-      player.condition = PLAYER_CONDITIONS.HIGH
-    }
+    // BEST_PLAYERS 는 HIGH 로 컨트롤함
   })
 
   const lastIndex = team.players.length - 1
@@ -23,13 +20,31 @@ function setPlayerCondition(team: Team) {
     if (team.players[i].condition === PLAYER_CONDITIONS.HIGH) {
       continue
     }
-    if (i === 0 || i === lastIndex) {
-      team.players[i].condition = PLAYER_CONDITIONS.HIGH
+    if (RAINBOW_PLAYERS.some((p) => p.name === team.players[i].name && p.year === team.players[i].year)) {
       continue
     }
-    const probability = i === 1 ? 0.7 : i === 2 ? 0.5 : 0.02
+    if (BEST_PLAYERS.some((p) => p.name === team.players[i].name && p.year === team.players[i].year)) {
+      continue
+    }
+
+    const probability = i === 1 ? 0.7 : i === 2 ? 0.3 : 0.02
     if (Math.random() < probability) {
       team.players[i].condition = PLAYER_CONDITIONS.HIGH
+    }
+  }
+
+  // team.player 중에 HIGH가 한명도 없다면 랜덤으로 한명 설정
+  if (!team.players.some((p) => p.condition === PLAYER_CONDITIONS.HIGH)) {
+    const candidates = team.players.filter(
+      (p) =>
+        p.name !== '지원' &&
+        p.name !== '지원 2' &&
+        !RAINBOW_PLAYERS.some((rp) => rp.name === p.name && rp.year === p.year) &&
+        !BEST_PLAYERS.some((bp) => bp.name === p.name && bp.year === p.year)
+    )
+    if (candidates.length > 0) {
+      const randomIdx = Math.floor(Math.random() * candidates.length)
+      candidates[randomIdx].condition = PLAYER_CONDITIONS.HIGH
     }
   }
 }

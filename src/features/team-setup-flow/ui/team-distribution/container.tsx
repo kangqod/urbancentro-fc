@@ -1,13 +1,11 @@
-import { Card, Typography, Row, Col, Spin, Badge } from 'antd'
-import { ArrowBigUp } from 'lucide-react'
-import { DEFAULT_YEAR, RAINBOW_PLAYERS, PLAYER_CONDITIONS, BEST_PLAYERS } from '@/entities'
+import { Card, Row, Col, Spin, Badge } from 'antd'
+import { DEFAULT_YEAR, RAINBOW_PLAYERS, BEST_PLAYERS } from '@/entities'
 import { useTeamsValue, useSetSelectedPlayerState } from '../../lib'
+import { PlayerCard } from './player-card'
 
 interface ContainerProps {
   isShuffle: boolean
 }
-
-const { Text } = Typography
 
 export function Container({ isShuffle }: ContainerProps) {
   const teams = useTeamsValue()
@@ -33,25 +31,23 @@ export function Container({ isShuffle }: ContainerProps) {
                 className="team-card"
               >
                 <div className="player-list">
-                  {team.players.map((player) => (
-                    <div
-                      key={player.id}
-                      className={`player-item${
-                        RAINBOW_PLAYERS.some((p) => p.name === player.name && p.year === player.year) ? ' rainbow' : ''
-                      }${BEST_PLAYERS.some((p) => p.name === player.name && p.year === player.year) ? ' best-player' : ''}`}
-                      onClick={() => {
-                        if (player.isGuest) return
-                        if (player.year === DEFAULT_YEAR) return
-                        updateSelectedPlayer(player)
-                      }}
-                    >
-                      <Text>
-                        {player.year ? `${player.year.slice(-2)} ` : 'G '}
-                        {player.name}
-                      </Text>
-                      {player.condition === PLAYER_CONDITIONS.HIGH && <ArrowBigUp className="arrow-big-up" />}
-                    </div>
-                  ))}
+                  {team.players.map((player) => {
+                    const isRainbowPlayer = RAINBOW_PLAYERS.some((p) => p.name === player.name && p.year === player.year)
+                    const isBestPlayer = BEST_PLAYERS.some((p) => p.name === player.name && p.year === player.year)
+                    return (
+                      <div
+                        key={player.id}
+                        className={`player-item${isRainbowPlayer ? ' rainbow' : ''}`}
+                        onClick={() => {
+                          if (player.isGuest) return
+                          if (player.year === DEFAULT_YEAR) return
+                          updateSelectedPlayer(player)
+                        }}
+                      >
+                        <PlayerCard player={player} isBestPlayer={isBestPlayer} />
+                      </div>
+                    )
+                  })}
                 </div>
               </Card>
             </Col>

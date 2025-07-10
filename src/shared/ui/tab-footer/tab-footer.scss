@@ -33,6 +33,10 @@
     }
   }
 
+  .go-home-button {
+    width: 140px;
+  }
+
   .prev-button {
     &.ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):hover {
       background-color: #e8e8e8;

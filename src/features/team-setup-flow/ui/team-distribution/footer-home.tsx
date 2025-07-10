@@ -8,11 +8,11 @@ export function FooterHome() {
       <div className="footer-container">
         <Button
           type="primary"
-          className="next-button"
+          className="next-button go-home-button"
           icon={<House size={24} />}
           onClick={() => (window.location.href = '/urbancentro-fc')}
         >
-          홈으로
+          홈으로 이동
         </Button>
       </div>
     </TabFooter>
