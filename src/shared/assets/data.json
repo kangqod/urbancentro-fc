@@ -24,6 +24,14 @@
     "attributes": ["양발 슈팅"]
   },
   {
+    "year": "1983",
+    "number": 2,
+    "name": "길성민",
+    "tier": "intermediate",
+    "strength": "공격 전개",
+    "attributes": ["넓은 시야"]
+  },
+  {
     "year": "1984",
     "number": 30,
     "name": "최현석",
@@ -227,7 +235,7 @@
     "year": "1991",
     "number": 0,
     "name": "김혁준",
-    "tier": "beginner",
+    "tier": "intermediate",
     "strength": "체력",
     "attributes": ["군무원", "열정"]
   },
