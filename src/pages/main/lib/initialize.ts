@@ -35,7 +35,7 @@ export const createPlayersFromTeams = (teamsData: TeamData[]): Player[] => {
           attributes: playerInfo.attributes,
           condition: (condition || DEFAULT_CONDITION) as ConditionType,
           isGuest: false,
-          isAvailable: true
+          isActiveForMatch: true
         })
       }
 
@@ -50,7 +50,7 @@ export const createPlayersFromTeams = (teamsData: TeamData[]): Player[] => {
         attributes: DEFAULT_ATTRIBUTES,
         condition: (condition || DEFAULT_CONDITION) as ConditionType,
         isGuest: true,
-        isAvailable: true
+        isActiveForMatch: true
       })
     })
   )

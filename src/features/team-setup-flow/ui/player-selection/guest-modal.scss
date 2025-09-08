@@ -1,0 +1,27 @@
+.input-guest-name {
+  color: #fff; // 기본 텍스트 색상
+  background-color: rgb(20, 20, 20);
+
+  // 크롬/사파리 자동완성
+  &:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px rgb(20, 20, 20) inset !important; // 배경 덮기
+    -webkit-text-fill-color: #ffffff !important; // 글자색
+    background-color: rgb(20, 20, 20) !important;
+  }
+
+  // Firefox 자동완성
+  &:-moz-autofill {
+    box-shadow: 0 0 0 1000px rgb(20, 20, 20) inset !important;
+    -moz-text-fill-color: #ffffff !important;
+    background-color: rgb(20, 20, 20) !important;
+  }
+}
+
+.text-guest-modal-note {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.span-guest-modal-highlight {
+  color: #ff681f;
+}
