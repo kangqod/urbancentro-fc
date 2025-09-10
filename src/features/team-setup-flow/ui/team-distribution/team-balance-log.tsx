@@ -96,7 +96,7 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
             </Space>
           </Flex>
 
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 16]} justify="center">
             {teamAnalytics.map((analytics, idx) => (
               <Col span={8} key={idx}>
                 <Card

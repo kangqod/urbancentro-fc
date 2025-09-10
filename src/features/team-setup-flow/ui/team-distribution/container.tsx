@@ -20,6 +20,7 @@ export function Container({ isShuffle }: ContainerProps) {
         <Spin size="large" fullscreen className="shuffle-loading" />
       ) : (
         <>
+          <TeamBalanceLog teams={teams} />
           <Row gutter={[8, 8]} className="team-row">
             {teams.map((team) => (
               <Col xs={columnSpan} md={columnSpan} lg={4} key={team.name}>
@@ -55,7 +56,6 @@ export function Container({ isShuffle }: ContainerProps) {
               </Col>
             ))}
           </Row>
-          <TeamBalanceLog teams={teams} />
         </>
       )}
     </>
