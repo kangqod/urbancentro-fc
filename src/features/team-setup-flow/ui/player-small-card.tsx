@@ -10,8 +10,9 @@ export function PlayerSmallCard({ player }: { player: Player }) {
   if (player.isGuest) {
     return (
       <>
-        <Text strong>{player.name}</Text>&nbsp;&nbsp;&nbsp;
         <Badge count="G" style={{ backgroundColor: PRIMARY_COLOR }} />
+        &nbsp;&nbsp;&nbsp;
+        <Text strong>{player.name}</Text>
       </>
     )
   }
@@ -19,8 +20,9 @@ export function PlayerSmallCard({ player }: { player: Player }) {
   if (!player.isGuest && SUPPORT_NAMES.includes(player.name)) {
     return (
       <>
-        <Text strong>{player.name}</Text>&nbsp;&nbsp;&nbsp;
         <Badge count="S" style={{ backgroundColor: PRIMARY_COLOR }} />
+        &nbsp;&nbsp;&nbsp;
+        <Text strong>{player.name}</Text>
       </>
     )
   }

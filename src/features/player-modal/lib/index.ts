@@ -3,15 +3,15 @@ import { PLAYER_TIERS } from '@/entities'
 export const getTierColor = (tier: string) => {
   switch (tier) {
     case PLAYER_TIERS.ACE:
-      return 'gold'
+      return '#ff4d4f'
     case PLAYER_TIERS.ADVANCED:
-      return 'geekblue'
+      return '#fa8c16'
     case PLAYER_TIERS.INTERMEDIATE:
-      return 'blue'
+      return '#52c41a'
     case PLAYER_TIERS.BEGINNER:
-      return 'gray'
+      return '#1890ff'
     default:
-      return 'default'
+      return '#52c41a'
   }
 }
 
