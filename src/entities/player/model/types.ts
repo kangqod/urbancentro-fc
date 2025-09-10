@@ -9,8 +9,9 @@ export interface Player {
   condition: ConditionType
   number: number
   isGuest: boolean
-  isAvailable: boolean
+  isActiveForMatch: boolean
   strength?: string
+  connectedPlayerIds?: string[]
 }
 
 export type TierType = (typeof PLAYER_TIERS)[keyof typeof PLAYER_TIERS]

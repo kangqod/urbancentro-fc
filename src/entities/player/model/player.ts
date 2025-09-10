@@ -32,7 +32,8 @@ export class PlayerClass implements Player {
   condition: ConditionType
   number: number
   isGuest: boolean
-  isAvailable: boolean
+  isActiveForMatch: boolean
+  connectedPlayerIds?: string[]
 
   constructor(data: Partial<Player>) {
     this.id = data.id || `${data.year}-${data.name}-${data.number}`
@@ -44,7 +45,8 @@ export class PlayerClass implements Player {
     this.attributes = data.attributes || DEFAULT_ATTRIBUTES
     this.condition = data.condition || DEFAULT_CONDITION
     this.isGuest = data.isGuest || false
-    this.isAvailable = data.isAvailable ?? data.year !== DEFAULT_YEAR
+    this.isActiveForMatch = data.isActiveForMatch ?? data.year !== DEFAULT_YEAR
+    this.connectedPlayerIds = data.connectedPlayerIds || []
   }
 
   static createFromData(data: Partial<Player>): PlayerClass {
@@ -52,7 +54,7 @@ export class PlayerClass implements Player {
   }
 
   toggleSelection(): void {
-    this.isAvailable = !this.isAvailable
+    this.isActiveForMatch = !this.isActiveForMatch
   }
 
   updateCondition(condition: ConditionType): void {

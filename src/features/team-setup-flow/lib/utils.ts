@@ -52,7 +52,7 @@ export function parseSharedTeams(teamsParam: string | null): Team[] | null {
             attributes: playerInfo.attributes,
             condition: (condition || DEFAULT_CONDITION) as ConditionType,
             isGuest: false,
-            isAvailable: true
+            isActiveForMatch: true
           })
         }
 
@@ -66,7 +66,7 @@ export function parseSharedTeams(teamsParam: string | null): Team[] | null {
           attributes: DEFAULT_ATTRIBUTES,
           condition: (condition || DEFAULT_CONDITION) as ConditionType,
           isGuest: false,
-          isAvailable: true
+          isActiveForMatch: true
         })
       })
     }))

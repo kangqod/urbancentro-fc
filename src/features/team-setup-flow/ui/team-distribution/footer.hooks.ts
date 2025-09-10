@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react'
 import { message } from 'antd'
 import { PLAYER_CONDITIONS, shareKakao } from '@/entities'
 import { getTeamsText, useTeamsValue } from '../../lib'
@@ -64,7 +65,7 @@ export function useFooter() {
   }
 
   return {
-    contextHolder,
+    contextHolder: contextHolder as ReactNode,
     handleNativeShare,
     handleCopyToClipboard,
     handleShareKakao,

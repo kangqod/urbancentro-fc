@@ -1,0 +1,147 @@
+@use '@/shared/assets/variables' as var;
+
+.team-balance-log-modal {
+  .ant-modal-body {
+    padding: 24px 0;
+  }
+}
+
+.team-balance-log-button {
+  width: 150px;
+  margin-inline: auto;
+  font-weight: 600;
+}
+
+.icon-trophy {
+  width: 20px;
+  height: 20px;
+}
+
+.team-balance-log-modal-header {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  column-gap: 8px;
+}
+
+.icon-trophy-title {
+  color: #faad14;
+}
+
+.team-balance-log-total-statistics-card {
+  margin-block-end: 16px;
+  background: linear-gradient(120deg, #d35400 0%, #ff9b5c 100%);
+
+  .ant-statistic-content-value {
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.team-balance-log-statistic-title {
+  font-weight: 500;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.team-balance-log-tag {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 12px;
+}
+
+.team-balance-log-legend {
+  margin-block-end: 12px;
+
+  .ant-tag {
+    font-weight: 600;
+    margin-inline-end: 0px;
+  }
+}
+
+.team-balance-log-tier {
+  &.mt-8 {
+    margin-block-start: 8px;
+  }
+
+  &.mb-12 {
+    margin-block-end: 12px;
+  }
+
+  &.mt-auto {
+    margin-block-start: auto;
+  }
+
+  .ant-tag {
+    font-weight: 600;
+    margin-inline-end: 0px;
+  }
+
+}
+
+.icon-users {
+  color: var.$primary-color;
+}
+
+.team-balance-log-card {
+  height: 100%;
+  min-height: 200px;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .ant-card-head {
+    align-items: center;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+
+    .ant-card-head-wrapper .ant-card-head-title {
+      display: flex;
+      align-items: center;
+      column-gap: 8px;
+    }
+  }
+
+  &.team-balance-log-card--max {
+    border: 2px solid #52c41a;
+  }
+
+  &.team-balance-log-card--min {
+    border: 2px solid #ff4d4f;
+  }
+}
+
+.dark-mode .team-balance-log-card {
+  .ant-card-head {
+    background-color: var.$header-background-color-dark;
+    border-bottom-color: rgba(253, 253, 253, 0.12);
+  }
+}
+
+.light-mode .team-balance-log-card {
+  .ant-card-head {
+    background-color: var.$header-background-color-light;
+    border-bottom-color: rgba(5, 5, 5, 0.06);
+  }
+}
+
+.team-balance-log-strength-space {
+  width: 100%;
+  row-gap: 0px;
+  margin-block-start: 8px;
+
+  .team-balance-log-strength-value {
+    color: var.$primary-color;
+  }
+
+  .ant-progress {
+    width: 100%;
+  }
+}
+
+.team-balance-log-team-name {
+  font-size: 1rem;
+  font-weight: 500;
+}
