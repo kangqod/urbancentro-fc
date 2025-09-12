@@ -24,6 +24,14 @@
     "attributes": ["양발 슈팅"]
   },
   {
+    "year": "1980",
+    "number": 0,
+    "name": "이태한",
+    "tier": "intermediate",
+    "strength": "디펜스",
+    "attributes": ["압박 수비"]
+  },
+  {
     "year": "1983",
     "number": 2,
     "name": "길성민",
