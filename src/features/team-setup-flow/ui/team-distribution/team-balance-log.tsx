@@ -118,9 +118,13 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                 >
                   {/* 밸런스 상태 표시 */}
                   <Flex className="team-balance-log-tier mt-auto" justify="center" align="center">
-                    {analytics.strength === maxStrength && <Tag color="success">최강팀</Tag>}
-                    {analytics.strength === minStrength && <Tag color="error">약체팀</Tag>}
-                    {analytics.strength !== maxStrength && analytics.strength !== minStrength && <Tag color="default">균형팀</Tag>}
+                    {analytics.strength === maxStrength ? (
+                      <Tag color="success">최강팀</Tag>
+                    ) : analytics.strength === minStrength ? (
+                      <Tag color="error">약체팀</Tag>
+                    ) : (
+                      <Tag color="default">균형팀</Tag>
+                    )}
                   </Flex>
 
                   {/* 실력 점수 */}
