@@ -17,6 +17,10 @@ export function useTeamSizeSelector() {
     }
   }
 
+  function handlePrevClick() {
+    setActiveTab(TabMenu.Security)
+  }
+
   function handleNextClick() {
     setActiveTab(TabMenu.PlayerSelection)
   }
@@ -24,6 +28,7 @@ export function useTeamSizeSelector() {
   return {
     selectedOption,
     handleOptionClick,
+    handlePrevClick,
     handleNextClick
   }
 }

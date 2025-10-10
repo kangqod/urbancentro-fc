@@ -1,7 +1,8 @@
 import { Tabs } from 'antd'
-import { Users, UserPlus, Shuffle } from 'lucide-react'
+import { LockKeyhole, Users, UserPlus, Shuffle } from 'lucide-react'
 import { TAB_GAP, TAB_ICON_SIZE, useActiveTabValue } from '../lib'
 import { TabMenu } from '../model'
+import { Security } from './security'
 import { TeamSizeSelector } from './team-size-selector'
 import { PlayerSelection } from './player-selection'
 import { TeamDistribution } from './team-distribution'
@@ -12,6 +13,17 @@ export function TeamSetupFlow() {
   const activeTab = useActiveTabValue()
 
   const tabItems = [
+    {
+      key: TabMenu.Security,
+      destroyOnHidden: true,
+      label: (
+        <div className="tab-menu">
+          <LockKeyhole size={TAB_ICON_SIZE} />
+          <span>코드</span>
+        </div>
+      ),
+      children: <Security />
+    },
     {
       key: TabMenu.TeamSetup,
       label: (

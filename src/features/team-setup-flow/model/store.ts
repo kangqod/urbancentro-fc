@@ -6,13 +6,14 @@ import { type TeamSetupFlowStore } from './types'
 type Mutators = [['zustand/devtools', never], ['zustand/immer', never]]
 
 export enum TabMenu {
+  Security = 'security',
   TeamSetup = 'team-setup',
   PlayerSelection = 'player-selection',
   TeamDistribution = 'team-distribution'
 }
 
 const initialState = {
-  activeTab: TabMenu.TeamSetup,
+  activeTab: TabMenu.Security,
   isSharedView: false
 }
 

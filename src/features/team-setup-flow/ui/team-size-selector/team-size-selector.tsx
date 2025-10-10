@@ -1,5 +1,5 @@
 import { Card, Button, Typography, Row, Col } from 'antd'
-import { Users, ArrowRight } from 'lucide-react'
+import { Users, ArrowLeft, ArrowRight } from 'lucide-react'
 import { MATCH_FORMAT_CONFIG } from '@/entities'
 import { TabFooter, TabHeader } from '@/shared'
 import { useTeamSizeSelector } from './team-size-selector.hooks'
@@ -20,7 +20,7 @@ const TEAM_OPTIONS = Object.values(MATCH_FORMAT_CONFIG).map((config) => ({
 }))
 
 export function TeamSizeSelector() {
-  const { selectedOption, handleOptionClick, handleNextClick } = useTeamSizeSelector()
+  const { selectedOption, handleOptionClick, handlePrevClick, handleNextClick } = useTeamSizeSelector()
 
   return (
     <div className="team-setup-container">
@@ -47,16 +47,21 @@ export function TeamSizeSelector() {
       </Row>
 
       <TabFooter>
-        <Button
-          type="primary"
-          size="large"
-          icon={<ArrowRight size={ICON_SIZE.ARROW} />}
-          onClick={handleNextClick}
-          disabled={!selectedOption}
-          className="next-button"
-        >
-          다음
-        </Button>
+        <div className="button-group">
+          <Button size="large" icon={<ArrowLeft size={ICON_SIZE.ARROW} />} onClick={handlePrevClick} className="prev-button">
+            이전
+          </Button>
+          <Button
+            type="primary"
+            size="large"
+            icon={<ArrowRight size={ICON_SIZE.ARROW} />}
+            onClick={handleNextClick}
+            disabled={!selectedOption}
+            className="next-button"
+          >
+            다음
+          </Button>
+        </div>
       </TabFooter>
     </div>
   )
