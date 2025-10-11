@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Modal, Button, Card, Row, Col, Tag, Progress, Divider, Statistic, Space, Flex } from 'antd'
 import { Trophy, Users } from 'lucide-react'
 import { PLAYER_TIERS, type Team } from '@/entities'
+import { teamNameToNumber } from '@/shared'
 import { getTierColor } from '@/features/player-modal/lib'
 
 import './team-balance-log.scss'
@@ -41,6 +42,8 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
     }
   })
 
+  console.log(teamAnalytics)
+
   // 전체 통계
   const maxStrength = Math.max(...teamAnalytics.map((t) => t.strength))
   const minStrength = Math.min(...teamAnalytics.map((t) => t.strength))
@@ -53,7 +56,7 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
   return (
     <>
       <Button type="primary" icon={<Trophy className="icon-trophy" />} className="team-balance-log-button" onClick={() => setVisible(true)}>
-        팀 밸런스 정보
+        밸런스 정보
       </Button>
 
       <Modal
@@ -103,7 +106,7 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                   title={
                     <>
                       <Users className="icon-users" size="20" />
-                      <strong className="team-balance-log-team-name">{analytics.team.name}</strong>
+                      <strong className="team-balance-log-team-name">{teamNameToNumber(analytics.team.name)}&nbsp;팀</strong>
                     </>
                   }
                   size="small"

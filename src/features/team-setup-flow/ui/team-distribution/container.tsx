@@ -1,5 +1,6 @@
 import { Card, Row, Col, Spin, Badge } from 'antd'
 import { DEFAULT_YEAR, RAINBOW_PLAYERS, BEST_PLAYERS } from '@/entities'
+import { teamNameToNumber } from '@/shared'
 import { useTeamsValue, useSetSelectedPlayerState } from '../../lib'
 import { PlayerCard } from './player-card'
 import { TeamBalanceLog } from './team-balance-log'
@@ -27,7 +28,7 @@ export function Container({ isShuffle }: ContainerProps) {
                 <Card
                   title={
                     <div className="team-card-header">
-                      <span>{team.name}</span>
+                      <span>{teamNameToNumber(team.name)}&nbsp;팀</span>
                       <Badge count={team.players.length} />
                     </div>
                   }

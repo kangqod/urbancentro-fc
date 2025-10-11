@@ -67,7 +67,7 @@
     "year": "1986",
     "number": 0,
     "name": "송승근",
-    "tier": "beginner",
+    "tier": "intermediate",
     "strength": "빠른 침투",
     "attributes": ["좋은 출석률"]
   },
@@ -125,7 +125,7 @@
     "name": "유주헌",
     "tier": "beginner",
     "strength": "넓은 시야",
-    "attributes": ["열정", "폼 올리는 중"]
+    "attributes": ["부폰"]
   },
   {
     "year": "1988",
@@ -219,7 +219,7 @@
     "year": "1990",
     "number": 5,
     "name": "박치환",
-    "tier": "beginner",
+    "tier": "intermediate",
     "strength": "체력",
     "attributes": ["육아 고수"]
   },
@@ -260,7 +260,7 @@
     "number": 0,
     "name": "황윤하",
     "tier": "advanced",
-    "strength": "체력",
+    "strength": "빠른 압박",
     "attributes": ["플레이메이커"]
   },
   {

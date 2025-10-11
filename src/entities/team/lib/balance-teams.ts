@@ -276,6 +276,12 @@ function finalBalanceAdjustment(teams: Team[]) {
       }
     }
   }
+
+  // beginner가 많은 팀에서 intermediate와 교환하여 밸런스 맞추기
+  swapBeginnerWithIntermediate(teams)
+
+  // beginner가 많은 팀에서 advanced와 교환하여 밸런스 맞추기
+  swapBeginnerWithAdvanced(teams)
 }
 
 function disallowDuplicateSupport(teams: Team[], excludedPairs: string[][]) {
@@ -383,17 +389,25 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
     }
   })
 
-  // intermediate 분배
+  // intermediate 분배 (ACE가 있는 팀 우선)
   tierMap[PLAYER_TIERS.INTERMEDIATE] = shuffleArray(tierMap[PLAYER_TIERS.INTERMEDIATE])
   const intermediatePool = [...tierMap[PLAYER_TIERS.INTERMEDIATE]]
+  const aceTeams = teams.filter((team) => team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
+  const otherTeams = teams.filter((team) => !team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
   while (intermediatePool.length > 0) {
-    teams.sort((a, b) => playersPerTeam - a.players.length - (playersPerTeam - b.players.length))
-    const team = teams.find((t) => t.players.length < playersPerTeam)
-    if (team) {
-      addToTeam(intermediatePool.shift()!, team)
-    } else {
-      break
-    }
+    // ACE팀 중 인원이 부족한 팀 우선
+    const targetTeam = aceTeams.find((t) => t.players.length < playersPerTeam) || otherTeams.find((t) => t.players.length < playersPerTeam)
+    if (!targetTeam) break
+    addToTeam(intermediatePool.shift()!, targetTeam)
+  }
+
+  // advancedPool에 남은 선수를 "가장 약한 팀"에 우선적으로 배정
+  while (advancedPool.length > 0) {
+    // 현재 playersPerTeam 미만인 팀 중에서 가장 약한 팀을 찾음
+    const candidateTeams = teams.filter((t) => t.players.length < playersPerTeam)
+    if (candidateTeams.length === 0) break
+    const weakestTeam = candidateTeams.reduce((a, b) => (calculateTeamStrength(a) < calculateTeamStrength(b) ? a : b))
+    addToTeam(advancedPool.shift()!, weakestTeam)
   }
 
   // 2. 개선된 게스트 배치 (밸런스 고려)
@@ -488,4 +502,40 @@ function sortPlayersByTier(teams: Team[]) {
     })
   })
   return teams
+}
+
+function swapBeginnerWithIntermediate(teams: Team[], minBeginnerCount = 3) {
+  // 1. beginner가 minBeginnerCount 이상인 팀 찾기
+  const beginnerRichTeams = teams.filter((team) => team.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length >= minBeginnerCount)
+  // 2. intermediate가 있는 다른 팀 찾기
+  beginnerRichTeams.forEach((beginnerTeam) => {
+    const intermediateTeam = teams.find((team) => team !== beginnerTeam && team.players.some((p) => p.tier === PLAYER_TIERS.INTERMEDIATE))
+    if (!intermediateTeam) return
+    // 교환 대상 선정
+    const beginnerPlayer = beginnerTeam.players.find((p) => p.tier === PLAYER_TIERS.BEGINNER)
+    const intermediatePlayer = intermediateTeam.players.find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE)
+    if (beginnerPlayer && intermediatePlayer) {
+      // 교환 실행
+      beginnerTeam.players = beginnerTeam.players.filter((p) => p !== beginnerPlayer)
+      intermediateTeam.players = intermediateTeam.players.filter((p) => p !== intermediatePlayer)
+      beginnerTeam.players.push(intermediatePlayer)
+      intermediateTeam.players.push(beginnerPlayer)
+    }
+  })
+}
+
+function swapBeginnerWithAdvanced(teams: Team[], minBeginnerCount = 3) {
+  const beginnerRichTeams = teams.filter((team) => team.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length >= minBeginnerCount)
+  beginnerRichTeams.forEach((beginnerTeam) => {
+    const advancedTeam = teams.find((team) => team !== beginnerTeam && team.players.some((p) => p.tier === PLAYER_TIERS.ADVANCED))
+    if (!advancedTeam) return
+    const beginnerPlayer = beginnerTeam.players.find((p) => p.tier === PLAYER_TIERS.BEGINNER)
+    const advancedPlayer = advancedTeam.players.find((p) => p.tier === PLAYER_TIERS.ADVANCED)
+    if (beginnerPlayer && advancedPlayer) {
+      beginnerTeam.players = beginnerTeam.players.filter((p) => p !== beginnerPlayer)
+      advancedTeam.players = advancedTeam.players.filter((p) => p !== advancedPlayer)
+      beginnerTeam.players.push(advancedPlayer)
+      advancedTeam.players.push(beginnerPlayer)
+    }
+  })
 }
