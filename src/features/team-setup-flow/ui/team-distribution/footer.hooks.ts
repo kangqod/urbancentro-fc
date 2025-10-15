@@ -25,7 +25,7 @@ export function useFooter() {
       }
     } catch (error: unknown) {
       if (error instanceof Error && error.message !== 'Share canceled') {
-        messageApi.error('공유에 실패했습니다.')
+        messageApi.error('공유에 실패했습니다!')
       }
       console.error('공유 실패 :', (error as Error).message)
     }
