@@ -256,6 +256,14 @@
     "attributes": ["군무원", "열정"]
   },
   {
+    "year": "1991",
+    "number": 0,
+    "name": "김동권",
+    "tier": "intermediate",
+    "strength": "데이터 부족",
+    "attributes": ["데이터 부족"]
+  },
+  {
     "year": "1993",
     "number": 0,
     "name": "황윤하",
