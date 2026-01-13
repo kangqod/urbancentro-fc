@@ -27,17 +27,9 @@
     "year": "1980",
     "number": 0,
     "name": "이태한",
-    "tier": "intermediate",
+    "tier": "beginner",
     "strength": "디펜스",
     "attributes": ["압박 수비"]
-  },
-  {
-    "year": "1983",
-    "number": 2,
-    "name": "길성민",
-    "tier": "intermediate",
-    "strength": "공격 전개",
-    "attributes": ["넓은 시야"]
   },
   {
     "year": "1984",
@@ -59,7 +51,7 @@
     "year": "1986",
     "number": 11,
     "name": "김성일",
-    "tier": "advanced",
+    "tier": "ace",
     "strength": "골 결정력",
     "attributes": ["유스 출신", "검단 메시"]
   },
@@ -125,7 +117,7 @@
     "name": "유주헌",
     "tier": "beginner",
     "strength": "넓은 시야",
-    "attributes": ["부폰"]
+    "attributes": ["패스 좋음", "병용 친구"]
   },
   {
     "year": "1988",
@@ -139,9 +131,9 @@
     "year": "1989",
     "number": 0,
     "name": "박근휘",
-    "tier": "ace",
+    "tier": "advanced",
     "strength": "골 결정력",
-    "attributes": ["출산 진심으로 축하드려요 🎉"]
+    "attributes": ["빠른 침투"]
   },
   {
     "year": "1989",
@@ -187,7 +179,7 @@
     "year": "1989",
     "number": 22,
     "name": "임은철",
-    "tier": "advanced",
+    "tier": "intermediate",
     "strength": "몸싸움",
     "attributes": ["넓은 시야"]
   },
@@ -251,7 +243,7 @@
     "year": "1991",
     "number": 0,
     "name": "김혁준",
-    "tier": "intermediate",
+    "tier": "advanced",
     "strength": "체력",
     "attributes": ["군무원", "열정"]
   },
