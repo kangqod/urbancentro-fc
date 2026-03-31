@@ -24,6 +24,53 @@ function findWeakestTeam(teams: Team[], maxSize?: number): Team | null {
   )
 }
 
+function parseMode(mode: MatchFormatType): { teamSizes: number[]; numTeams: number; playersPerTeam: number; expectedTotal: number } {
+  const teamSizes = mode.split(':').map(Number)
+  const numTeams = teamSizes.length
+  const playersPerTeam = teamSizes[0]
+  const expectedTotal = teamSizes.reduce((total, size) => total + size, 0)
+  return { teamSizes, numTeams, playersPerTeam, expectedTotal }
+}
+
+function assertValidMode(mode: MatchFormatType): void {
+  const { teamSizes, playersPerTeam } = parseMode(mode)
+  if (teamSizes.length === 0 || teamSizes.some((size) => !Number.isFinite(size) || size <= 0)) {
+    throw new Error(`Invalid match format mode: ${mode}`)
+  }
+  if (teamSizes.some((size) => size !== playersPerTeam)) {
+    throw new Error(`Unsupported match format mode (uneven team sizes): ${mode}`)
+  }
+}
+
+function assertUniquePlayerIds(players: Player[]): void {
+  const ids = players.map((player) => player.id)
+  const uniqueCount = new Set(ids).size
+  if (ids.length !== uniqueCount) {
+    throw new Error('Invariant broken: duplicate player ids in input')
+  }
+}
+
+function assertTeamsIntegrity(inputPlayers: Player[], teams: Team[]): void {
+  const inputIds = inputPlayers.map((player) => player.id)
+  const outputIds = teams.flatMap((team) => team.players.map((player) => player.id))
+  const inputSet = new Set(inputIds)
+  const outputSet = new Set(outputIds)
+
+  if (outputIds.length !== outputSet.size) {
+    throw new Error('Invariant broken: duplicate player ids in team result')
+  }
+
+  if (inputSet.size !== outputSet.size) {
+    throw new Error('Invariant broken: player count mismatch between input and output teams')
+  }
+
+  for (const id of inputSet) {
+    if (!outputSet.has(id)) {
+      throw new Error(`Invariant broken: missing player in team result (${id})`)
+    }
+  }
+}
+
 // ==================== 유틸리티 함수 ====================
 
 /** @internal test-only */
@@ -194,9 +241,10 @@ export function distributeGuests(teams: Team[], guests: Player[], playersPerTeam
       }
     } else {
       const weakestTeam = findWeakestTeam(teams, playersPerTeam)
-      if (weakestTeam) {
-        weakestTeam.players.push(guest)
+      if (!weakestTeam) {
+        throw new Error(`Invariant broken: no capacity for connected guest (${guest.id})`)
       }
+      weakestTeam.players.push(guest)
     }
   })
 
@@ -396,9 +444,13 @@ function logFinalBalance(teams: Team[]): void {
 
 export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
   const excludedPairs: string[][] = [['지원 1', '지원 2']]
-  const teamSizes = mode.split(':').map(Number)
-  const numTeams = teamSizes.length
-  const playersPerTeam = teamSizes[0]
+  assertValidMode(mode)
+  assertUniquePlayerIds(players)
+  const { numTeams, playersPerTeam, expectedTotal } = parseMode(mode)
+
+  if (players.length !== expectedTotal) {
+    throw new Error(`Invalid player count for ${mode}: expected ${expectedTotal}, received ${players.length}`)
+  }
 
   const regularPlayers = players.filter((p) => !p.isGuest)
   const guests = players.filter((p) => p.isGuest)
@@ -428,6 +480,8 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
 
   teams.forEach(setPlayerCondition)
   teams.forEach((team) => team.players.sort((a, b) => a.year.localeCompare(b.year)))
+
+  assertTeamsIntegrity(players, teams)
 
   logFinalBalance(teams)
 

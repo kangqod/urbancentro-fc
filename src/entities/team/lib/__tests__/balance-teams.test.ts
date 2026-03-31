@@ -153,7 +153,7 @@ describe('balance-teams helpers', () => {
     expect(teams[1].players.map((p) => p.id)).toContain('weak')
   })
 
-  it('distributeGuests does not throw on empty under-capacity candidate list (regression)', () => {
+  it('distributeGuests throws when connected guest has no anchor and no remaining capacity', () => {
     const teams = [makeTeam('A', [makePlayer({ id: 'a1' })]), makeTeam('B', [makePlayer({ id: 'b1' })])]
     const connectedGuestWithoutAnchor = makePlayer({
       id: 'g1',
@@ -161,7 +161,7 @@ describe('balance-teams helpers', () => {
       connectedPlayerIds: ['unknown-anchor']
     })
 
-    expect(() => distributeGuests(teams, [connectedGuestWithoutAnchor], 1)).not.toThrow()
+    expect(() => distributeGuests(teams, [connectedGuestWithoutAnchor], 1)).toThrow('no capacity for connected guest')
   })
 
   it('balanceTeamStrength reduces strength gap to within threshold', () => {
@@ -333,7 +333,7 @@ describe('balanceTeams integration', () => {
     expect(teamWithSupport1).not.toBe(teamWithSupport2)
   })
 
-  it('does not throw on connected guest without anchor when all teams are full (regression)', () => {
+  it('keeps connected guest even when anchor is missing if mode still has capacity', () => {
     const players = makePool(10, '5:5').map((player, index) =>
       index === 0
         ? makePlayer({
@@ -345,6 +345,23 @@ describe('balanceTeams integration', () => {
         : player
     )
 
-    expect(() => balanceTeams(players, '5:5')).not.toThrow()
+    const result = balanceTeams(players, '5:5')
+    expect(flattenIds(result)).toContain('reg-1')
+  })
+
+  it('throws when player count does not match mode capacity', () => {
+    const players = makePool(9, '5:5')
+
+    expect(() => balanceTeams(players, '5:5')).toThrow('Invalid player count')
+  })
+
+  it('throws when duplicate player ids are provided', () => {
+    const players = makePool(10, '5:5')
+    players[1] = makePlayer({
+      ...players[1],
+      id: players[0].id
+    })
+
+    expect(() => balanceTeams(players, '5:5')).toThrow('duplicate player ids')
   })
 })
