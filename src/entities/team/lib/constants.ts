@@ -1,3 +1,5 @@
+import { PLAYER_TIERS } from '@/entities/player/model/player'
+
 export const MATCH_FORMAT_CONFIG = {
   FIVE_TWO_TEAMS: {
     ID: '5:5',
@@ -56,3 +58,10 @@ export const RAINBOW_PLAYERS = [
 ]
 
 export const BEST_PLAYERS = [{ name: '박준범', year: '1989' }]
+
+export const TIER_WEIGHTS = {
+  [PLAYER_TIERS.ACE]: 4,
+  [PLAYER_TIERS.ADVANCED]: 3,
+  [PLAYER_TIERS.INTERMEDIATE]: 2,
+  [PLAYER_TIERS.BEGINNER]: 1
+} as const

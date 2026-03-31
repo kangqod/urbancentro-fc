@@ -1,3 +1,3 @@
 export * from './constants'
-export * from './balance-teams'
+export { balanceTeams } from './balance-teams'
 export * from './share-kakao'
