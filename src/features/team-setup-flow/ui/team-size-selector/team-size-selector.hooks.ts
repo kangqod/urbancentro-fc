@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { MouseEvent } from 'react'
 import { MATCH_FORMAT_CONFIG } from '@/entities'
 import { useSetActiveTabState, useSetTeamOptionState } from '../../lib'
 import { TabMenu } from '../../model'
@@ -17,7 +18,8 @@ export function useTeamSizeSelector() {
     }
   }
 
-  function handleNextClick() {
+  function handleNextClick(event?: MouseEvent<HTMLElement>) {
+    event?.currentTarget.blur()
     setActiveTab(TabMenu.PlayerSelection)
   }
 

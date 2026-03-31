@@ -32,15 +32,22 @@ export function TeamSizeSelector() {
             <Card
               hoverable
               className={`team-option-card ${selectedOption === option.id ? 'selected' : ''}`}
-              onClick={handleOptionClick(option.id)}
             >
-              <div className="team-option-content">
-                <Users size={ICON_SIZE.TEAM} className={selectedOption === option.id ? 'icon-selected' : 'icon-default'} />
-                <Title level={5} className="option-title">
-                  {option.title}
-                </Title>
-                <Text type="secondary">{option.description}</Text>
-              </div>
+              <button
+                type="button"
+                className="team-option-button"
+                onClick={handleOptionClick(option.id)}
+                aria-pressed={selectedOption === option.id}
+                aria-label={`${option.title} ${option.description}`}
+              >
+                <div className="team-option-content">
+                  <Users size={ICON_SIZE.TEAM} className={selectedOption === option.id ? 'icon-selected' : 'icon-default'} />
+                  <Title level={5} className="option-title">
+                    {option.title}
+                  </Title>
+                  <Text type="secondary">{option.description}</Text>
+                </div>
+              </button>
             </Card>
           </Col>
         ))}

@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
+import type { MouseEvent } from 'react'
 import { DEFAULT_YEAR, PlayerClass } from '@/entities'
 import type { Player, TierType } from '@/entities'
 import {
@@ -34,11 +35,13 @@ export function usePlayerSelection() {
     updateSelectedPlayer(player)
   }
 
-  const handlePrevClick = () => {
+  const handlePrevClick = (event?: MouseEvent<HTMLElement>) => {
+    event?.currentTarget.blur()
     setActiveTab(TabMenu.TeamSetup)
   }
 
-  const handleNextClick = () => {
+  const handleNextClick = (event?: MouseEvent<HTMLElement>) => {
+    event?.currentTarget.blur()
     setActiveTab(TabMenu.TeamDistribution)
   }
 

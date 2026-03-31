@@ -1,28 +1,94 @@
-import { RAINBOW_PLAYERS, BEST_PLAYERS, PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities'
-import type { Player, Team, MatchFormatType } from '@/entities'
+import { PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities/player/model/player'
+import type { Player } from '@/entities/player/model/types'
+import type { MatchFormatType, Team } from '@/entities/team/model/types'
+import { BEST_PLAYERS, RAINBOW_PLAYERS, TIER_WEIGHTS } from './constants'
+
+function getTierWeight(player: Player): number {
+  return TIER_WEIGHTS[player.tier] ?? 1
+}
+
+function swapPlayersBetweenTeams(teamA: Team, playerA: Player, teamB: Team, playerB: Player): void {
+  teamA.players = teamA.players.filter((p) => p.id !== playerA.id)
+  teamB.players = teamB.players.filter((p) => p.id !== playerB.id)
+  teamA.players.push(playerB)
+  teamB.players.push(playerA)
+}
+
+function findWeakestTeam(teams: Team[], maxSize?: number): Team | null {
+  const candidates = typeof maxSize === 'number' ? teams.filter((t) => t.players.length < maxSize) : teams
+
+  if (candidates.length === 0) return null
+
+  return candidates.reduce((weakest, current) =>
+    calculateTeamStrength(current) < calculateTeamStrength(weakest) ? current : weakest
+  )
+}
+
+function parseMode(mode: MatchFormatType): { teamSizes: number[]; numTeams: number; playersPerTeam: number; expectedTotal: number } {
+  const teamSizes = mode.split(':').map(Number)
+  const numTeams = teamSizes.length
+  const playersPerTeam = teamSizes[0]
+  const expectedTotal = teamSizes.reduce((total, size) => total + size, 0)
+  return { teamSizes, numTeams, playersPerTeam, expectedTotal }
+}
+
+function assertValidMode(mode: MatchFormatType): void {
+  const { teamSizes, playersPerTeam } = parseMode(mode)
+  if (teamSizes.length === 0 || teamSizes.some((size) => !Number.isFinite(size) || size <= 0)) {
+    throw new Error(`Invalid match format mode: ${mode}`)
+  }
+  if (teamSizes.some((size) => size !== playersPerTeam)) {
+    throw new Error(`Unsupported match format mode (uneven team sizes): ${mode}`)
+  }
+}
+
+function assertUniquePlayerIds(players: Player[]): void {
+  const ids = players.map((player) => player.id)
+  const uniqueCount = new Set(ids).size
+  if (ids.length !== uniqueCount) {
+    throw new Error('Invariant broken: duplicate player ids in input')
+  }
+}
+
+function assertTeamsIntegrity(inputPlayers: Player[], teams: Team[]): void {
+  const inputIds = inputPlayers.map((player) => player.id)
+  const outputIds = teams.flatMap((team) => team.players.map((player) => player.id))
+  const inputSet = new Set(inputIds)
+  const outputSet = new Set(outputIds)
+
+  if (outputIds.length !== outputSet.size) {
+    throw new Error('Invariant broken: duplicate player ids in team result')
+  }
+
+  if (inputSet.size !== outputSet.size) {
+    throw new Error('Invariant broken: player count mismatch between input and output teams')
+  }
+
+  for (const id of inputSet) {
+    if (!outputSet.has(id)) {
+      throw new Error(`Invariant broken: missing player in team result (${id})`)
+    }
+  }
+}
 
 // ==================== 유틸리티 함수 ====================
 
-function shuffleArray<T>(array: T[]): T[] {
+/** @internal test-only */
+export function shuffleArray<T>(array: T[]): T[] {
   return [...array].sort(() => Math.random() - 0.5)
 }
 
 // 팀의 실력 점수 계산
-function calculateTeamStrength(team: Team): number {
-  const tierWeights = {
-    [PLAYER_TIERS.ACE]: 4,
-    [PLAYER_TIERS.ADVANCED]: 3,
-    [PLAYER_TIERS.INTERMEDIATE]: 2,
-    [PLAYER_TIERS.BEGINNER]: 1
-  }
-
+/** @internal test-only */
+export function calculateTeamStrength(team: Team): number {
   return team.players.reduce((total, player) => {
-    return total + (tierWeights[player.tier as keyof typeof tierWeights] || 1)
+    return total + getTierWeight(player)
   }, 0)
 }
 
 // 이동 가능한 선수 찾기
-function getMovablePlayers(team: Team, excludeTiers: string[] = []): Player[] {
+/** @internal test-only */
+export function getMovablePlayers(team: Team, excludeTiers: string[] = []): Player[] {
   return team.players.filter(
     (player) =>
       !player.isGuest && (!player.connectedPlayerIds || player.connectedPlayerIds.length === 0) && !excludeTiers.includes(player.tier)
@@ -30,7 +96,8 @@ function getMovablePlayers(team: Team, excludeTiers: string[] = []): Player[] {
 }
 
 // 팀별 티어 정보 가져오기
-function getTeamTierCounts(team: Team) {
+/** @internal test-only */
+export function getTeamTierCounts(team: Team) {
   return {
     ace: team.players.filter((p) => p.tier === PLAYER_TIERS.ACE).length,
     advanced: team.players.filter((p) => p.tier === PLAYER_TIERS.ADVANCED).length,
@@ -42,7 +109,8 @@ function getTeamTierCounts(team: Team) {
 
 // ==================== 선수 컨디션 설정 ====================
 
-function setPlayerCondition(team: Team) {
+/** @internal test-only */
+export function setPlayerCondition(team: Team): void {
   team.players.forEach((player) => {
     player.condition = PLAYER_CONDITIONS.MID
   })
@@ -62,7 +130,6 @@ function setPlayerCondition(team: Team) {
     }
   }
 
-  // HIGH 컨디션 선수가 없으면 랜덤 배정
   if (!team.players.some((p) => p.condition === PLAYER_CONDITIONS.HIGH)) {
     const candidates = team.players.filter(
       (p) =>
@@ -80,16 +147,15 @@ function setPlayerCondition(team: Team) {
 
 // ==================== 초기 팀 배분 ====================
 
-function distributeRegularPlayers(teams: Team[], tierMap: Record<string, Player[]>, playersPerTeam: number) {
+/** @internal test-only */
+export function distributeRegularPlayers(teams: Team[], tierMap: Record<string, Player[]>, playersPerTeam: number): void {
   const numTeams = teams.length
 
-  // 1. ACE 배분 (균등 분배)
   const acePool = shuffleArray(tierMap[PLAYER_TIERS.ACE])
   acePool.forEach((player, index) => {
     teams[index % numTeams].players.push(player)
   })
 
-  // 2. BEGINNER 배분 (균등 분배)
   const beginnerPool = shuffleArray(tierMap[PLAYER_TIERS.BEGINNER])
   const beginnerPerTeam = Math.floor(beginnerPool.length / numTeams)
   let beginnerRemainder = beginnerPool.length % numTeams
@@ -101,7 +167,6 @@ function distributeRegularPlayers(teams: Team[], tierMap: Record<string, Player[
     }
   })
 
-  // 3. ADVANCED 배분 (beginner 많은 팀 우선)
   const advancedPool = shuffleArray(tierMap[PLAYER_TIERS.ADVANCED])
   const teamsByBeginnerCount = [...teams].sort((a, b) => {
     const aBeginners = a.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length
@@ -119,7 +184,6 @@ function distributeRegularPlayers(teams: Team[], tierMap: Record<string, Player[
     }
   })
 
-  // 4. INTERMEDIATE 배분 (약한 팀 우선, ACE 팀 선호)
   const intermediatePool = shuffleArray(tierMap[PLAYER_TIERS.INTERMEDIATE])
 
   while (intermediatePool.length > 0) {
@@ -136,7 +200,6 @@ function distributeRegularPlayers(teams: Team[], tierMap: Record<string, Player[
     teamsByStrength[0].players.push(intermediatePool.shift()!)
   }
 
-  // 5. 남은 ADVANCED 배분 (약한 팀 우선)
   while (advancedPool.length > 0) {
     const teamsByStrength = [...teams]
       .filter((t) => t.players.length < playersPerTeam)
@@ -149,14 +212,13 @@ function distributeRegularPlayers(teams: Team[], tierMap: Record<string, Player[
 
 // ==================== 게스트 배분 ====================
 
-function distributeGuests(teams: Team[], guests: Player[], playersPerTeam: number) {
+/** @internal test-only */
+export function distributeGuests(teams: Team[], guests: Player[], playersPerTeam: number): void {
   if (guests.length === 0) return
 
-  // 연결된 게스트와 일반 게스트 분류
   const connectedGuests = guests.filter((g) => g.connectedPlayerIds && g.connectedPlayerIds.length > 0)
   const unconnectedGuests = guests.filter((g) => !g.connectedPlayerIds || g.connectedPlayerIds.length === 0)
 
-  // 1. 연결된 게스트 배치
   connectedGuests.forEach((guest) => {
     const connectedTeam = teams.find((team) => team.players.some((p) => guest.connectedPlayerIds?.includes(p.id)))
 
@@ -164,18 +226,13 @@ function distributeGuests(teams: Team[], guests: Player[], playersPerTeam: numbe
       if (connectedTeam.players.length < playersPerTeam) {
         connectedTeam.players.push(guest)
       } else {
-        // 팀이 가득 찬 경우: 약한 선수를 다른 팀으로 이동
         const movablePlayers = getMovablePlayers(connectedTeam)
         const availableTeam = teams.find((t) => t !== connectedTeam && t.players.length < playersPerTeam)
 
         if (movablePlayers.length > 0 && availableTeam) {
-          // 가장 약한 이동 가능 선수 선택
-          const playerToMove = movablePlayers.reduce((weakest, current) => {
-            const weights = { ace: 4, advanced: 3, intermediate: 2, beginner: 1 }
-            const weakestWeight = weights[weakest.tier as keyof typeof weights] || 1
-            const currentWeight = weights[current.tier as keyof typeof weights] || 1
-            return currentWeight < weakestWeight ? current : weakest
-          })
+          const playerToMove = movablePlayers.reduce((weakest, current) =>
+            getTierWeight(current) < getTierWeight(weakest) ? current : weakest
+          )
 
           connectedTeam.players = connectedTeam.players.filter((p) => p.id !== playerToMove.id)
           availableTeam.players.push(playerToMove)
@@ -183,59 +240,52 @@ function distributeGuests(teams: Team[], guests: Player[], playersPerTeam: numbe
         connectedTeam.players.push(guest)
       }
     } else {
-      // 연결된 선수가 없으면 약한 팀에 배치
-      const weakestTeam = teams
-        .filter((t) => t.players.length < playersPerTeam)
-        .reduce((weakest, current) => (calculateTeamStrength(current) < calculateTeamStrength(weakest) ? current : weakest))
-      if (weakestTeam) {
-        weakestTeam.players.push(guest)
+      const weakestTeam = findWeakestTeam(teams, playersPerTeam)
+      if (!weakestTeam) {
+        throw new Error(`Invariant broken: no capacity for connected guest (${guest.id})`)
       }
+      weakestTeam.players.push(guest)
     }
   })
 
-  // 2. 일반 게스트 배치 (밸런스 고려)
-  let bestTeam: Team | null = null
   unconnectedGuests.forEach((guest) => {
+    let bestTeam: Team | null = null
     let bestScore = Infinity
 
-    teams.forEach((team) => {
-      if (team.players.length >= playersPerTeam) return
+    for (const team of teams) {
+      if (team.players.length >= playersPerTeam) continue
 
-      // 게스트 추가 후 예상 밸런스 계산
       const guestCount = team.players.filter((p) => p.isGuest).length
       const strength = calculateTeamStrength(team)
-
-      // 약한 팀이면서 게스트가 적은 팀 선호
       const score = strength + guestCount * 2
 
       if (score < bestScore) {
         bestScore = score
-        bestTeam = team as Team
+        bestTeam = team
       }
-    })
+    }
 
     if (bestTeam) {
       bestTeam.players.push(guest)
     } else {
-      // 모든 팀이 가득 차면 가장 약한 팀에 추가
-      const weakestTeam = teams.reduce((weakest, current) =>
-        calculateTeamStrength(current) < calculateTeamStrength(weakest) ? current : weakest
-      )
-      weakestTeam.players.push(guest)
+      const weakestTeam = findWeakestTeam(teams)
+      if (weakestTeam) {
+        weakestTeam.players.push(guest)
+      }
     }
   })
 }
 
 // ==================== 팀 밸런싱 ====================
 
-function balanceTeamStrength(teams: Team[], maxIterations: number = 10) {
+/** @internal test-only */
+export function balanceTeamStrength(teams: Team[], maxIterations: number = 10): void {
   for (let iteration = 0; iteration < maxIterations; iteration++) {
     const strengths = teams.map((team) => calculateTeamStrength(team))
     const maxStrength = Math.max(...strengths)
     const minStrength = Math.min(...strengths)
     const gap = maxStrength - minStrength
 
-    // 밸런스가 충분히 좋으면 종료
     if (gap <= 2) break
 
     const strongestIndex = strengths.indexOf(maxStrength)
@@ -243,12 +293,10 @@ function balanceTeamStrength(teams: Team[], maxIterations: number = 10) {
     const strongestTeam = teams[strongestIndex]
     const weakestTeam = teams[weakestIndex]
 
-    // 강한 팀에서 약한 팀으로 선수 이동
     const movablePlayers = getMovablePlayers(strongestTeam, [PLAYER_TIERS.ACE])
 
     if (movablePlayers.length === 0) break
 
-    // INTERMEDIATE 또는 ADVANCED를 우선적으로 이동
     const playerToMove =
       movablePlayers.find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE) ||
       movablePlayers.find((p) => p.tier === PLAYER_TIERS.ADVANCED) ||
@@ -263,7 +311,8 @@ function balanceTeamStrength(teams: Team[], maxIterations: number = 10) {
   }
 }
 
-function balanceTeamSize(teams: Team[]) {
+/** @internal test-only */
+export function balanceTeamSize(teams: Team[]): void {
   const teamSizes = teams.map((t) => t.players.length)
   const maxSize = Math.max(...teamSizes)
   const minSize = Math.min(...teamSizes)
@@ -283,7 +332,8 @@ function balanceTeamSize(teams: Team[]) {
   }
 }
 
-function balanceAceDisadvantage(teams: Team[]) {
+/** @internal test-only */
+export function balanceAceDisadvantage(teams: Team[]): void {
   const aceLessTeams = teams.filter((team) => !team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
   const aceTeams = teams.filter((team) => team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
 
@@ -293,26 +343,21 @@ function balanceAceDisadvantage(teams: Team[]) {
       const aceLessIntermediate = getMovablePlayers(aceLessTeam).find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE)
 
       if (aceTeamAdvanced && aceLessIntermediate) {
-        aceTeam.players = aceTeam.players.filter((p) => p.id !== aceTeamAdvanced.id)
-        aceLessTeam.players = aceLessTeam.players.filter((p) => p.id !== aceLessIntermediate.id)
-        aceTeam.players.push(aceLessIntermediate)
-        aceLessTeam.players.push(aceTeamAdvanced)
+        swapPlayersBetweenTeams(aceTeam, aceTeamAdvanced, aceLessTeam, aceLessIntermediate)
         break
       }
 
       const aceLessBeginner = getMovablePlayers(aceLessTeam).find((p) => p.tier === PLAYER_TIERS.BEGINNER)
       if (aceTeamAdvanced && aceLessBeginner) {
-        aceTeam.players = aceTeam.players.filter((p) => p.id !== aceTeamAdvanced.id)
-        aceLessTeam.players = aceLessTeam.players.filter((p) => p.id !== aceLessBeginner.id)
-        aceTeam.players.push(aceLessBeginner)
-        aceLessTeam.players.push(aceTeamAdvanced)
+        swapPlayersBetweenTeams(aceTeam, aceTeamAdvanced, aceLessTeam, aceLessBeginner)
         break
       }
     }
   })
 }
 
-function balanceBeginnerHeavyTeams(teams: Team[]) {
+/** @internal test-only */
+export function balanceBeginnerHeavyTeams(teams: Team[]): void {
   const beginnerThreshold = 3
 
   teams.forEach((beginnerHeavyTeam) => {
@@ -320,7 +365,6 @@ function balanceBeginnerHeavyTeams(teams: Team[]) {
 
     if (beginnerCount < beginnerThreshold) return
 
-    // INTERMEDIATE 또는 ADVANCED가 있는 다른 팀 찾기
     const otherTeam = teams.find((team) => {
       if (team === beginnerHeavyTeam) return false
       return team.players.some((p) => p.tier === PLAYER_TIERS.INTERMEDIATE || p.tier === PLAYER_TIERS.ADVANCED)
@@ -332,22 +376,19 @@ function balanceBeginnerHeavyTeams(teams: Team[]) {
     const betterPlayer = getMovablePlayers(otherTeam).find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE || p.tier === PLAYER_TIERS.ADVANCED)
 
     if (beginnerPlayer && betterPlayer) {
-      beginnerHeavyTeam.players = beginnerHeavyTeam.players.filter((p) => p.id !== beginnerPlayer.id)
-      otherTeam.players = otherTeam.players.filter((p) => p.id !== betterPlayer.id)
-      beginnerHeavyTeam.players.push(betterPlayer)
-      otherTeam.players.push(beginnerPlayer)
+      swapPlayersBetweenTeams(beginnerHeavyTeam, beginnerPlayer, otherTeam, betterPlayer)
     }
   })
 }
 
 // ==================== 특수 규칙 ====================
 
-function enforceExcludedPairs(teams: Team[], excludedPairs: string[][]) {
+/** @internal test-only */
+export function enforceExcludedPairs(teams: Team[], excludedPairs: string[][]): void {
   excludedPairs.forEach(([player1Name, player2Name]) => {
     const player1Team = teams.find((team) => team.players.some((p) => p.name === player1Name))
     const player2Team = teams.find((team) => team.players.some((p) => p.name === player2Name))
 
-    // 같은 팀에 있는 경우만 처리
     if (player1Team && player2Team && player1Team === player2Team) {
       const otherTeams = teams.filter((team) => team !== player1Team)
       if (otherTeams.length === 0) return
@@ -355,13 +396,11 @@ function enforceExcludedPairs(teams: Team[], excludedPairs: string[][]) {
       const player2 = player1Team.players.find((p) => p.name === player2Name)
       if (!player2) return
 
-      // 교환할 선수를 먼저 찾기 (반드시 1:1 교환)
       let swapSuccess = false
 
       for (const otherTeam of otherTeams) {
         const movableFromOther = getMovablePlayers(otherTeam)
 
-        // 비슷한 티어의 선수를 찾아서 교환
         const swapCandidate =
           movableFromOther.find((p) => p.tier === player2.tier) ||
           movableFromOther.find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE) ||
@@ -369,19 +408,12 @@ function enforceExcludedPairs(teams: Team[], excludedPairs: string[][]) {
           movableFromOther[0]
 
         if (swapCandidate) {
-          // 1:1 교환 실행
-          player1Team.players = player1Team.players.filter((p) => p.name !== player2Name)
-          otherTeam.players = otherTeam.players.filter((p) => p.id !== swapCandidate.id)
-
-          player1Team.players.push(swapCandidate)
-          otherTeam.players.push(player2)
-
+          swapPlayersBetweenTeams(player1Team, player2, otherTeam, swapCandidate)
           swapSuccess = true
           break
         }
       }
 
-      // 교환 가능한 선수가 없는 경우 (최후의 수단)
       if (!swapSuccess) {
         const targetTeam = otherTeams[0]
         player1Team.players = player1Team.players.filter((p) => p.name !== player2Name)
@@ -393,7 +425,7 @@ function enforceExcludedPairs(teams: Team[], excludedPairs: string[][]) {
 
 // ==================== 로깅 ====================
 
-function logFinalBalance(teams: Team[]) {
+function logFinalBalance(teams: Team[]): void {
   console.log('\n=== Final Team Balance ===')
   teams.forEach((team) => {
     const tierCounts = getTeamTierCounts(team)
@@ -412,15 +444,17 @@ function logFinalBalance(teams: Team[]) {
 
 export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
   const excludedPairs: string[][] = [['지원 1', '지원 2']]
-  const teamSizes = mode.split(':').map(Number)
-  const numTeams = teamSizes.length
-  const playersPerTeam = teamSizes[0]
+  assertValidMode(mode)
+  assertUniquePlayerIds(players)
+  const { numTeams, playersPerTeam, expectedTotal } = parseMode(mode)
 
-  // 게스트와 일반 선수 분리
+  if (players.length !== expectedTotal) {
+    throw new Error(`Invalid player count for ${mode}: expected ${expectedTotal}, received ${players.length}`)
+  }
+
   const regularPlayers = players.filter((p) => !p.isGuest)
   const guests = players.filter((p) => p.isGuest)
 
-  // 티어별 선수 분류
   const tierMap: Record<string, Player[]> = {
     [PLAYER_TIERS.ACE]: regularPlayers.filter((p) => p.tier === PLAYER_TIERS.ACE),
     [PLAYER_TIERS.ADVANCED]: regularPlayers.filter((p) => p.tier === PLAYER_TIERS.ADVANCED),
@@ -428,34 +462,27 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
     [PLAYER_TIERS.BEGINNER]: regularPlayers.filter((p) => p.tier === PLAYER_TIERS.BEGINNER)
   }
 
-  // 팀 초기화
   const teams: Team[] = Array.from({ length: numTeams }, (_, i) => ({
     name: `팀 ${String.fromCharCode(65 + i)}`,
     players: []
   }))
 
-  // 1. 일반 선수 배분
   distributeRegularPlayers(teams, tierMap, playersPerTeam)
-
-  // 2. 게스트 배분
   distributeGuests(teams, guests, playersPerTeam)
 
-  // 3. 팀 밸런싱
   balanceAceDisadvantage(teams)
   balanceBeginnerHeavyTeams(teams)
 
-  // 4. 특수 규칙 적용 (밸런싱 전에 처리)
   enforceExcludedPairs(teams, excludedPairs)
 
-  // 5. 최종 밸런싱 (특수 규칙 적용 후)
   balanceTeamStrength(teams)
   balanceTeamSize(teams)
 
-  // 6. 컨디션 설정 및 정렬
   teams.forEach(setPlayerCondition)
   teams.forEach((team) => team.players.sort((a, b) => a.year.localeCompare(b.year)))
 
-  // 7. 최종 결과 로깅
+  assertTeamsIntegrity(players, teams)
+
   logFinalBalance(teams)
 
   return teams
