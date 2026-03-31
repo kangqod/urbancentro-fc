@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type MouseEvent, type ReactNode } from 'react'
 import { message } from 'antd'
 import { PLAYER_CONDITIONS, shareKakao } from '@/entities'
 import { getTeamsText, useTeamsValue } from '../../lib'
@@ -60,7 +60,8 @@ export function useFooter() {
     })
   }
 
-  function handlePrevClick() {
+  function handlePrevClick(event?: MouseEvent<HTMLElement>) {
+    event?.currentTarget.blur()
     setActiveTab(TabMenu.PlayerSelection)
   }
 
