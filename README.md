@@ -92,19 +92,6 @@ pnpm install
 pnpm dev
 ```
 
-### 환경 변수
-
-프로젝트 루트에 `.env` 파일을 생성합니다.
-
-```env
-VITE_KAKAO_JS_KEY=<카카오 JavaScript 키>
-```
-
-| 변수 | 설명 | 필수 |
-|------|------|------|
-| `VITE_KAKAO_JS_KEY` | 카카오톡 공유 기능용 JavaScript 앱 키 | 카카오 공유 사용 시 |
-| `VITE_BUILD_DATE` | 빌드 날짜 (CI에서 자동 설정) | 아니오 |
-
 ---
 
 ## 스크립트
