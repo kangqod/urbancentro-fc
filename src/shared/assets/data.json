@@ -258,6 +258,14 @@
   {
     "year": "1993",
     "number": 0,
+    "name": "박찬우",
+    "tier": "intermediate",
+    "strength": "왼발",
+    "attributes": ["열정"]
+  },
+  {
+    "year": "1993",
+    "number": 0,
     "name": "황윤하",
     "tier": "advanced",
     "strength": "빠른 압박",
