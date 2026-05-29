@@ -51,7 +51,7 @@
     "year": "1986",
     "number": 11,
     "name": "김성일",
-    "tier": "ace",
+    "tier": "advanced",
     "strength": "골 결정력",
     "attributes": ["유스 출신", "검단 메시"]
   },
@@ -195,9 +195,9 @@
     "year": "1989",
     "number": 42,
     "name": "최승빈",
-    "tier": "ace",
+    "tier": "advanced",
     "strength": "화려한 개인기",
-    "attributes": ["플레이메이커", "실수하면 소리커짐"]
+    "attributes": ["플레이메이커"]
   },
   {
     "year": "1989",
@@ -275,7 +275,7 @@
     "year": "1998",
     "number": 0,
     "name": "백창성",
-    "tier": "ace",
+    "tier": "advanced",
     "strength": "패스",
     "attributes": ["젊음", "승우 동생"]
   }
