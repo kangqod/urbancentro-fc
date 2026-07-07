@@ -6,10 +6,13 @@ import {
   PlayerClass,
   DEFAULT_TIER,
   DEFAULT_STRENGTH,
-  DEFAULT_ATTRIBUTES
+  DEFAULT_ATTRIBUTES,
+  TIER_LABELS
 } from '@/entities'
-import type { Player } from '@/entities'
+import type { Player, TierType } from '@/entities'
 import { useSetPlayersState, usePlayersValue } from '../../lib'
+
+export const TIER_OPTIONS = Object.entries(TIER_LABELS).map(([value, label]) => ({ value: value as TierType, label }))
 
 interface UseGuestModalProps {
   form: FormInstance<any>
@@ -28,13 +31,13 @@ export function useGuestModal({ form, onOpenModal }: UseGuestModalProps) {
   const getPlayerGuestCount = (playerId: string) => players.filter((p) => p.isGuest && p.connectedPlayerIds?.includes(playerId)).length
 
   // 게스트 생성 객체 생성 함수
-  const createGuestPlayer = (name: string, connectedPlayerId?: string): Player => {
+  const createGuestPlayer = (name: string, connectedPlayerId?: string, tier: TierType = DEFAULT_TIER): Player => {
     return new PlayerClass({
       id: `guest-${Date.now()}`,
       name,
       year: DEFAULT_YEAR,
       number: DEFAULT_NUMBER,
-      tier: DEFAULT_TIER,
+      tier,
       condition: DEFAULT_CONDITION,
       strength: DEFAULT_STRENGTH,
       attributes: DEFAULT_ATTRIBUTES,
@@ -55,8 +58,8 @@ export function useGuestModal({ form, onOpenModal }: UseGuestModalProps) {
     player
   }))
 
-  const onFinish = (values: { name: string; matchedPlayer?: string }) => {
-    const newPlayer = createGuestPlayer(values.name, values.matchedPlayer)
+  const onFinish = (values: { name: string; matchedPlayer?: string; tier: TierType }) => {
+    const newPlayer = createGuestPlayer(values.name, values.matchedPlayer, values.tier)
     setPlayers((prevPlayers: Player[]) => {
       // 연결된 선수의 connectedPlayerIds에도 게스트 id 추가
       if (values.matchedPlayer) {
@@ -80,6 +83,7 @@ export function useGuestModal({ form, onOpenModal }: UseGuestModalProps) {
   return {
     onFinish,
     playerOptions,
+    tierOptions: TIER_OPTIONS,
     handlePlayerSelect,
     handleClose
   }

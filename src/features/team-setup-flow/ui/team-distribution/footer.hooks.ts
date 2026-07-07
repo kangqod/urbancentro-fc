@@ -1,7 +1,8 @@
 import { type MouseEvent, type ReactNode } from 'react'
 import { message } from 'antd'
 import { PLAYER_CONDITIONS, shareKakao } from '@/entities'
-import { getTeamsText, useTeamsValue } from '../../lib'
+import type { Team } from '@/entities'
+import { getTeamsText, useTeamsValue, type SharedPlayer, type SharedTeam } from '../../lib'
 import { TabMenu, useTeamSetupFlowStore } from '../../model'
 
 export function useFooter() {
@@ -42,20 +43,30 @@ export function useFooter() {
   }
 
   const handleShareKakao = () => {
-    const teamsData: any = teams.map((team) => [
-      team.name.slice(-1), // "팀 A" -> "A"
-      team.players.map(
-        (player) =>
-          `${player.year ? `${player.year.slice(-2)}` : '99'}-${player.name}-${
-            player.condition === PLAYER_CONDITIONS.HIGH ? PLAYER_CONDITIONS.HIGH : ''
-          }`
-      )
-    ])
+    // 플레이어를 [year, name, condition, tier, isGuest] 배열로 직렬화한다.
+    // tier와 isGuest를 항상 담아, 복원 시 로스터에서 못 찾은 선수도 등급과
+    // 게스트 여부를 잃지 않게 한다. 이름에 `-`가 포함되어도 필드가 어긋나지 않는다.
+    const teamsData = teams.map(
+      (team): SharedTeam => [
+        team.name.slice(-1), // "팀 A" -> "A"
+        team.players.map(
+          (player): SharedPlayer => [
+            player.year ? player.year.slice(-2) : '99',
+            player.name,
+            player.condition === PLAYER_CONDITIONS.HIGH ? PLAYER_CONDITIONS.HIGH : '',
+            player.tier,
+            player.isGuest
+          ]
+        )
+      ]
+    )
 
     const description = getTeamsText(teams)
 
+    // ShareKakaoContent.teams는 Team[]로 선언돼 있으나 링크에는 직렬화 튜플을 싣는다.
+    // (직렬화 포맷 타입을 entities로 끌어올리면 FSD 계층을 침범하므로 경계에서만 캐스팅)
     shareKakao({
-      teams: teamsData,
+      teams: teamsData as unknown as Team[],
       description
     })
   }

@@ -18,6 +18,17 @@ export const PLAYER_CONDITIONS = {
 export const DEFAULT_YEAR = '2099'
 export const DEFAULT_NUMBER = 99
 export const DEFAULT_TIER = PLAYER_TIERS.INTERMEDIATE
+
+export const TIER_LABELS: Record<TierType, string> = {
+  [PLAYER_TIERS.ACE]: '에이스',
+  [PLAYER_TIERS.ADVANCED]: '상급',
+  [PLAYER_TIERS.INTERMEDIATE]: '중급',
+  [PLAYER_TIERS.BEGINNER]: '초급'
+}
+
+const VALID_TIERS = new Set(Object.values(PLAYER_TIERS))
+export const toTierType = (value: string | undefined): TierType =>
+  value !== undefined && VALID_TIERS.has(value as TierType) ? (value as TierType) : DEFAULT_TIER
 export const DEFAULT_CONDITION = PLAYER_CONDITIONS.MID
 export const DEFAULT_STRENGTH = '-'
 export const DEFAULT_ATTRIBUTES: string[] = []
