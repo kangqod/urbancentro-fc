@@ -1,5 +1,5 @@
 import { Card, Row, Col, Spin, Badge } from 'antd'
-import { DEFAULT_YEAR, RAINBOW_PLAYERS, BEST_PLAYERS } from '@/entities'
+import { RAINBOW_PLAYERS, BEST_PLAYERS } from '@/entities'
 import { teamNameToNumber } from '@/shared'
 import { useTeamsValue, useSetSelectedPlayerState } from '../../lib'
 import { PlayerCard } from './player-card'
@@ -43,8 +43,6 @@ export function Container({ isShuffle }: ContainerProps) {
                           key={player.id}
                           className={`player-item${isRainbowPlayer ? ' rainbow' : ''}`}
                           onClick={() => {
-                            if (player.isGuest) return
-                            if (player.year === DEFAULT_YEAR) return
                             updateSelectedPlayer(player)
                           }}
                         >

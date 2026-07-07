@@ -15,7 +15,7 @@ export const PLAYER_CONDITIONS = {
   LOW: 'low'
 } as const
 
-export const DEFAULT_YEAR = '2099'
+export const DEFAULT_YEAR = '3000'
 export const DEFAULT_NUMBER = 99
 export const DEFAULT_TIER = PLAYER_TIERS.INTERMEDIATE
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import type { MouseEvent } from 'react'
-import { DEFAULT_YEAR, PlayerClass } from '@/entities'
+import { PlayerClass } from '@/entities'
 import type { Player, TierType } from '@/entities'
 import {
   useAvailablePlayerCountValue,
@@ -27,9 +27,6 @@ export function usePlayerSelection() {
   const handlePlayerClick = (player: Player) => () => {
     if (!detailMode) {
       togglePlayerAvailability(player.id)
-      return
-    }
-    if (player.isGuest || player.year === DEFAULT_YEAR) {
       return
     }
     updateSelectedPlayer(player)
