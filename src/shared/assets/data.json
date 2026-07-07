@@ -1,17 +1,17 @@
 [
   {
     "year": "3000",
-    "number": 90,
+    "number": 0,
     "name": "지원 1",
-    "tier": "초급",
+    "tier": "중급",
     "strength": "",
     "attributes": []
   },
   {
     "year": "3000",
-    "number": 91,
+    "number": 0,
     "name": "지원 2",
-    "tier": "초급",
+    "tier": "중급",
     "strength": "",
     "attributes": []
   },

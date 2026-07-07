@@ -84,7 +84,7 @@ export function Contents({ player, onClose }: PlayerProps) {
       </Descriptions>
 
       <Typography.Text type="secondary" className="footer-text">
-        분석 중이며 수정이 필요한 분은 카카오톡으로 문의해주세요
+        요청 시 정보 수정 가능
       </Typography.Text>
     </div>
   )

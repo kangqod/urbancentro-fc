@@ -30,7 +30,7 @@ const VALID_TIERS = new Set(Object.values(PLAYER_TIERS))
 export const toTierType = (value: string | undefined): TierType =>
   value !== undefined && VALID_TIERS.has(value as TierType) ? (value as TierType) : DEFAULT_TIER
 export const DEFAULT_CONDITION = PLAYER_CONDITIONS.MID
-export const DEFAULT_STRENGTH = '-'
+export const DEFAULT_STRENGTH = ''
 export const DEFAULT_ATTRIBUTES: string[] = []
 
 export class PlayerClass implements Player {
