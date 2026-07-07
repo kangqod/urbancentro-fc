@@ -331,6 +331,11 @@ export function balanceTeamSize(teams: Team[]): void {
   }
 }
 
+/**
+ * 에이스가 없는 팀을 상급 스왑으로 보정한다.
+ * 단, 스왑이 실제로 두 팀의 전력 격차를 줄일 때만 수행한다.
+ * (무조건 스왑하면 상급이 이미 균등해도 에이스 없는 팀으로 몰려 티어 분포가 한쪽으로 쏠린다.)
+ */
 /** @internal test-only */
 export function balanceAceDisadvantage(teams: Team[]): void {
   const aceLessTeams = teams.filter((team) => !team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
@@ -339,16 +344,22 @@ export function balanceAceDisadvantage(teams: Team[]): void {
   aceLessTeams.forEach((aceLessTeam) => {
     for (const aceTeam of aceTeams) {
       const aceTeamAdvanced = getMovablePlayers(aceTeam).find((p) => p.tier === PLAYER_TIERS.ADVANCED)
-      const aceLessIntermediate = getMovablePlayers(aceLessTeam).find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE)
+      if (!aceTeamAdvanced) continue
 
-      if (aceTeamAdvanced && aceLessIntermediate) {
-        swapPlayersBetweenTeams(aceTeam, aceTeamAdvanced, aceLessTeam, aceLessIntermediate)
-        break
-      }
+      // 중급 우선, 없으면 초급과 스왑 (기존 선호 유지)
+      const partner =
+        getMovablePlayers(aceLessTeam).find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE) ??
+        getMovablePlayers(aceLessTeam).find((p) => p.tier === PLAYER_TIERS.BEGINNER)
+      if (!partner) continue
 
-      const aceLessBeginner = getMovablePlayers(aceLessTeam).find((p) => p.tier === PLAYER_TIERS.BEGINNER)
-      if (aceTeamAdvanced && aceLessBeginner) {
-        swapPlayersBetweenTeams(aceTeam, aceTeamAdvanced, aceLessTeam, aceLessBeginner)
+      const gapBefore = Math.abs(calculateTeamStrength(aceTeam) - calculateTeamStrength(aceLessTeam))
+      const netTransfer = getTierWeight(aceTeamAdvanced) - getTierWeight(partner)
+      const gapAfter = Math.abs(
+        calculateTeamStrength(aceTeam) - netTransfer - (calculateTeamStrength(aceLessTeam) + netTransfer)
+      )
+
+      if (gapAfter < gapBefore) {
+        swapPlayersBetweenTeams(aceTeam, aceTeamAdvanced, aceLessTeam, partner)
         break
       }
     }

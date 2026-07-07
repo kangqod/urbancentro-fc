@@ -364,4 +364,49 @@ describe('balanceTeams integration', () => {
 
     expect(() => balanceTeams(players, '5:5')).toThrow('duplicate player ids')
   })
+
+  // 회귀 가드: 에이스 1명 + 상급이 균등 분배 가능할 때, 상급이 에이스 없는 팀으로 쏠리면 안 된다.
+  // (예전 balanceAceDisadvantage 는 무조건 스왑해 상급을 1:3 으로 몰았다.)
+  function buildRoster(mode: string, ace: number, adv: number, int: number, beg: number): Player[] {
+    const players: Player[] = []
+    const push = (tier: (typeof PLAYER_TIERS)[keyof typeof PLAYER_TIERS], n: number) => {
+      for (let i = 0; i < n; i++) {
+        players.push(makePlayer({ id: `${tier}-${i}`, name: `${tier} ${i}`, tier }))
+      }
+    }
+    push(PLAYER_TIERS.ACE, ace)
+    push(PLAYER_TIERS.ADVANCED, adv)
+    push(PLAYER_TIERS.INTERMEDIATE, int)
+    push(PLAYER_TIERS.BEGINNER, beg)
+    void mode
+    return players
+  }
+
+  it('does not clump advanced onto the ace-less team (6:6, 1 ace + 4 advanced)', () => {
+    for (let run = 0; run < 200; run++) {
+      const teams = balanceTeams(buildRoster('6:6', 1, 4, 4, 3), '6:6')
+      const aceTeam = teams.find((t) => t.players.some((p) => p.tier === PLAYER_TIERS.ACE))!
+      const other = teams.find((t) => t !== aceTeam)!
+      const advAce = aceTeam.players.filter((p) => p.tier === PLAYER_TIERS.ADVANCED).length
+      const advOther = other.players.filter((p) => p.tier === PLAYER_TIERS.ADVANCED).length
+
+      // 상급 4명은 2:2 로 나뉘어야 하며, 한 팀에 3명 이상 쏠리면 안 된다.
+      expect(advOther).toBeLessThan(3)
+      expect(advAce).toBeGreaterThan(0)
+      // 전력 격차는 여전히 작게 유지된다.
+      expect(Math.abs(calculateTeamStrength(aceTeam) - calculateTeamStrength(other))).toBeLessThanOrEqual(2)
+    }
+  })
+
+  it('does not starve any team of advanced across three teams (6:6:6, 1 ace)', () => {
+    // 수정 전에는 상급이 3:3:0 으로 몰려 한 팀(주로 에이스팀)이 상급 0개였다.
+    // 게이트 적용 후에는 최소 1개씩 확보되고(3:2:1), 전력 격차도 작게 유지된다.
+    for (let run = 0; run < 200; run++) {
+      const teams = balanceTeams(buildRoster('6:6:6', 1, 6, 8, 3), '6:6:6')
+      const advCounts = teams.map((t) => t.players.filter((p) => p.tier === PLAYER_TIERS.ADVANCED).length)
+      expect(Math.min(...advCounts)).toBeGreaterThan(0)
+      const strengths = teams.map(calculateTeamStrength)
+      expect(Math.max(...strengths) - Math.min(...strengths)).toBeLessThanOrEqual(2)
+    }
+  })
 })
