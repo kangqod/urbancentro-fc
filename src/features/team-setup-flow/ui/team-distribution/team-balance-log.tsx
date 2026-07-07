@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Modal, Button, Card, Row, Col, Tag, Progress, Divider, Statistic, Space, Flex } from 'antd'
 import { Trophy, Users } from 'lucide-react'
-import { PLAYER_TIERS, type Team } from '@/entities'
+import { PLAYER_TIERS, TIER_LABELS, calculateTeamStrength, type Team } from '@/entities'
 import { teamNameToNumber } from '@/shared'
 import { getTierColor } from '@/features/player-modal/lib'
 
@@ -16,21 +16,19 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
 
   // 팀별 상세 정보 계산
   const teamAnalytics = teams.map((team) => {
+    // 티어 값(한글)을 키로 사용해 getTierColor와 매칭되도록 한다.
     const tierCounts = {
-      ace: team.players.filter((p) => p.tier === PLAYER_TIERS.ACE).length,
-      advanced: team.players.filter((p) => p.tier === PLAYER_TIERS.ADVANCED).length,
-      intermediate: team.players.filter((p) => p.tier === PLAYER_TIERS.INTERMEDIATE).length,
-      beginner: team.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length
+      [PLAYER_TIERS.ACE]: team.players.filter((p) => p.tier === PLAYER_TIERS.ACE).length,
+      [PLAYER_TIERS.ADVANCED]: team.players.filter((p) => p.tier === PLAYER_TIERS.ADVANCED).length,
+      [PLAYER_TIERS.INTERMEDIATE]: team.players.filter((p) => p.tier === PLAYER_TIERS.INTERMEDIATE).length,
+      [PLAYER_TIERS.BEGINNER]: team.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length
     }
 
     const guestCount = team.players.filter((p) => p.isGuest).length
     const regularCount = team.players.length - guestCount
 
-    // 실력 점수 계산 (가중치 기반)
-    const tierWeights = { ace: 4, advanced: 3, intermediate: 2, beginner: 1 }
-    const strength = team.players.reduce((sum, p) => {
-      return sum + (tierWeights[p.tier as keyof typeof tierWeights] || 1)
-    }, 0)
+    // 실력 점수 계산 (밸런서와 동일한 가중치 로직 재사용 — 표시값과 실제 밸런싱이 어긋나지 않도록)
+    const strength = calculateTeamStrength(team)
 
     return {
       team,
@@ -41,8 +39,6 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
       totalPlayers: team.players.length
     }
   })
-
-  console.log(teamAnalytics)
 
   // 전체 통계
   const maxStrength = Math.max(...teamAnalytics.map((t) => t.strength))
@@ -92,10 +88,10 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
           {/* 티어 범례 */}
           <Flex className="team-balance-log-legend" align="center" justify="space-around">
             <Space>
-              <Tag color={getTierColor(PLAYER_TIERS.ACE)}>Ace</Tag>
-              <Tag color={getTierColor(PLAYER_TIERS.ADVANCED)}>Advanced</Tag>
-              <Tag color={getTierColor(PLAYER_TIERS.INTERMEDIATE)}>Intermediate</Tag>
-              <Tag color={getTierColor(PLAYER_TIERS.BEGINNER)}>Beginner</Tag>
+              <Tag color={getTierColor(PLAYER_TIERS.ACE)}>{TIER_LABELS[PLAYER_TIERS.ACE]}</Tag>
+              <Tag color={getTierColor(PLAYER_TIERS.ADVANCED)}>{TIER_LABELS[PLAYER_TIERS.ADVANCED]}</Tag>
+              <Tag color={getTierColor(PLAYER_TIERS.INTERMEDIATE)}>{TIER_LABELS[PLAYER_TIERS.INTERMEDIATE]}</Tag>
+              <Tag color={getTierColor(PLAYER_TIERS.BEGINNER)}>{TIER_LABELS[PLAYER_TIERS.BEGINNER]}</Tag>
             </Space>
           </Flex>
 
@@ -137,7 +133,7 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                       <span className="team-balance-log-strength-value">{analytics.strength}점</span>
                     </Flex>
                     <Progress
-                      percent={Math.round((analytics.strength / maxStrength) * 100)}
+                      percent={maxStrength > 0 ? Math.round((analytics.strength / maxStrength) * 100) : 0}
                       showInfo={false}
                       strokeColor={{
                         '0%': '#d05000',

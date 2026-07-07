@@ -1,10 +1,10 @@
 import type { Player, ConditionType, TierType } from './types'
 
 export const PLAYER_TIERS = {
-  ACE: 'ace',
-  ADVANCED: 'advanced',
-  INTERMEDIATE: 'intermediate',
-  BEGINNER: 'beginner'
+  ACE: '에이스',
+  ADVANCED: '상급',
+  INTERMEDIATE: '중급',
+  BEGINNER: '초급'
 } as const
 
 export const PLAYER_CONDITIONS = {

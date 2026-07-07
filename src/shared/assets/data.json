@@ -3,23 +3,23 @@
     "year": "3000",
     "number": 90,
     "name": "지원 1",
-    "tier": "beginner",
-    "strength": "-",
+    "tier": "초급",
+    "strength": "",
     "attributes": []
   },
   {
     "year": "3000",
     "number": 91,
     "name": "지원 2",
-    "tier": "beginner",
-    "strength": "-",
+    "tier": "초급",
+    "strength": "",
     "attributes": []
   },
   {
     "year": "1973",
     "number": 10,
     "name": "김정표",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "골 결정력",
     "attributes": ["양발 슈팅"]
   },
@@ -27,7 +27,7 @@
     "year": "1980",
     "number": 0,
     "name": "이태한",
-    "tier": "beginner",
+    "tier": "초급",
     "strength": "디펜스",
     "attributes": ["압박 수비"]
   },
@@ -35,7 +35,7 @@
     "year": "1984",
     "number": 30,
     "name": "최현석",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "공격 전개",
     "attributes": ["노련한 개인기"]
   },
@@ -43,7 +43,7 @@
     "year": "1985",
     "number": 9,
     "name": "전인정",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "골 결정력",
     "attributes": ["빠른 침투"]
   },
@@ -51,7 +51,7 @@
     "year": "1986",
     "number": 11,
     "name": "김성일",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "골 결정력",
     "attributes": ["유스 출신", "검단 메시"]
   },
@@ -59,7 +59,7 @@
     "year": "1986",
     "number": 0,
     "name": "송승근",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "빠른 침투",
     "attributes": ["좋은 출석률"]
   },
@@ -67,7 +67,7 @@
     "year": "1986",
     "number": 28,
     "name": "조용일",
-    "tier": "beginner",
+    "tier": "초급",
     "strength": "피지컬",
     "attributes": ["용일탑"]
   },
@@ -75,7 +75,7 @@
     "year": "1987",
     "number": 33,
     "name": "강병용",
-    "tier": "beginner",
+    "tier": "초급",
     "strength": "수비",
     "attributes": ["일단 치고 달림"]
   },
@@ -83,7 +83,7 @@
     "year": "1987",
     "number": 20,
     "name": "박준우",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "플레이메이커",
     "attributes": ["공격 전개"]
   },
@@ -91,7 +91,7 @@
     "year": "1987",
     "number": 0,
     "name": "김용경",
-    "tier": "beginner",
+    "tier": "초급",
     "strength": "든든한 수비",
     "attributes": ["넓은 시야"]
   },
@@ -99,7 +99,7 @@
     "year": "1987",
     "number": 17,
     "name": "양성호",
-    "tier": "beginner",
+    "tier": "초급",
     "strength": "든든한 수비",
     "attributes": ["패스 좋음"]
   },
@@ -107,7 +107,7 @@
     "year": "1987",
     "number": 19,
     "name": "홍승우",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "드리블",
     "attributes": ["라민 야말"]
   },
@@ -115,7 +115,7 @@
     "year": "1987",
     "number": 0,
     "name": "유주헌",
-    "tier": "beginner",
+    "tier": "초급",
     "strength": "넓은 시야",
     "attributes": ["패스 좋음", "병용 친구"]
   },
@@ -123,7 +123,7 @@
     "year": "1988",
     "number": 0,
     "name": "우상욱",
-    "tier": "beginner",
+    "tier": "초급",
     "strength": "든든한 수비",
     "attributes": ["체력 좋음"]
   },
@@ -131,7 +131,7 @@
     "year": "1989",
     "number": 0,
     "name": "박근휘",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "골 결정력",
     "attributes": ["빠른 침투"]
   },
@@ -139,7 +139,7 @@
     "year": "1989",
     "number": 8,
     "name": "김동수",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "몸싸움",
     "attributes": ["회장", "파워슛"]
   },
@@ -147,7 +147,7 @@
     "year": "1989",
     "number": 0,
     "name": "박준범",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "몸싸움",
     "attributes": ["부회장", "넓은 시야"]
   },
@@ -155,7 +155,7 @@
     "year": "1989",
     "number": 1,
     "name": "윤용준",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "데이터 부족",
     "attributes": ["빠른 참석 요망"]
   },
@@ -163,7 +163,7 @@
     "year": "1989",
     "number": 4,
     "name": "이원식",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "피지컬",
     "attributes": ["벽"]
   },
@@ -171,7 +171,7 @@
     "year": "1989",
     "number": 12,
     "name": "이한별",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "빠른 침투",
     "attributes": ["지치지 않는 체력"]
   },
@@ -179,7 +179,7 @@
     "year": "1989",
     "number": 22,
     "name": "임은철",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "몸싸움",
     "attributes": ["넓은 시야"]
   },
@@ -187,7 +187,7 @@
     "year": "1989",
     "number": 31,
     "name": "장세원",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "패스",
     "attributes": ["플레이메이커", "막걸리 러버"]
   },
@@ -195,7 +195,7 @@
     "year": "1989",
     "number": 42,
     "name": "최승빈",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "화려한 개인기",
     "attributes": ["플레이메이커"]
   },
@@ -203,7 +203,7 @@
     "year": "1989",
     "number": 7,
     "name": "이원재",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "공격 전개",
     "attributes": ["플레이메이커", "넓은 시야"]
   },
@@ -211,7 +211,7 @@
     "year": "1990",
     "number": 5,
     "name": "박치환",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "체력",
     "attributes": ["육아 고수"]
   },
@@ -219,7 +219,7 @@
     "year": "1990",
     "number": 13,
     "name": "이민수",
-    "tier": "beginner",
+    "tier": "초급",
     "strength": "든든한 수비",
     "attributes": ["카시야스"]
   },
@@ -227,7 +227,7 @@
     "year": "1990",
     "number": 24,
     "name": "임시현",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "빠른 침투",
     "attributes": ["지치지 않는 체력"]
   },
@@ -235,7 +235,7 @@
     "year": "1991",
     "number": 6,
     "name": "김백상",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "유머",
     "attributes": ["화려한 발재간"]
   },
@@ -243,7 +243,7 @@
     "year": "1991",
     "number": 0,
     "name": "김혁준",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "체력",
     "attributes": ["군무원", "열정"]
   },
@@ -251,7 +251,7 @@
     "year": "1991",
     "number": 0,
     "name": "김동권",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "드리블",
     "attributes": ["넓은 시야"]
   },
@@ -259,7 +259,7 @@
     "year": "1993",
     "number": 0,
     "name": "박찬우",
-    "tier": "intermediate",
+    "tier": "중급",
     "strength": "왼발",
     "attributes": ["열정"]
   },
@@ -267,7 +267,7 @@
     "year": "1993",
     "number": 0,
     "name": "황윤하",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "빠른 압박",
     "attributes": ["플레이메이커"]
   },
@@ -275,7 +275,7 @@
     "year": "1998",
     "number": 0,
     "name": "백창성",
-    "tier": "advanced",
+    "tier": "상급",
     "strength": "패스",
     "attributes": ["젊음", "승우 동생"]
   }

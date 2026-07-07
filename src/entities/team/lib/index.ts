@@ -1,3 +1,3 @@
 export * from './constants'
-export { balanceTeams } from './balance-teams'
+export { balanceTeams, calculateTeamStrength } from './balance-teams'
 export * from './share-kakao'

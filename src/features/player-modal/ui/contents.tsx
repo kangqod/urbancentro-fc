@@ -1,8 +1,8 @@
 import { Grid, Descriptions, Tag, Typography } from 'antd'
 import { Info, Shirt, Crown, Flame, Zap, ArrowBigUp, ArrowBigRight } from 'lucide-react'
-import { DEFAULT_ATTRIBUTES, DEFAULT_NUMBER, DEFAULT_STRENGTH, PLAYER_CONDITIONS } from '@/entities'
+import { DEFAULT_ATTRIBUTES, DEFAULT_NUMBER, DEFAULT_STRENGTH, PLAYER_CONDITIONS, TIER_LABELS } from '@/entities'
 import type { ConditionType, Player as PlayerType } from '@/entities'
-import { capitalizeFirstLetter, getTierColor } from '../lib'
+import { getTierColor } from '../lib'
 
 interface PlayerProps {
   player: PlayerType
@@ -31,7 +31,7 @@ export function Contents({ player, onClose }: PlayerProps) {
             </div>
           }
         >
-          <Tag color={getTierColor(player.tier)}>{capitalizeFirstLetter(player.tier)}</Tag>
+          <Tag color={getTierColor(player.tier)}>{TIER_LABELS[player.tier]}</Tag>
         </Descriptions.Item>
         <Descriptions.Item
           label={

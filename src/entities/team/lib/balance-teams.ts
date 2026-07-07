@@ -78,8 +78,7 @@ export function shuffleArray<T>(array: T[]): T[] {
   return [...array].sort(() => Math.random() - 0.5)
 }
 
-// 팀의 실력 점수 계산
-/** @internal test-only */
+// 팀의 실력 점수 계산 (밸런서 + 밸런스 정보 모달에서 공용으로 사용)
 export function calculateTeamStrength(team: Team): number {
   return team.players.reduce((total, player) => {
     return total + getTierWeight(player)
