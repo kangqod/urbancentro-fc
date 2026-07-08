@@ -1,0 +1,145 @@
+.ocr-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  // 딤 배경 + blur — 스피너/문구가 화면에 묻히던 문제(백드롭 부재)를 해결하는 핵심.
+  // 반투명 검정이라 라이트/다크 양쪽에서 공통으로 대비를 확보한다.
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.ocr-loading__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 280px;
+  max-width: 90vw;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  // Tesseract 컴포넌트는 <AntdApp>(=.css-var-root) 하위에서 인라인 렌더되므로
+  // antd CSS 변수가 정상 해석된다 (Spin fullscreen의 body 포털 트랩 회피).
+  background: var(--ant-color-bg-elevated);
+  color: var(--ant-color-text);
+  box-shadow: var(--ant-box-shadow-secondary);
+  text-align: center;
+}
+
+.ocr-loading__ball {
+  font-size: 3rem;
+  line-height: 1;
+  animation: ocr-loading-spin 1.2s linear infinite;
+}
+
+.ocr-loading__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.ocr-loading__steps {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ocr-loading__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 68px;
+}
+
+// 단계 사이 연결선 (각 점 중심에서 다음 점 중심까지)
+.ocr-loading__step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--ant-color-fill-secondary);
+  z-index: 0;
+}
+
+.ocr-loading__step.is-done:not(:last-child)::after {
+  background: var(--ant-color-primary);
+}
+
+.ocr-loading__dot {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ant-color-fill-secondary);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ocr-loading__step.is-done .ocr-loading__dot,
+.ocr-loading__step.is-active .ocr-loading__dot {
+  background: var(--ant-color-primary);
+}
+
+.ocr-loading__step.is-active .ocr-loading__dot {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ant-color-primary) 25%, transparent);
+}
+
+.ocr-loading__label {
+  margin-top: 0.45rem;
+  font-size: 0.75rem;
+  color: var(--ant-color-text-tertiary);
+  transition: color 0.3s ease;
+}
+
+.ocr-loading__step.is-done .ocr-loading__label,
+.ocr-loading__step.is-active .ocr-loading__label {
+  color: var(--ant-color-text);
+  font-weight: 500;
+}
+
+.ocr-loading__bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--ant-color-fill-secondary);
+  overflow: hidden;
+}
+
+.ocr-loading__bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ant-color-primary);
+  transition: width 0.3s ease;
+}
+
+.ocr-loading__percent {
+  font-size: 0.85rem;
+  color: var(--ant-color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes ocr-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocr-loading__ball {
+    animation: none;
+  }
+
+  .ocr-loading__dot,
+  .ocr-loading__label,
+  .ocr-loading__bar-fill {
+    transition: none;
+  }
+}

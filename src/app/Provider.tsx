@@ -6,6 +6,23 @@ import { useThemeValue } from './lib'
 
 const fontFamily = `'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', helvetica, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`
 
+// 라이트모드 표면/경계 토큰
+const lightSurfaceTokens = {
+  colorBgLayout: '#f0f2f5',
+  colorBgContainer: '#ffffff',
+  colorBorder: '#d9d9d9',
+  colorBorderSecondary: '#e8e8e8'
+}
+
+// 다크모드 표면/경계 토큰 — 기존 `.dark-mode` SCSS 하드코딩 값(#141414 / #2a2a2a / #444)과 동일하게 맞춰
+// antd CSS 변수(--ant-color-bg-layout 등) 하나로 라이트/다크 양쪽을 커버할 수 있게 한다 (회귀 없음, 값 동일).
+const darkSurfaceTokens = {
+  colorBgLayout: '#141414',
+  colorBgContainer: '#2a2a2a',
+  colorBorder: '#444444',
+  colorBorderSecondary: '#333333'
+}
+
 export function Provider() {
   const isDarkMode = useThemeValue()
 
@@ -22,7 +39,11 @@ export function Provider() {
         token: {
           colorPrimary: PRIMARY_COLOR,
           borderRadius: 6,
-          fontFamily
+          fontFamily,
+          // 라이트/다크 공용 엘리베이션 스케일 (rest / hover 단계)
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
+          boxShadowSecondary: '0 4px 12px rgba(0, 0, 0, 0.10)',
+          ...(isDarkMode ? darkSurfaceTokens : lightSurfaceTokens)
         }
       }}
     >

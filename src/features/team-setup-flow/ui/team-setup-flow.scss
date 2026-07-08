@@ -1,5 +1,3 @@
-@use '@/shared/assets/variables' as var;
-
 .tab-menu {
   display: flex;
   flex-direction: column;
@@ -10,14 +8,21 @@
 
 .ant-tabs {
   flex: 1;
+  background-color: var(--ant-color-bg-layout);
 
   & > .ant-tabs-nav {
-    background-color: #f9fafb;
+    background-color: var(--ant-color-bg-container);
+    box-shadow: var(--ant-box-shadow);
   }
 
   .ant-tabs-tab .ant-tabs-tab-btn,
   .ant-tabs-tab-btn:focus:not(:focus-visible) {
-    color: #ccc;
+    color: var(--ant-color-text-tertiary);
+  }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--ant-color-primary);
+    text-shadow: 0 0 0.25px currentcolor;
   }
 
   .ant-tabs-content:focus-visible {
@@ -44,44 +49,6 @@
     .ant-tabs-content:not(.ant-tabs-content-hidden) {
       display: flex;
       flex: 1;
-    }
-  }
-}
-
-.dark-mode {
-  .ant-tabs {
-    background-color: var.$header-background-color-dark;
-
-    > .ant-tabs-nav {
-      background-color: #2a2a2a;
-    }
-
-    .ant-tabs-tab .ant-tabs-tab-btn,
-    .ant-tabs-tab-btn:focus:not(:focus-visible) {
-      color: #666;
-    }
-    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-      color: #ff681f;
-      text-shadow: 0 0 0.25px currentcolor;
-    }
-  }
-}
-
-.light-mode {
-  .ant-tabs {
-    background-color: var.$header-background-color-light;
-
-    > .ant-tabs-nav {
-      background-color: #f9fafb;
-    }
-
-    .ant-tabs-tab .ant-tabs-tab-btn,
-    .ant-tabs-tab-btn:focus:not(:focus-visible) {
-      color: #ccc;
-    }
-    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-      color: #ff681f;
-      text-shadow: 0 0 0.25px currentcolor;
     }
   }
 }

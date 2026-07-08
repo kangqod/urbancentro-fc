@@ -1,5 +1,3 @@
-@use '@/shared/assets/variables' as var;
-
 .team-setup-container {
   display: flex;
   flex-direction: column;
@@ -12,20 +10,11 @@
   text-align: center;
   height: 100%;
   transition: all 0.3s ease;
-  border: 2px solid #ccc;
+  border: 1px solid var(--ant-color-border);
+  box-shadow: var(--ant-box-shadow);
 
   &.selected {
-    border: 2px solid var.$primary-color;
-  }
-}
-
-.dark-mode {
-  .team-option-card {
-    border: 2px solid #444;
-
-    &.selected {
-      border: 2px solid var.$primary-color;
-    }
+    border: 2px solid var(--ant-color-primary);
   }
 }
 
@@ -50,11 +39,11 @@
 }
 
 .icon-selected {
-  color: var.$primary-color;
+  color: var(--ant-color-primary);
 }
 
 .icon-default {
-  color: #666;
+  color: var(--ant-color-text-tertiary);
 }
 
 .option-title {

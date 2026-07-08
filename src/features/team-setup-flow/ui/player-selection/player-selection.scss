@@ -48,26 +48,21 @@
 
 .player-card {
   transition: all 0.3s ease;
-  border: 2px solid #f0f0f0;
-}
-
-.dark-mode .player-card {
-  border: 2px solid #444;
-  background-color: #2a2a2a;
-  color: #ddd;
+  // 선택 시 .selected(2px)로 커지면 1px 리플로우가 생기므로 기본도 2px 유지, 색만 변경
+  border: 2px solid var(--ant-color-border);
+  background-color: var(--ant-color-bg-container);
+  color: var(--ant-color-text);
+  box-shadow: var(--ant-box-shadow);
 }
 
 .ant-card.player-card .ant-card-body {
   border-radius: 8px;
   padding-block: 0.8rem;
-}
-
-.dark-mode .ant-card.player-card .ant-card-body {
-  background-color: #2a2a2a;
+  background-color: var(--ant-color-bg-container);
 }
 
 .player-card.selected {
-  border: 2px solid var(--primary-color, #ff681f);
+  border: 2px solid var(--ant-color-primary);
 }
 
 .player-card-content {
@@ -99,21 +94,13 @@
 }
 
 .prev-button {
-  background-color: #f0f0f0;
+  background-color: var(--ant-color-fill-tertiary);
+  border: 1px solid var(--ant-color-border);
+  color: var(--ant-color-text);
 }
 
 .prev-button:hover {
-  background-color: #e0e0e0;
-}
-
-.dark-mode .prev-button {
-  color: #ddd;
-  background-color: #444;
-  border: 1px solid #555;
-}
-
-.dark-mode .prev-button:hover {
-  background-color: #555;
+  background-color: var(--ant-color-fill-secondary);
 }
 
 .modal-footer {

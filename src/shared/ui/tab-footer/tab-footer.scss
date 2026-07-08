@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   margin-block-start: auto;
-  background-color: #f9fafb;
+  background-color: var(--ant-color-bg-container);
 
   .button-group {
     display: flex;
@@ -39,26 +39,21 @@
 
   .prev-button {
     &.ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):hover {
-      background-color: #e8e8e8;
+      background-color: var(--ant-color-fill-secondary);
     }
   }
 }
 
+// 그림자는 방향(위로 뜨는 형태)과 대비 방향(다크=밝은 글로우 / 라이트=어두운 그림자)이 모드마다 달라
+// 단일 elevation 토큰으로 대체하지 않고 모드별 값을 유지한다.
 .dark-mode {
   .tab-footer {
-    background-color: #3a3a3a;
     box-shadow: 0 -2px 8px rgba(255, 255, 255, 0.2);
-  }
-  .prev-button {
-    &.ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):hover {
-      background-color: #242424;
-    }
   }
 }
 
 .light-mode {
   .tab-footer {
-    background-color: #f9fafb;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
   }
 }

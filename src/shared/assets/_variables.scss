@@ -3,8 +3,7 @@ $primary-color: #ff681f;
 $white-color: #ffffff;
 $black-color: #000000;
 
-// dark mode styles
+// body 배경 폴백 (ConfigProvider css 변수 트리 밖, JS 마운트 전 FOUC 방지용).
+// 실제 표면/경계 색은 Provider.tsx의 antd 토큰 → `var(--ant-color-*)` CSS 변수가 단일 소스다.
 $header-background-color-dark: #141414;
-
-// light mode styles
-$header-background-color-light: #ffffff;
+$layout-background-color-light: #f0f2f5;
