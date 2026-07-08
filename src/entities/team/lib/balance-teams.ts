@@ -6,9 +6,10 @@ import {
   calculateTeamStrength,
   compareScore,
   getTierWeight,
-  scoreArrangement
+  scoreArrangement,
+  strengthGap
 } from './balance-score'
-import { BEST_PLAYERS, RAINBOW_PLAYERS } from './constants'
+import { BEST_PLAYERS, CONDITION_EXEMPT_NAMES, EXCLUDED_PAIRS, RAINBOW_PLAYERS } from './constants'
 
 // calculateTeamStrength 은 balance-score 로 이동했으나 공개 표면 유지를 위해 재export 한다.
 // (index.ts 가 './balance-teams' 에서 calculateTeamStrength 를 export 하고,
@@ -23,8 +24,6 @@ export { calculateTeamStrength } from './balance-score'
  * 확률이 무시할 수준)을 확보하도록 크게 잡는다.
  */
 const CANDIDATE_COUNT = 400
-
-const EXCLUDED_PAIRS: string[][] = [['지원 1', '지원 2']]
 
 function swapPlayersBetweenTeams(teamA: Team, playerA: Player, teamB: Team, playerB: Player): void {
   teamA.players = teamA.players.filter((p) => p.id !== playerA.id)
@@ -101,15 +100,21 @@ function assertEqualTeamSizes(teams: Team[]): void {
 
 /** @internal test-only */
 export function shuffleArray<T>(array: T[]): T[] {
-  return [...array].sort(() => Math.random() - 0.5)
+  // Fisher–Yates: 균일한 순열 분포를 보장한다. (sort(() => Math.random() - 0.5) 는
+  // 비추이적 비교자라 near-identity 로 편향되어 후보 다양성/공정성을 훼손했다.)
+  const result = [...array]
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[result[i], result[j]] = [result[j], result[i]]
+  }
+  return result
 }
 
-// 이동 가능한 선수 찾기 (게스트/연결선수/제외티어 제외)
+// 이동 가능한 선수 찾기 (게스트/연결선수 제외)
 /** @internal test-only */
-export function getMovablePlayers(team: Team, excludeTiers: string[] = []): Player[] {
+export function getMovablePlayers(team: Team): Player[] {
   return team.players.filter(
-    (player) =>
-      !player.isGuest && (!player.connectedPlayerIds || player.connectedPlayerIds.length === 0) && !excludeTiers.includes(player.tier)
+    (player) => !player.isGuest && (!player.connectedPlayerIds || player.connectedPlayerIds.length === 0)
   )
 }
 
@@ -137,7 +142,7 @@ export function setPlayerCondition(team: Team): void {
   for (let i = 0; i <= lastIndex; i++) {
     const player = team.players[i]
 
-    if (player.name === '지원 1' || player.name === '지원 2') continue
+    if (CONDITION_EXEMPT_NAMES.includes(player.name)) continue
     if (player.condition === PLAYER_CONDITIONS.HIGH) continue
     if (RAINBOW_PLAYERS.some((p) => p.name === player.name && p.year === player.year)) continue
     if (BEST_PLAYERS.some((p) => p.name === player.name && p.year === player.year)) continue
@@ -151,8 +156,7 @@ export function setPlayerCondition(team: Team): void {
   if (!team.players.some((p) => p.condition === PLAYER_CONDITIONS.HIGH)) {
     const candidates = team.players.filter(
       (p) =>
-        p.name !== '지원 1' &&
-        p.name !== '지원 2' &&
+        !CONDITION_EXEMPT_NAMES.includes(p.name) &&
         !RAINBOW_PLAYERS.some((rp) => rp.name === p.name && rp.year === p.year) &&
         !BEST_PLAYERS.some((bp) => bp.name === p.name && bp.year === p.year)
     )
@@ -329,9 +333,7 @@ function logFinalBalance(teams: Team[]): void {
     )
   })
 
-  const strengths = teams.map(calculateTeamStrength)
-  const gap = Math.max(...strengths) - Math.min(...strengths)
-  console.log(`Balance Gap: ${gap}`)
+  console.log(`Balance Gap: ${strengthGap(teams)}`)
 }
 
 // ==================== 메인 함수 ====================
@@ -358,10 +360,15 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
   }
 
   // 모든 후보가 무효한 병리적 케이스: 최소 하나는 반환하도록 fallback (throw 하지 않음).
+  // enforceExcludedPairs 는 swap 실패 시 용량 검사 없이 선수를 옮겨 크기 불변식(차<=1)을
+  // 깨뜨릴 수 있으므로, 강제 결과가 유효할 때만 쓰고 아니면 강제 이전(라운드로빈이라 크기
+  // 균등 보장) 후보를 쓴다. 그래야 아래 assertEqualTeamSizes 가 throw 하지 않는다.
   if (pool.length === 0) {
     const teams = generateCandidate(regularPlayers, guests, numTeams, playersPerTeam)
-    enforceExcludedPairs(teams, EXCLUDED_PAIRS)
-    pool.push({ teams, score: scoreArrangement(teams) })
+    const enforced = teams.map((t) => ({ ...t, players: [...t.players] }))
+    enforceExcludedPairs(enforced, EXCLUDED_PAIRS)
+    const chosen = isValidCandidate(enforced, EXCLUDED_PAIRS) ? enforced : teams
+    pool.push({ teams: chosen, score: scoreArrangement(chosen) })
   }
 
   // 사전식 최선 선택 후, '동점'(같은 band + 같은 구성 몰림 점수) 후보 풀에서 랜덤 샘플 → 변동성 확보.

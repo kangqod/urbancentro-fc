@@ -127,6 +127,6 @@ export function parseSharedTeams(teamsParam: string | null): Team[] | null {
     }))
     return formattedTeams
   } catch (error) {
-    throw new Error('팀 데이터를 불러오는데 실패했습니다.')
+    throw new Error('팀 데이터를 불러오는데 실패했습니다.', { cause: error })
   }
 }

@@ -10,7 +10,6 @@
 
 .ant-tabs {
   flex: 1;
-  background-color: white;
 
   & > .ant-tabs-nav {
     background-color: #f9fafb;
@@ -21,7 +20,7 @@
     color: #ccc;
   }
 
-  .ant-tabs-tabpane:focus-visible {
+  .ant-tabs-content:focus-visible {
     outline: none;
   }
 
@@ -34,15 +33,15 @@
     padding-block: 0;
   }
 
-  .ant-tabs-content-holder {
+  .ant-tabs-body-holder {
     display: flex;
   }
 
-  .ant-tabs-content {
+  .ant-tabs-body {
     display: flex;
     flex-direction: column;
 
-    .ant-tabs-tabpane:not(.ant-tabs-tabpane-hidden) {
+    .ant-tabs-content:not(.ant-tabs-content-hidden) {
       display: flex;
       flex: 1;
     }

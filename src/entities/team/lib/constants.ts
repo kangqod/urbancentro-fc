@@ -59,6 +59,12 @@ export const RAINBOW_PLAYERS = [
 
 export const BEST_PLAYERS = [{ name: '박준범', year: '1989' }]
 
+// 같은 팀에 두면 안 되는 선수 쌍 (밸런서가 다른 팀으로 분리한다)
+export const EXCLUDED_PAIRS: string[][] = [['지원 1', '지원 2']]
+
+// 컨디션(HIGH) 부여에서 제외할 선수 이름 ('지원' 성격의 인원)
+export const CONDITION_EXEMPT_NAMES = ['지원 1', '지원 2']
+
 export const TIER_WEIGHTS = {
   [PLAYER_TIERS.ACE]: 4,
   [PLAYER_TIERS.ADVANCED]: 3,

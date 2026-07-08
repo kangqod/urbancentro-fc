@@ -84,14 +84,14 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
             </Row>
           </Card>
 
-          <Divider orientation="left">팀별 상세 분석</Divider>
+          <Divider titlePlacement="start">팀별 상세 분석</Divider>
           {/* 티어 범례 */}
           <Flex className="team-balance-log-legend" align="center" justify="space-around">
             <Space>
-              <Tag color={getTierColor(PLAYER_TIERS.ACE)}>{TIER_LABELS[PLAYER_TIERS.ACE]}</Tag>
-              <Tag color={getTierColor(PLAYER_TIERS.ADVANCED)}>{TIER_LABELS[PLAYER_TIERS.ADVANCED]}</Tag>
-              <Tag color={getTierColor(PLAYER_TIERS.INTERMEDIATE)}>{TIER_LABELS[PLAYER_TIERS.INTERMEDIATE]}</Tag>
-              <Tag color={getTierColor(PLAYER_TIERS.BEGINNER)}>{TIER_LABELS[PLAYER_TIERS.BEGINNER]}</Tag>
+              <Tag variant="solid" color={getTierColor(PLAYER_TIERS.ACE)}>{TIER_LABELS[PLAYER_TIERS.ACE]}</Tag>
+              <Tag variant="solid" color={getTierColor(PLAYER_TIERS.ADVANCED)}>{TIER_LABELS[PLAYER_TIERS.ADVANCED]}</Tag>
+              <Tag variant="solid" color={getTierColor(PLAYER_TIERS.INTERMEDIATE)}>{TIER_LABELS[PLAYER_TIERS.INTERMEDIATE]}</Tag>
+              <Tag variant="solid" color={getTierColor(PLAYER_TIERS.BEGINNER)}>{TIER_LABELS[PLAYER_TIERS.BEGINNER]}</Tag>
             </Space>
           </Flex>
 
@@ -127,7 +127,7 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                   </Flex>
 
                   {/* 실력 점수 */}
-                  <Space direction="vertical" className="team-balance-log-strength-space">
+                  <Space orientation="vertical" className="team-balance-log-strength-space">
                     <Flex className="team-balance-log-strength" justify="space-between" align="center" style={{ width: '100%' }}>
                       <span className="team-balance-log-strength-title">팀 점수</span>
                       <span className="team-balance-log-strength-value">{analytics.strength}점</span>
@@ -149,6 +149,7 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                         count > 0 && (
                           <Tag
                             key={tier}
+                            variant="solid"
                             color={getTierColor(tier)}
                             style={{ margin: '2px', minWidth: 32, textAlign: 'center', fontWeight: 'bold' }}
                           >
@@ -162,7 +163,7 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
             ))}
           </Row>
 
-          <Divider orientation="left">밸런스 평가</Divider>
+          <Divider titlePlacement="start">밸런스 평가</Divider>
           <Flex justify="center" align="center">
             {maxStrength - minStrength <= 2 ? (
               <Tag color="success" className="team-balance-log-tag">

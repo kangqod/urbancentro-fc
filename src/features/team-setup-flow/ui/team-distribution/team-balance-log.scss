@@ -116,6 +116,13 @@
 }
 
 .dark-mode .team-balance-log-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  // 초록/빨강 accent 보더(--max/--min)는 유지하고, 기본 카드 테두리만 다크에 맞게 조정
+  &:not(.team-balance-log-card--max):not(.team-balance-log-card--min) {
+    border-color: rgba(253, 253, 253, 0.12);
+  }
+
   .ant-card-head {
     background-color: var.$header-background-color-dark;
     border-bottom-color: rgba(253, 253, 253, 0.12);

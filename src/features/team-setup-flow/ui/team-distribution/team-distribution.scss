@@ -275,7 +275,7 @@
   height: 0;
 }
 
-body:not(.dark-mode) {
+body.light-mode {
   @keyframes animate-light {
     0% {
       box-shadow: 0 0 10px #ff681f77, inset 0 0 10px #ff681f77;

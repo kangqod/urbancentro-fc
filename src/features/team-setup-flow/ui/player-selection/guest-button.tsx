@@ -34,7 +34,7 @@ export function GuestButton({ detailMode, onClickDetailMode }: GuestButtonProps)
 
       <Alert
         showIcon
-        message={status.message}
+        title={status.message}
         type={status.type as 'warning' | 'error' | 'success'}
         icon={status.type === 'success' ? <CheckCircle size={ICON_SIZE} /> : <AlertCircle size={ICON_SIZE} />}
         className="status-alert"

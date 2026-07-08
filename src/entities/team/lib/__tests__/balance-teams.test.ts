@@ -75,7 +75,7 @@ describe('balance-teams helpers', () => {
     expect(calculateTeamStrength(team)).toBe(10)
   })
 
-  it('getMovablePlayers filters guests, connected players, and excluded tiers', () => {
+  it('getMovablePlayers filters guests and connected players', () => {
     const players = [
       makePlayer({ id: 'movable', tier: PLAYER_TIERS.INTERMEDIATE }),
       makePlayer({ id: 'guest', isGuest: true }),
@@ -83,8 +83,8 @@ describe('balance-teams helpers', () => {
       makePlayer({ id: 'ace', tier: PLAYER_TIERS.ACE })
     ]
 
-    const result = getMovablePlayers(makeTeam('A', players), [PLAYER_TIERS.ACE])
-    expect(result.map((p) => p.id)).toEqual(['movable'])
+    const result = getMovablePlayers(makeTeam('A', players))
+    expect(result.map((p) => p.id)).toEqual(['movable', 'ace'])
   })
 
   it('getTeamTierCounts returns accurate tier counts', () => {
@@ -115,6 +115,32 @@ describe('balance-teams helpers', () => {
     expect(output).toHaveLength(input.length)
     expect([...output].sort()).toEqual([...input].sort())
     expect(input).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('shuffleArray produces a near-uniform permutation distribution', () => {
+    // Fisher–Yates 회귀 가드: sort(() => Math.random() - 0.5) 는 원소를 원래 위치
+    // 근처에 남겨(near-identity 편향) 이 테스트를 통과하지 못한다.
+    const N = 5
+    const TRIALS = 20000
+    const input = Array.from({ length: N }, (_, i) => i)
+    // counts[element][position] = 해당 원소가 그 위치에 떨어진 횟수
+    const counts: number[][] = Array.from({ length: N }, () => new Array(N).fill(0))
+
+    for (let t = 0; t < TRIALS; t++) {
+      const output = shuffleArray(input)
+      output.forEach((element, position) => {
+        counts[element][position]++
+      })
+    }
+
+    const expected = TRIALS / N // 균일하면 각 (원소,위치) 조합은 이 값 근처여야 한다
+    const tolerance = expected * 0.15 // ±15% (20000회 기준 ~10σ 여유, 사실상 비flaky)
+
+    for (let element = 0; element < N; element++) {
+      for (let position = 0; position < N; position++) {
+        expect(Math.abs(counts[element][position] - expected)).toBeLessThan(tolerance)
+      }
+    }
   })
 
   it('distributeGuests places connected guests on connected team if space exists', () => {

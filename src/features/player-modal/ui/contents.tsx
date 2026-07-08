@@ -18,7 +18,7 @@ export function Contents({ player, onClose }: PlayerProps) {
     <div className="player-contents" onClick={onClose}>
       <Descriptions
         column={screens.xs ? 1 : 3}
-        size="middle"
+        size="medium"
         layout="horizontal"
         styles={{ label: { fontWeight: 500 } }}
         className="player-descriptions"
@@ -31,7 +31,7 @@ export function Contents({ player, onClose }: PlayerProps) {
             </div>
           }
         >
-          <Tag color={getTierColor(player.tier)}>{TIER_LABELS[player.tier]}</Tag>
+          <Tag variant="solid" color={getTierColor(player.tier)}>{TIER_LABELS[player.tier]}</Tag>
         </Descriptions.Item>
         <Descriptions.Item
           label={

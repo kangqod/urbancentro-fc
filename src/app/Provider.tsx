@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { ConfigProvider, theme, App as AntdApp } from 'antd'
 import { PRIMARY_COLOR } from '@/shared'
 import { Main } from '@/pages'
@@ -7,6 +8,12 @@ const fontFamily = `'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'M
 
 export function Provider() {
   const isDarkMode = useThemeValue()
+
+  // 테마 body 클래스는 앱 루트에서 관리해 토글 버튼 마운트 여부와 무관하게 보장한다
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', isDarkMode)
+    document.body.classList.toggle('light-mode', !isDarkMode)
+  }, [isDarkMode])
 
   return (
     <ConfigProvider
