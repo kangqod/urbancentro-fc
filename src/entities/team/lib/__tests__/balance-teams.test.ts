@@ -2,15 +2,10 @@ import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
 import { PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities/player/model/player'
 import type { Player } from '@/entities/player/model/types'
 import type { Team } from '@/entities/team/model/types'
+import { calculateTeamStrength, strengthGap, tierCountSpread } from '../balance-score'
 import {
-  balanceAceDisadvantage,
-  balanceBeginnerHeavyTeams,
-  balanceTeamSize,
-  balanceTeamStrength,
   balanceTeams,
-  calculateTeamStrength,
   distributeGuests,
-  distributeRegularPlayers,
   enforceExcludedPairs,
   getMovablePlayers,
   getTeamTierCounts,
@@ -43,6 +38,21 @@ function makeTeam(name: string, players: Player[] = []): Team {
 
 function flattenIds(teams: Team[]): string[] {
   return teams.flatMap((team) => team.players.map((player) => player.id))
+}
+
+// 티어별 인원수로 로스터를 구성한다 (integration 가드 + 통계 하네스 공용).
+function buildRoster(ace: number, adv: number, int: number, beg: number): Player[] {
+  const players: Player[] = []
+  const push = (tier: (typeof PLAYER_TIERS)[keyof typeof PLAYER_TIERS], n: number) => {
+    for (let i = 0; i < n; i++) {
+      players.push(makePlayer({ id: `${tier}-${i}`, name: `${tier} ${i}`, tier }))
+    }
+  }
+  push(PLAYER_TIERS.ACE, ace)
+  push(PLAYER_TIERS.ADVANCED, adv)
+  push(PLAYER_TIERS.INTERMEDIATE, int)
+  push(PLAYER_TIERS.BEGINNER, beg)
+  return players
 }
 
 describe('balance-teams helpers', () => {
@@ -107,29 +117,6 @@ describe('balance-teams helpers', () => {
     expect(input).toEqual([1, 2, 3, 4, 5])
   })
 
-  it('distributeRegularPlayers fills teams and keeps ace split across teams', () => {
-    const teams = [makeTeam('A'), makeTeam('B')]
-    const tierMap: Record<string, Player[]> = {
-      [PLAYER_TIERS.ACE]: [makePlayer({ tier: PLAYER_TIERS.ACE }), makePlayer({ tier: PLAYER_TIERS.ACE })],
-      [PLAYER_TIERS.ADVANCED]: [makePlayer({ tier: PLAYER_TIERS.ADVANCED }), makePlayer({ tier: PLAYER_TIERS.ADVANCED })],
-      [PLAYER_TIERS.INTERMEDIATE]: [makePlayer({ tier: PLAYER_TIERS.INTERMEDIATE }), makePlayer({ tier: PLAYER_TIERS.INTERMEDIATE })],
-      [PLAYER_TIERS.BEGINNER]: [
-        makePlayer({ tier: PLAYER_TIERS.BEGINNER }),
-        makePlayer({ tier: PLAYER_TIERS.BEGINNER }),
-        makePlayer({ tier: PLAYER_TIERS.BEGINNER }),
-        makePlayer({ tier: PLAYER_TIERS.BEGINNER })
-      ]
-    }
-
-    distributeRegularPlayers(teams, tierMap, 5)
-
-    expect(teams[0].players).toHaveLength(5)
-    expect(teams[1].players).toHaveLength(5)
-
-    const aceCounts = teams.map((team) => team.players.filter((player) => player.tier === PLAYER_TIERS.ACE).length)
-    expect(aceCounts).toEqual([1, 1])
-  })
-
   it('distributeGuests places connected guests on connected team if space exists', () => {
     const anchor = makePlayer({ id: 'anchor' })
     const guest = makePlayer({ id: 'guest', isGuest: true, connectedPlayerIds: ['anchor'] })
@@ -162,64 +149,6 @@ describe('balance-teams helpers', () => {
     })
 
     expect(() => distributeGuests(teams, [connectedGuestWithoutAnchor], 1)).toThrow('no capacity for connected guest')
-  })
-
-  it('balanceTeamStrength reduces strength gap to within threshold', () => {
-    const strongTeam = makeTeam('A', [
-      makePlayer({ tier: PLAYER_TIERS.ACE }),
-      makePlayer({ tier: PLAYER_TIERS.ADVANCED }),
-      makePlayer({ tier: PLAYER_TIERS.ADVANCED }),
-      makePlayer({ tier: PLAYER_TIERS.INTERMEDIATE })
-    ])
-    const weakTeam = makeTeam('B', [
-      makePlayer({ tier: PLAYER_TIERS.BEGINNER }),
-      makePlayer({ tier: PLAYER_TIERS.BEGINNER }),
-      makePlayer({ tier: PLAYER_TIERS.BEGINNER }),
-      makePlayer({ tier: PLAYER_TIERS.BEGINNER })
-    ])
-
-    balanceTeamStrength([strongTeam, weakTeam], 10)
-
-    const gap = Math.abs(calculateTeamStrength(strongTeam) - calculateTeamStrength(weakTeam))
-    expect(gap).toBeLessThanOrEqual(2)
-  })
-
-  it('balanceTeamSize reduces size difference to at most 1', () => {
-    const teams = [
-      makeTeam('A', [makePlayer({ tier: PLAYER_TIERS.ADVANCED }), makePlayer({ tier: PLAYER_TIERS.INTERMEDIATE }), makePlayer()]),
-      makeTeam('B', [makePlayer()])
-    ]
-
-    balanceTeamSize(teams)
-
-    expect(Math.abs(teams[0].players.length - teams[1].players.length)).toBeLessThanOrEqual(1)
-  })
-
-  it('balanceAceDisadvantage swaps advanced from ace team into ace-less team', () => {
-    const aceTeam = makeTeam('A', [
-      makePlayer({ id: 'ace', tier: PLAYER_TIERS.ACE }),
-      makePlayer({ id: 'adv', tier: PLAYER_TIERS.ADVANCED })
-    ])
-    const aceLessTeam = makeTeam('B', [makePlayer({ id: 'int', tier: PLAYER_TIERS.INTERMEDIATE })])
-
-    balanceAceDisadvantage([aceTeam, aceLessTeam])
-
-    expect(aceLessTeam.players.map((p) => p.id)).toContain('adv')
-    expect(aceTeam.players.map((p) => p.id)).toContain('int')
-  })
-
-  it('balanceBeginnerHeavyTeams swaps beginner out for better tier from another team', () => {
-    const beginnerHeavy = makeTeam('A', [
-      makePlayer({ id: 'b1', tier: PLAYER_TIERS.BEGINNER }),
-      makePlayer({ id: 'b2', tier: PLAYER_TIERS.BEGINNER }),
-      makePlayer({ id: 'b3', tier: PLAYER_TIERS.BEGINNER })
-    ])
-    const other = makeTeam('B', [makePlayer({ id: 'int', tier: PLAYER_TIERS.INTERMEDIATE })])
-
-    balanceBeginnerHeavyTeams([beginnerHeavy, other])
-
-    expect(beginnerHeavy.players.some((p) => p.id === 'int')).toBe(true)
-    expect(other.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length).toBeGreaterThan(0)
   })
 
   it('enforceExcludedPairs separates blocked pair', () => {
@@ -366,25 +295,9 @@ describe('balanceTeams integration', () => {
   })
 
   // 회귀 가드: 에이스 1명 + 상급이 균등 분배 가능할 때, 상급이 에이스 없는 팀으로 쏠리면 안 된다.
-  // (예전 balanceAceDisadvantage 는 무조건 스왑해 상급을 1:3 으로 몰았다.)
-  function buildRoster(mode: string, ace: number, adv: number, int: number, beg: number): Player[] {
-    const players: Player[] = []
-    const push = (tier: (typeof PLAYER_TIERS)[keyof typeof PLAYER_TIERS], n: number) => {
-      for (let i = 0; i < n; i++) {
-        players.push(makePlayer({ id: `${tier}-${i}`, name: `${tier} ${i}`, tier }))
-      }
-    }
-    push(PLAYER_TIERS.ACE, ace)
-    push(PLAYER_TIERS.ADVANCED, adv)
-    push(PLAYER_TIERS.INTERMEDIATE, int)
-    push(PLAYER_TIERS.BEGINNER, beg)
-    void mode
-    return players
-  }
-
   it('does not clump advanced onto the ace-less team (6:6, 1 ace + 4 advanced)', () => {
     for (let run = 0; run < 200; run++) {
-      const teams = balanceTeams(buildRoster('6:6', 1, 4, 4, 3), '6:6')
+      const teams = balanceTeams(buildRoster(1, 4, 4, 3), '6:6')
       const aceTeam = teams.find((t) => t.players.some((p) => p.tier === PLAYER_TIERS.ACE))!
       const other = teams.find((t) => t !== aceTeam)!
       const advAce = aceTeam.players.filter((p) => p.tier === PLAYER_TIERS.ADVANCED).length
@@ -399,14 +312,97 @@ describe('balanceTeams integration', () => {
   })
 
   it('does not starve any team of advanced across three teams (6:6:6, 1 ace)', () => {
-    // 수정 전에는 상급이 3:3:0 으로 몰려 한 팀(주로 에이스팀)이 상급 0개였다.
-    // 게이트 적용 후에는 최소 1개씩 확보되고(3:2:1), 전력 격차도 작게 유지된다.
     for (let run = 0; run < 200; run++) {
-      const teams = balanceTeams(buildRoster('6:6:6', 1, 6, 8, 3), '6:6:6')
+      const teams = balanceTeams(buildRoster(1, 6, 8, 3), '6:6:6')
       const advCounts = teams.map((t) => t.players.filter((p) => p.tier === PLAYER_TIERS.ADVANCED).length)
       expect(Math.min(...advCounts)).toBeGreaterThan(0)
       const strengths = teams.map(calculateTeamStrength)
       expect(Math.max(...strengths) - Math.min(...strengths)).toBeLessThanOrEqual(2)
     }
+  })
+})
+
+// ==================== 통계적 불변식 하네스 ====================
+// 랜덤 알고리즘이므로 각 (모드 × 구성 프로파일)을 N회 반복해 불변식을 검증한다.
+describe('balanceTeams statistical invariants', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined)
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  // 팀 구성 서명(팀 순서 무시). 동일 입력 반복 시 배치 다양성을 세는 데 사용.
+  function signature(teams: Team[]): string {
+    return teams
+      .map((t) => t.players.map((p) => p.id).sort().join(','))
+      .sort()
+      .join('|')
+  }
+
+  interface StatCase {
+    label: string
+    mode: '5:5' | '6:6' | '7:7' | '5:5:5' | '6:6:6' | '5:5:5:5'
+    roster: [number, number, number, number]
+    gapMax: number // roster-aware: 달성 가능한 최대 격차 상한
+  }
+
+  // 균형 잡힌 프로파일: gap<=2 달성 가능. 구조적 하드 프로파일: gap<=2 불가 → gap<=3.
+  const cases: StatCase[] = [
+    { label: 'balanced 5:5', mode: '5:5', roster: [1, 2, 4, 3], gapMax: 2 },
+    { label: 'balanced 6:6', mode: '6:6', roster: [1, 3, 5, 3], gapMax: 2 },
+    { label: 'balanced 5:5:5', mode: '5:5:5', roster: [3, 3, 6, 3], gapMax: 2 },
+    { label: 'balanced 5:5:5:5', mode: '5:5:5:5', roster: [4, 4, 8, 4], gapMax: 2 },
+    // 1에이스 + 대부분 초급: 모든 5/5 분할이 gap=3 강제 → gap<=2 는 산술적으로 불가능.
+    { label: '1-ace mostly-beginner 5:5 (gap<=2 impossible)', mode: '5:5', roster: [1, 0, 0, 9], gapMax: 3 }
+  ]
+
+  const RUNS = 80
+
+  cases.forEach((c) => {
+    it(`[${c.label}] keeps gap<=${c.gapMax}, no ace/advanced clumping, and equal sizes over ${RUNS} runs`, () => {
+      for (let run = 0; run < RUNS; run++) {
+        const teams = balanceTeams(buildRoster(...c.roster), c.mode)
+
+        // 팀 크기 균등
+        const sizes = teams.map((t) => t.players.length)
+        expect(Math.max(...sizes) - Math.min(...sizes)).toBeLessThanOrEqual(1)
+
+        // 전력 합계 격차 (roster-aware 상한)
+        expect(strengthGap(teams)).toBeLessThanOrEqual(c.gapMax)
+
+        // 상위 티어 몰림 방지: 에이스/상급은 팀 간 최대 1명 차이로 고르게 퍼져야 한다.
+        expect(tierCountSpread(teams, PLAYER_TIERS.ACE)).toBeLessThanOrEqual(1)
+        expect(tierCountSpread(teams, PLAYER_TIERS.ADVANCED)).toBeLessThanOrEqual(1)
+
+        // 모든 선수 정확히 1회
+        const total = c.roster.reduce((a, b) => a + b, 0)
+        expect(new Set(flattenIds(teams)).size).toBe(total)
+      }
+    })
+  })
+
+  it('balanced rosters achieve gap<=2 on (near) every run', () => {
+    // gap<=2 달성 가능 프로파일에서 K개 후보로 실제로 밴드0 를 확보하는지 게이팅.
+    let gapLe2 = 0
+    const RUNS_ACHIEVE = 80
+    for (let run = 0; run < RUNS_ACHIEVE; run++) {
+      const teams = balanceTeams(buildRoster(1, 3, 5, 3), '6:6')
+      if (strengthGap(teams) <= 2) gapLe2++
+    }
+    // 달성 가능하므로 압도적 다수가 gap<=2 여야 한다.
+    expect(gapLe2 / RUNS_ACHIEVE).toBeGreaterThanOrEqual(0.9)
+  })
+
+  it('produces varied arrangements across repeated identical input (reshuffle variety)', () => {
+    const signatures = new Set<string>()
+    const RUNS_VARIETY = 60
+    for (let run = 0; run < RUNS_VARIETY; run++) {
+      const teams = balanceTeams(buildRoster(4, 4, 8, 4), '5:5:5:5') // 총 20명
+      signatures.add(signature(teams))
+    }
+    // 단순 >1 이 아니라 의미 있는 다양성을 요구한다.
+    expect(signatures.size).toBeGreaterThanOrEqual(5)
   })
 })

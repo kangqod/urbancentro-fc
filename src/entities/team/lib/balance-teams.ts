@@ -1,11 +1,30 @@
 import { PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities/player/model/player'
 import type { Player } from '@/entities/player/model/types'
 import type { MatchFormatType, Team } from '@/entities/team/model/types'
-import { BEST_PLAYERS, RAINBOW_PLAYERS, TIER_WEIGHTS } from './constants'
+import {
+  ArrangementScore,
+  calculateTeamStrength,
+  compareScore,
+  getTierWeight,
+  scoreArrangement
+} from './balance-score'
+import { BEST_PLAYERS, RAINBOW_PLAYERS } from './constants'
 
-function getTierWeight(player: Player): number {
-  return TIER_WEIGHTS[player.tier] ?? 1
-}
+// calculateTeamStrength 은 balance-score 로 이동했으나 공개 표면 유지를 위해 재export 한다.
+// (index.ts 가 './balance-teams' 에서 calculateTeamStrength 를 export 하고,
+//  team-balance-log.tsx 가 이를 사용한다.)
+export { calculateTeamStrength } from './balance-score'
+
+/**
+ * K개 후보를 생성해 점수화한 뒤 near-best 밴드에서 랜덤 선택한다.
+ * 후보 생성은 '완전 랜덤'(전체 셔플 후 라운드로빈)이다 — 구조적(snake/티어별) 분배는
+ * 왜곡된 로스터에서 gap<=2 가 요구하는 티어 불균형(예: 중급 1:3) 배치를 못 만들어
+ * 밴드0 을 영영 못 찾는다. K 는 밴드0 달성률(하드 로스터에서도 200회 반복 중 밴드0 0개일
+ * 확률이 무시할 수준)을 확보하도록 크게 잡는다.
+ */
+const CANDIDATE_COUNT = 400
+
+const EXCLUDED_PAIRS: string[][] = [['지원 1', '지원 2']]
 
 function swapPlayersBetweenTeams(teamA: Team, playerA: Player, teamB: Team, playerB: Player): void {
   teamA.players = teamA.players.filter((p) => p.id !== playerA.id)
@@ -71,6 +90,13 @@ function assertTeamsIntegrity(inputPlayers: Player[], teams: Team[]): void {
   }
 }
 
+function assertEqualTeamSizes(teams: Team[]): void {
+  const sizes = teams.map((t) => t.players.length)
+  if (Math.max(...sizes) - Math.min(...sizes) > 1) {
+    throw new Error('Invariant broken: team sizes differ by more than 1')
+  }
+}
+
 // ==================== 유틸리티 함수 ====================
 
 /** @internal test-only */
@@ -78,14 +104,7 @@ export function shuffleArray<T>(array: T[]): T[] {
   return [...array].sort(() => Math.random() - 0.5)
 }
 
-// 팀의 실력 점수 계산 (밸런서 + 밸런스 정보 모달에서 공용으로 사용)
-export function calculateTeamStrength(team: Team): number {
-  return team.players.reduce((total, player) => {
-    return total + getTierWeight(player)
-  }, 0)
-}
-
-// 이동 가능한 선수 찾기
+// 이동 가능한 선수 찾기 (게스트/연결선수/제외티어 제외)
 /** @internal test-only */
 export function getMovablePlayers(team: Team, excludeTiers: string[] = []): Player[] {
   return team.players.filter(
@@ -141,71 +160,6 @@ export function setPlayerCondition(team: Team): void {
       const randomIdx = Math.floor(Math.random() * candidates.length)
       candidates[randomIdx].condition = PLAYER_CONDITIONS.HIGH
     }
-  }
-}
-
-// ==================== 초기 팀 배분 ====================
-
-/** @internal test-only */
-export function distributeRegularPlayers(teams: Team[], tierMap: Record<string, Player[]>, playersPerTeam: number): void {
-  const numTeams = teams.length
-
-  const acePool = shuffleArray(tierMap[PLAYER_TIERS.ACE])
-  acePool.forEach((player, index) => {
-    teams[index % numTeams].players.push(player)
-  })
-
-  const beginnerPool = shuffleArray(tierMap[PLAYER_TIERS.BEGINNER])
-  const beginnerPerTeam = Math.floor(beginnerPool.length / numTeams)
-  let beginnerRemainder = beginnerPool.length % numTeams
-
-  teams.forEach((team) => {
-    const count = beginnerPerTeam + (beginnerRemainder-- > 0 ? 1 : 0)
-    for (let i = 0; i < count && beginnerPool.length > 0; i++) {
-      team.players.push(beginnerPool.shift()!)
-    }
-  })
-
-  const advancedPool = shuffleArray(tierMap[PLAYER_TIERS.ADVANCED])
-  const teamsByBeginnerCount = [...teams].sort((a, b) => {
-    const aBeginners = a.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length
-    const bBeginners = b.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length
-    return bBeginners - aBeginners
-  })
-
-  const advancedPerTeam = Math.floor(advancedPool.length / numTeams)
-  let advancedRemainder = advancedPool.length % numTeams
-
-  teamsByBeginnerCount.forEach((team) => {
-    const count = advancedPerTeam + (advancedRemainder-- > 0 ? 1 : 0)
-    for (let i = 0; i < count && advancedPool.length > 0 && team.players.length < playersPerTeam; i++) {
-      team.players.push(advancedPool.shift()!)
-    }
-  })
-
-  const intermediatePool = shuffleArray(tierMap[PLAYER_TIERS.INTERMEDIATE])
-
-  while (intermediatePool.length > 0) {
-    const teamsByStrength = [...teams]
-      .filter((t) => t.players.length < playersPerTeam)
-      .sort((a, b) => {
-        const aHasAce = a.players.some((p) => p.tier === PLAYER_TIERS.ACE) ? 1 : 0
-        const bHasAce = b.players.some((p) => p.tier === PLAYER_TIERS.ACE) ? 1 : 0
-        if (aHasAce !== bHasAce) return bHasAce - aHasAce
-        return calculateTeamStrength(a) - calculateTeamStrength(b)
-      })
-
-    if (teamsByStrength.length === 0) break
-    teamsByStrength[0].players.push(intermediatePool.shift()!)
-  }
-
-  while (advancedPool.length > 0) {
-    const teamsByStrength = [...teams]
-      .filter((t) => t.players.length < playersPerTeam)
-      .sort((a, b) => calculateTeamStrength(a) - calculateTeamStrength(b))
-
-    if (teamsByStrength.length === 0) break
-    teamsByStrength[0].players.push(advancedPool.shift()!)
   }
 }
 
@@ -275,122 +229,6 @@ export function distributeGuests(teams: Team[], guests: Player[], playersPerTeam
   })
 }
 
-// ==================== 팀 밸런싱 ====================
-
-/** @internal test-only */
-export function balanceTeamStrength(teams: Team[], maxIterations: number = 10): void {
-  for (let iteration = 0; iteration < maxIterations; iteration++) {
-    const strengths = teams.map((team) => calculateTeamStrength(team))
-    const maxStrength = Math.max(...strengths)
-    const minStrength = Math.min(...strengths)
-    const gap = maxStrength - minStrength
-
-    if (gap <= 2) break
-
-    const strongestIndex = strengths.indexOf(maxStrength)
-    const weakestIndex = strengths.indexOf(minStrength)
-    const strongestTeam = teams[strongestIndex]
-    const weakestTeam = teams[weakestIndex]
-
-    const movablePlayers = getMovablePlayers(strongestTeam, [PLAYER_TIERS.ACE])
-
-    if (movablePlayers.length === 0) break
-
-    const playerToMove =
-      movablePlayers.find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE) ||
-      movablePlayers.find((p) => p.tier === PLAYER_TIERS.ADVANCED) ||
-      movablePlayers[0]
-
-    if (playerToMove) {
-      strongestTeam.players = strongestTeam.players.filter((p) => p.id !== playerToMove.id)
-      weakestTeam.players.push(playerToMove)
-    } else {
-      break
-    }
-  }
-}
-
-/** @internal test-only */
-export function balanceTeamSize(teams: Team[]): void {
-  const teamSizes = teams.map((t) => t.players.length)
-  const maxSize = Math.max(...teamSizes)
-  const minSize = Math.min(...teamSizes)
-
-  if (maxSize - minSize <= 1) return
-
-  const largestTeam = teams.find((t) => t.players.length === maxSize)
-  const smallestTeam = teams.find((t) => t.players.length === minSize)
-
-  if (largestTeam && smallestTeam) {
-    const movablePlayers = getMovablePlayers(largestTeam, [PLAYER_TIERS.ACE])
-    if (movablePlayers.length > 0) {
-      const playerToMove = movablePlayers[0]
-      largestTeam.players = largestTeam.players.filter((p) => p.id !== playerToMove.id)
-      smallestTeam.players.push(playerToMove)
-    }
-  }
-}
-
-/**
- * 에이스가 없는 팀을 상급 스왑으로 보정한다.
- * 단, 스왑이 실제로 두 팀의 전력 격차를 줄일 때만 수행한다.
- * (무조건 스왑하면 상급이 이미 균등해도 에이스 없는 팀으로 몰려 티어 분포가 한쪽으로 쏠린다.)
- */
-/** @internal test-only */
-export function balanceAceDisadvantage(teams: Team[]): void {
-  const aceLessTeams = teams.filter((team) => !team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
-  const aceTeams = teams.filter((team) => team.players.some((p) => p.tier === PLAYER_TIERS.ACE))
-
-  aceLessTeams.forEach((aceLessTeam) => {
-    for (const aceTeam of aceTeams) {
-      const aceTeamAdvanced = getMovablePlayers(aceTeam).find((p) => p.tier === PLAYER_TIERS.ADVANCED)
-      if (!aceTeamAdvanced) continue
-
-      // 중급 우선, 없으면 초급과 스왑 (기존 선호 유지)
-      const partner =
-        getMovablePlayers(aceLessTeam).find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE) ??
-        getMovablePlayers(aceLessTeam).find((p) => p.tier === PLAYER_TIERS.BEGINNER)
-      if (!partner) continue
-
-      const gapBefore = Math.abs(calculateTeamStrength(aceTeam) - calculateTeamStrength(aceLessTeam))
-      const netTransfer = getTierWeight(aceTeamAdvanced) - getTierWeight(partner)
-      const gapAfter = Math.abs(
-        calculateTeamStrength(aceTeam) - netTransfer - (calculateTeamStrength(aceLessTeam) + netTransfer)
-      )
-
-      if (gapAfter < gapBefore) {
-        swapPlayersBetweenTeams(aceTeam, aceTeamAdvanced, aceLessTeam, partner)
-        break
-      }
-    }
-  })
-}
-
-/** @internal test-only */
-export function balanceBeginnerHeavyTeams(teams: Team[]): void {
-  const beginnerThreshold = 3
-
-  teams.forEach((beginnerHeavyTeam) => {
-    const beginnerCount = beginnerHeavyTeam.players.filter((p) => p.tier === PLAYER_TIERS.BEGINNER).length
-
-    if (beginnerCount < beginnerThreshold) return
-
-    const otherTeam = teams.find((team) => {
-      if (team === beginnerHeavyTeam) return false
-      return team.players.some((p) => p.tier === PLAYER_TIERS.INTERMEDIATE || p.tier === PLAYER_TIERS.ADVANCED)
-    })
-
-    if (!otherTeam) return
-
-    const beginnerPlayer = getMovablePlayers(beginnerHeavyTeam).find((p) => p.tier === PLAYER_TIERS.BEGINNER)
-    const betterPlayer = getMovablePlayers(otherTeam).find((p) => p.tier === PLAYER_TIERS.INTERMEDIATE || p.tier === PLAYER_TIERS.ADVANCED)
-
-    if (beginnerPlayer && betterPlayer) {
-      swapPlayersBetweenTeams(beginnerHeavyTeam, beginnerPlayer, otherTeam, betterPlayer)
-    }
-  })
-}
-
 // ==================== 특수 규칙 ====================
 
 /** @internal test-only */
@@ -433,6 +271,52 @@ export function enforceExcludedPairs(teams: Team[], excludedPairs: string[][]): 
   })
 }
 
+// ==================== 후보 생성 ====================
+
+function createEmptyTeams(numTeams: number): Team[] {
+  return Array.from({ length: numTeams }, (_, i) => ({
+    name: `팀 ${String.fromCharCode(65 + i)}`,
+    players: []
+  }))
+}
+
+/**
+ * 랜덤 유효 후보 1개를 생성한다.
+ * 일반 선수 전체를 셔플한 뒤 라운드로빈으로 나눈다 → 팀 크기는 균등하고(총원이 팀 수로
+ * 나누어떨어짐) 구성은 완전 랜덤이라 배치 공간을 폭넓게 탐색한다. 좋은 배치의 '선택'은
+ * scorer(gap 밴드 → 구성 몰림)에 맡긴다. 이후 게스트 앵커 규칙(distributeGuests)을 적용한다.
+ */
+function generateCandidate(
+  regularPlayers: Player[],
+  guests: Player[],
+  numTeams: number,
+  playersPerTeam: number
+): Team[] {
+  const teams = createEmptyTeams(numTeams)
+
+  shuffleArray(regularPlayers).forEach((player, i) => {
+    teams[i % numTeams].players.push(player)
+  })
+
+  distributeGuests(teams, guests, playersPerTeam)
+  return teams
+}
+
+// 점수화 전에 후보가 유효한지 검사한다: 팀 크기차<=1 + 제외쌍 분리.
+function isValidCandidate(teams: Team[], excludedPairs: string[][]): boolean {
+  const sizes = teams.map((t) => t.players.length)
+  if (Math.max(...sizes) - Math.min(...sizes) > 1) return false
+
+  for (const [name1, name2] of excludedPairs) {
+    const sameTeam = teams.some((team) => {
+      const names = team.players.map((p) => p.name)
+      return names.includes(name1) && names.includes(name2)
+    })
+    if (sameTeam) return false
+  }
+  return true
+}
+
 // ==================== 로깅 ====================
 
 function logFinalBalance(teams: Team[]): void {
@@ -453,7 +337,6 @@ function logFinalBalance(teams: Team[]): void {
 // ==================== 메인 함수 ====================
 
 export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
-  const excludedPairs: string[][] = [['지원 1', '지원 2']]
   assertValidMode(mode)
   assertUniquePlayerIds(players)
   const { numTeams, playersPerTeam, expectedTotal } = parseMode(mode)
@@ -465,35 +348,36 @@ export function balanceTeams(players: Player[], mode: MatchFormatType): Team[] {
   const regularPlayers = players.filter((p) => !p.isGuest)
   const guests = players.filter((p) => p.isGuest)
 
-  const tierMap: Record<string, Player[]> = {
-    [PLAYER_TIERS.ACE]: regularPlayers.filter((p) => p.tier === PLAYER_TIERS.ACE),
-    [PLAYER_TIERS.ADVANCED]: regularPlayers.filter((p) => p.tier === PLAYER_TIERS.ADVANCED),
-    [PLAYER_TIERS.INTERMEDIATE]: regularPlayers.filter((p) => p.tier === PLAYER_TIERS.INTERMEDIATE),
-    [PLAYER_TIERS.BEGINNER]: regularPlayers.filter((p) => p.tier === PLAYER_TIERS.BEGINNER)
+  // K개 랜덤 유효 후보 생성 → 규칙 강제 → 유효성 필터 → 점수화
+  const pool: { teams: Team[]; score: ArrangementScore }[] = []
+  for (let k = 0; k < CANDIDATE_COUNT; k++) {
+    const teams = generateCandidate(regularPlayers, guests, numTeams, playersPerTeam)
+    enforceExcludedPairs(teams, EXCLUDED_PAIRS)
+    if (!isValidCandidate(teams, EXCLUDED_PAIRS)) continue
+    pool.push({ teams, score: scoreArrangement(teams) })
   }
 
-  const teams: Team[] = Array.from({ length: numTeams }, (_, i) => ({
-    name: `팀 ${String.fromCharCode(65 + i)}`,
-    players: []
-  }))
+  // 모든 후보가 무효한 병리적 케이스: 최소 하나는 반환하도록 fallback (throw 하지 않음).
+  if (pool.length === 0) {
+    const teams = generateCandidate(regularPlayers, guests, numTeams, playersPerTeam)
+    enforceExcludedPairs(teams, EXCLUDED_PAIRS)
+    pool.push({ teams, score: scoreArrangement(teams) })
+  }
 
-  distributeRegularPlayers(teams, tierMap, playersPerTeam)
-  distributeGuests(teams, guests, playersPerTeam)
+  // 사전식 최선 선택 후, '동점'(같은 band + 같은 구성 몰림 점수) 후보 풀에서 랜덤 샘플 → 변동성 확보.
+  // imbalance 는 정수라 동점 후보가 많고, 그 안의 선수 배치는 제각각이라 매번 다른 팀이 나온다.
+  const best = pool.reduce((a, b) => (compareScore(a.score, b.score) <= 0 ? a : b))
+  const nearBest = pool.filter((s) => compareScore(s.score, best.score) === 0)
+  const winner = nearBest[Math.floor(Math.random() * nearBest.length)].teams
 
-  balanceAceDisadvantage(teams)
-  balanceBeginnerHeavyTeams(teams)
+  // winner 에만 마무리 처리. 컨디션은 반드시 year-sort '이전'에 (인덱스 기반 확률 보존).
+  winner.forEach(setPlayerCondition)
+  winner.forEach((team) => team.players.sort((a, b) => a.year.localeCompare(b.year)))
 
-  enforceExcludedPairs(teams, excludedPairs)
+  assertTeamsIntegrity(players, winner)
+  assertEqualTeamSizes(winner)
 
-  balanceTeamStrength(teams)
-  balanceTeamSize(teams)
+  logFinalBalance(winner)
 
-  teams.forEach(setPlayerCondition)
-  teams.forEach((team) => team.players.sort((a, b) => a.year.localeCompare(b.year)))
-
-  assertTeamsIntegrity(players, teams)
-
-  logFinalBalance(teams)
-
-  return teams
+  return winner
 }
