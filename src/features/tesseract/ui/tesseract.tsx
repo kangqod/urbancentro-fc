@@ -1,11 +1,10 @@
-import { Button, Spin, Upload } from 'antd'
+import { Button, Upload } from 'antd'
 import { Upload as IconUpload } from 'lucide-react'
 import { useTesseract } from '../lib'
-
-import './tesseract.scss'
+import { OcrLoading } from './ocr-loading'
 
 export function Tesseract() {
-  const { loading, contextHolder, iconSize, beforeUpload } = useTesseract()
+  const { loading, phase, progress, contextHolder, iconSize, beforeUpload } = useTesseract()
 
   return (
     <>
@@ -14,7 +13,7 @@ export function Tesseract() {
           선수 이미지 업로드
         </Button>
       </Upload>
-      <Spin fullscreen spinning={loading} tip="텍스트 추출중입니다. 잠시만 기다려주세요." className="upload-spin" />
+      <OcrLoading visible={loading} phase={phase} progress={progress} />
       {contextHolder}
     </>
   )
