@@ -8,7 +8,8 @@ import {
   compositionImbalance,
   scoreArrangement,
   strengthGap,
-  tierCountSpread
+  tierCountSpread,
+  topTierImbalance
 } from '../balance-score'
 
 function makePlayer(tier: (typeof PLAYER_TIERS)[keyof typeof PLAYER_TIERS]): Player {
@@ -60,44 +61,67 @@ describe('balance-score metrics', () => {
     expect(clumped).toBeGreaterThan(spread)
   })
 
-  it('scoreArrangement maps gap to bands 0/1/Infinity', () => {
+  it('topTierImbalance counts only ace/advanced clumping (weighted)', () => {
+    // 상급을 한 팀에 몰기(2:0) → 3×2=6. 중급/초급 몰림은 무시한다.
+    const teams = [makeTeam(ADVANCED, ADVANCED, BEGINNER), makeTeam(INTERMEDIATE, INTERMEDIATE, INTERMEDIATE)]
+    expect(topTierImbalance(teams)).toBe(6)
+    // 에이스 1:0(×4) + 상급 1:0(×3) = 7
+    expect(topTierImbalance([makeTeam(ACE, ADVANCED), makeTeam(INTERMEDIATE, INTERMEDIATE)])).toBe(7)
+  })
+
+  it('scoreArrangement maps gap to bands: <=2→0, 3→1, >=4→Infinity', () => {
     expect(scoreArrangement([makeTeam(ACE, INTERMEDIATE), makeTeam(ADVANCED, BEGINNER)]).band).toBe(0) // gap 2
     expect(scoreArrangement([makeTeam(ADVANCED, ADVANCED), makeTeam(INTERMEDIATE, BEGINNER)]).band).toBe(1) // gap 3
     expect(scoreArrangement([makeTeam(ACE, ACE), makeTeam(BEGINNER, BEGINNER)]).band).toBe(Number.POSITIVE_INFINITY) // gap 6
   })
 })
 
-describe('balance-score lexicographic comparison (AC3)', () => {
-  it('a gap<=2 arrangement ALWAYS beats a gap===3 arrangement, even when gap-3 has lower imbalance', () => {
-    // band 0 후보: 구성 몰림을 일부러 나쁘게 (에이스+초급 vs 상급+중급) → gap 0, imbalance 10
-    const band0 = scoreArrangement([makeTeam(ACE, BEGINNER), makeTeam(ADVANCED, INTERMEDIATE)])
-    expect(band0.band).toBe(0)
-
-    // band 1 후보: 구성 몰림이 더 낮음 (상급2 vs 상급1) → gap 3, imbalance 3
-    const band1 = scoreArrangement([makeTeam(ADVANCED, ADVANCED), makeTeam(ADVANCED)])
-    expect(band1.band).toBe(1)
-
-    // band1 의 imbalance 가 더 낮아도(3 < 10) band0 이 이긴다
-    expect(band1.imbalance).toBeLessThan(band0.imbalance)
-    expect(compareScore(band0, band1)).toBeLessThan(0)
+describe('balance-score lexicographic comparison (band → topImbalance → gap → imbalance)', () => {
+  it('band dominates everything: a gap<=2 arrangement beats a gap===3 one even if gap-3 has zero clumping', () => {
+    // band 0 (gap 2) 인데 상급을 몰아 topImbalance 6
+    const gap2Clumped = scoreArrangement([makeTeam(ADVANCED, ADVANCED), makeTeam(INTERMEDIATE, INTERMEDIATE)])
+    // band 1 (gap 3) 인데 상급은 고르게 퍼져 topImbalance 0
+    const gap3Spread = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE), makeTeam(ADVANCED, BEGINNER)])
+    expect(gap2Clumped.band).toBe(0)
+    expect(gap3Spread.band).toBe(1)
+    expect(gap3Spread.topImbalance).toBeLessThan(gap2Clumped.topImbalance)
+    // band 가 최우선이라 gap<=2 가 이긴다 (gap 3 은 gap<=2 후보가 없을 때만 쓰인다)
+    expect(compareScore(gap2Clumped, gap3Spread)).toBeLessThan(0)
   })
 
-  it('within the same band, the lower-imbalance arrangement wins', () => {
-    // 둘 다 gap<=2 (band 0). 하나는 몰림(imbalance 큼), 하나는 균형(imbalance 0)
-    const clumped = scoreArrangement([makeTeam(ACE, BEGINNER), makeTeam(ADVANCED, INTERMEDIATE)])
-    const balanced = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE), makeTeam(ADVANCED, INTERMEDIATE)])
-    expect(clumped.band).toBe(0)
-    expect(balanced.band).toBe(0)
+  it('topImbalance beats gap: a star-spread arrangement wins even with a LARGER gap', () => {
+    // 상급 고르게(spread 0) 지만 전력 격차 2
+    const spread = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE), makeTeam(ADVANCED, BEGINNER, BEGINNER)])
+    // 상급 몰림(2:0) 이지만 전력 격차 0
+    const clumped = scoreArrangement([makeTeam(ADVANCED, ADVANCED), makeTeam(INTERMEDIATE, INTERMEDIATE, INTERMEDIATE)])
+    expect(spread.topImbalance).toBe(0)
+    expect(spread.gap).toBe(2)
+    expect(clumped.topImbalance).toBe(6)
+    expect(clumped.gap).toBe(0)
+    // gap 이 더 커도 스타 분산이 우선 → spread 가 이긴다
+    expect(compareScore(spread, clumped)).toBeLessThan(0)
+  })
+
+  it('gap breaks ties after topImbalance: smaller gap wins over lower int/beg imbalance (the 14 vs 12 fix)', () => {
+    // 둘 다 상급 spread 0 (topImbalance 0). small 은 gap 0 이지만 중급/초급 몰림 큼,
+    // big 은 gap 2 지만 중급/초급 몰림 작음. 그래도 gap 이 우선이라 small 이 이긴다.
+    const small = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE), makeTeam(ADVANCED, BEGINNER, BEGINNER, BEGINNER, BEGINNER)])
+    const big = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE, INTERMEDIATE), makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE)])
+    expect(small.topImbalance).toBe(0)
+    expect(big.topImbalance).toBe(0)
+    expect(small.gap).toBe(0)
+    expect(big.gap).toBe(2)
+    expect(small.imbalance).toBeGreaterThan(big.imbalance) // small 이 중급/초급은 더 몰렸지만
+    expect(compareScore(small, big)).toBeLessThan(0) // gap 이 우선이라 이긴다
+  })
+
+  it('imbalance is the final tiebreak: equal band/topImbalance/gap → lower int/beg spread wins', () => {
+    const balanced = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE), makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE)])
+    const clumped = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE), makeTeam(ADVANCED, INTERMEDIATE, BEGINNER, BEGINNER)])
+    expect(balanced.band).toBe(clumped.band)
+    expect(balanced.topImbalance).toBe(clumped.topImbalance)
+    expect(balanced.gap).toBe(clumped.gap)
     expect(balanced.imbalance).toBeLessThan(clumped.imbalance)
     expect(compareScore(balanced, clumped)).toBeLessThan(0)
-  })
-
-  it('gap===3 is only chosen when no gap<=2 candidate exists (band ordering)', () => {
-    const gap3 = scoreArrangement([makeTeam(ADVANCED, ADVANCED), makeTeam(INTERMEDIATE, BEGINNER)])
-    const gap1 = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE), makeTeam(INTERMEDIATE, INTERMEDIATE)])
-    expect(gap3.band).toBe(1)
-    expect(gap1.band).toBe(0)
-    // 후보 풀에 gap<=2 가 있으면 그게 최선이 된다
-    expect(compareScore(gap1, gap3)).toBeLessThan(0)
   })
 })

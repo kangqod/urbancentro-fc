@@ -41,25 +41,46 @@ export function compositionImbalance(teams: Team[]): number {
   )
 }
 
+/**
+ * 상위 티어(에이스·상급) 몰림 지표. 눈에 잘 띄는 '스타' 분산만 따로 뽑아 최우선으로 방어한다.
+ * (중급·초급 몰림은 체감이 약해 gap 뒤 tiebreaker 로 미룬다 — compositionImbalance 참고.)
+ */
+export function topTierImbalance(teams: Team[]): number {
+  return (
+    TIER_WEIGHTS[PLAYER_TIERS.ACE] * tierCountSpread(teams, PLAYER_TIERS.ACE) +
+    TIER_WEIGHTS[PLAYER_TIERS.ADVANCED] * tierCountSpread(teams, PLAYER_TIERS.ADVANCED)
+  )
+}
+
 export interface ArrangementScore {
-  // 0: gap<=2 (목표), 1: gap===3 (구성 개선 시에만 허용), Infinity: gap>=4 (하드 리젝)
+  // 0: gap<=2, 1: gap===3 (구성 개선 시에만 허용), Infinity: gap>=4 (하드 리젝)
   band: number
+  topImbalance: number
+  gap: number
   imbalance: number
 }
 
 /**
- * 배치 품질 점수. 사전식(lexicographic): band 우선, 동밴드면 compositionImbalance.
- * 이 인코딩이 스펙의 "gap 3은 gap<=2 배치가 없을 때만" 규칙을 상수 튜닝 없이 정확히 표현한다.
- * (선형 스칼라는 EPSILON<W_GAP 상수 결합에 정확성이 새어나가므로 폐기했다.)
+ * 배치 품질 점수. 사전식(lexicographic): band → topImbalance → gap → imbalance.
+ *
+ * 우선순위 근거(사용자 체감 기준):
+ *  1. band          — gap>=4 하드 리젝, gap 3 은 gap<=2 가 없을 때만(병리적 로스터 degrade).
+ *  2. topImbalance  — 에이스·상급 몰림 방지. 스타가 한 팀에 몰리는 건 가장 눈에 띈다.
+ *                     gap 보다 먼저 둬야 'gap 줄이려 상급 몰기'(실측 ~30%)를 막는다.
+ *  3. gap           — 전력 격차. 예전엔 gap 0/1/2 를 동일 취급해 14 vs 12(gap 2) 가 뽑혔다.
+ *                     스타 분산이 같은 배치들 중에선 격차가 가장 작은 것을 고른다.
+ *  4. imbalance     — 중급·초급까지 포함한 전체 몰림. 체감이 약하므로 마지막 미세 tiebreak.
  */
 export function scoreArrangement(teams: Team[]): ArrangementScore {
   const gap = strengthGap(teams)
   const band = gap <= 2 ? 0 : gap === 3 ? 1 : Number.POSITIVE_INFINITY
-  return { band, imbalance: compositionImbalance(teams) }
+  return { band, topImbalance: topTierImbalance(teams), gap, imbalance: compositionImbalance(teams) }
 }
 
-// 낮을수록 좋음. band 우선(작을수록 좋음), 동밴드면 imbalance 작을수록 좋음.
+// 낮을수록 좋음. band → topImbalance → gap → imbalance 순 사전식 비교(각 단계 작을수록 좋음).
 export function compareScore(a: ArrangementScore, b: ArrangementScore): number {
   if (a.band !== b.band) return a.band - b.band
+  if (a.topImbalance !== b.topImbalance) return a.topImbalance - b.topImbalance
+  if (a.gap !== b.gap) return a.gap - b.gap
   return a.imbalance - b.imbalance
 }
