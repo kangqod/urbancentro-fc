@@ -19,7 +19,7 @@
     "year": "1973",
     "number": 10,
     "name": "김정표",
-    "tier": "상급",
+    "tier": "중급",
     "strength": "골 결정력",
     "attributes": ["양발 슈팅"]
   },
@@ -61,7 +61,7 @@
     "name": "송승근",
     "tier": "중급",
     "strength": "빠른 침투",
-    "attributes": ["좋은 출석률"]
+    "attributes": ["열정"]
   },
   {
     "year": "1986",
@@ -75,9 +75,9 @@
     "year": "1987",
     "number": 33,
     "name": "강병용",
-    "tier": "초급",
+    "tier": "중급",
     "strength": "수비",
-    "attributes": ["일단 치고 달림"]
+    "attributes": ["열정"]
   },
   {
     "year": "1987",
@@ -115,9 +115,9 @@
     "year": "1987",
     "number": 0,
     "name": "유주헌",
-    "tier": "초급",
+    "tier": "중급",
     "strength": "넓은 시야",
-    "attributes": ["패스 좋음", "병용 친구"]
+    "attributes": ["포처", "병용 친구"]
   },
   {
     "year": "1988",
@@ -165,7 +165,7 @@
     "name": "이원식",
     "tier": "상급",
     "strength": "피지컬",
-    "attributes": ["벽"]
+    "attributes": ["홀란드"]
   },
   {
     "year": "1989",
