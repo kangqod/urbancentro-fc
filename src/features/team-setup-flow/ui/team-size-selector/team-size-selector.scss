@@ -50,6 +50,18 @@
   margin: 0 !important;
 }
 
+.team-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.team-option-group-title {
+  padding-inline: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
 .team-option-row {
   padding-inline: 1rem;
 }

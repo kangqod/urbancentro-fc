@@ -13,11 +13,15 @@ const ICON_SIZE = {
   ARROW: 16
 }
 
-const TEAM_OPTIONS = Object.values(MATCH_FORMAT_CONFIG).map((config) => ({
-  id: config.ID,
-  title: config.TITLE,
-  description: config.DESCRIPTION
-}))
+const TEAM_OPTION_GROUPS = Object.values(
+  Object.values(MATCH_FORMAT_CONFIG).reduce<
+    Record<number, { teamCount: number; options: { id: string; title: string; description: string }[] }>
+  >((groups, config) => {
+    const group = (groups[config.TEAM_COUNT] ??= { teamCount: config.TEAM_COUNT, options: [] })
+    group.options.push({ id: config.ID, title: config.TITLE, description: config.DESCRIPTION })
+    return groups
+  }, {})
+).sort((a, b) => a.teamCount - b.teamCount)
 
 export function TeamSizeSelector() {
   const { selectedOption, handleOptionClick, handleNextClick } = useTeamSizeSelector()
@@ -26,32 +30,39 @@ export function TeamSizeSelector() {
     <div className="team-setup-container">
       <TabHeader title="팀 구성 선택" description="원하는 팀 구성을 선택해주세요" />
 
-      <Row gutter={[16, 16]} className="team-option-row">
-        {TEAM_OPTIONS.map((option) => (
-          <Col xs={12} md={8} key={option.id}>
-            <Card
-              hoverable
-              className={`team-option-card ${selectedOption === option.id ? 'selected' : ''}`}
-            >
-              <button
-                type="button"
-                className="team-option-button"
-                onClick={handleOptionClick(option.id)}
-                aria-pressed={selectedOption === option.id}
-                aria-label={`${option.title} ${option.description}`}
-              >
-                <div className="team-option-content">
-                  <Users size={ICON_SIZE.TEAM} className={selectedOption === option.id ? 'icon-selected' : 'icon-default'} />
-                  <Title level={5} className="option-title">
-                    {option.title}
-                  </Title>
-                  <Text type="secondary">{option.description}</Text>
-                </div>
-              </button>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+      {TEAM_OPTION_GROUPS.map((group) => (
+        <section className="team-option-group" key={group.teamCount}>
+          <Text className="team-option-group-title" type="secondary">
+            {group.teamCount}팀 대결
+          </Text>
+          <Row gutter={[16, 16]} className="team-option-row">
+            {group.options.map((option) => (
+              <Col xs={12} md={8} key={option.id}>
+                <Card
+                  hoverable
+                  className={`team-option-card ${selectedOption === option.id ? 'selected' : ''}`}
+                >
+                  <button
+                    type="button"
+                    className="team-option-button"
+                    onClick={handleOptionClick(option.id)}
+                    aria-pressed={selectedOption === option.id}
+                    aria-label={`${option.title} ${option.description}`}
+                  >
+                    <div className="team-option-content">
+                      <Users size={ICON_SIZE.TEAM} className={selectedOption === option.id ? 'icon-selected' : 'icon-default'} />
+                      <Title level={5} className="option-title">
+                        {option.title}
+                      </Title>
+                      <Text type="secondary">{option.description}</Text>
+                    </div>
+                  </button>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </section>
+      ))}
 
       <TabFooter>
         <Button

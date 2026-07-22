@@ -22,6 +22,13 @@ export const MATCH_FORMAT_CONFIG = {
     TEAM_COUNT: 2,
     PLAYERS_PER_TEAM: 7
   },
+  FOUR_THREE_TEAMS: {
+    ID: '4:4:4',
+    TITLE: '4 vs 4 vs 4',
+    DESCRIPTION: '총 12명',
+    TEAM_COUNT: 3,
+    PLAYERS_PER_TEAM: 4
+  },
   FIVE_THREE_TEAMS: {
     ID: '5:5:5',
     TITLE: '5 vs 5 vs 5',
@@ -42,6 +49,13 @@ export const MATCH_FORMAT_CONFIG = {
     DESCRIPTION: '총 21명',
     TEAM_COUNT: 3,
     PLAYERS_PER_TEAM: 7
+  },
+  FOUR_FOUR_TEAMS: {
+    ID: '4:4:4:4',
+    TITLE: '4 vs 4 vs 4 vs 4',
+    DESCRIPTION: '총 16명',
+    TEAM_COUNT: 4,
+    PLAYERS_PER_TEAM: 4
   },
   FIVE_FOUR_TEAMS: {
     ID: '5:5:5:5',
