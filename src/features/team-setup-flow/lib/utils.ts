@@ -1,4 +1,14 @@
-import { DEFAULT_ATTRIBUTES, DEFAULT_CONDITION, DEFAULT_STRENGTH, DEFAULT_YEAR, PLAYER_CONDITIONS, PLAYER_TIERS, PlayerClass, TIER_LABELS, toTierType } from '@/entities'
+import {
+  DEFAULT_ATTRIBUTES,
+  DEFAULT_CONDITION,
+  DEFAULT_STRENGTH,
+  DEFAULT_YEAR,
+  PLAYER_CONDITIONS,
+  PLAYER_TIERS,
+  PlayerClass,
+  TIER_LABELS,
+  toTierType
+} from '@/entities'
 import type { ConditionType, Team, TierType } from '@/entities'
 import playerData from '@/shared/assets/data.json'
 
@@ -27,7 +37,9 @@ export function getTeamsText(teams: Team[]) {
   return teams
     .map((team, index) => {
       const playerList = team.players
-        .map((p) => `${p.year ? `${p.year.slice(-2)}` : '99'} ${p.name} [${TIER_LABELS[p.tier] ?? p.tier}] ${p.condition === PLAYER_CONDITIONS.HIGH ? '↑' : ''}`.trimEnd())
+        .map((p) =>
+          `${p.year ? `${p.year.slice(-2)}` : '99'} ${p.name} [${TIER_LABELS[p.tier] ?? p.tier}] ${p.condition === PLAYER_CONDITIONS.HIGH ? '↑' : ''}`.trimEnd()
+        )
         .join('\n')
       return `${index + 1}팀\n${playerList}`
     })

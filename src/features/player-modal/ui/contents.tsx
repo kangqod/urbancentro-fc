@@ -31,7 +31,9 @@ export function Contents({ player, onClose }: PlayerProps) {
             </div>
           }
         >
-          <Tag variant="solid" color={getTierColor(player.tier)}>{TIER_LABELS[player.tier]}</Tag>
+          <Tag variant="solid" color={getTierColor(player.tier)}>
+            {TIER_LABELS[player.tier]}
+          </Tag>
         </Descriptions.Item>
         <Descriptions.Item
           label={
@@ -71,11 +73,11 @@ export function Contents({ player, onClose }: PlayerProps) {
             </div>
           }
         >
-          {player.attributes.length === 0 ? (
+          {player.attributes.filter(Boolean).length === 0 ? (
             <>{DEFAULT_ATTRIBUTES}</>
           ) : (
             <ul className="player-attributes">
-              {player.attributes.map((attr, index) => (
+              {player.attributes.filter(Boolean).map((attr, index) => (
                 <li key={index}>{attr}</li>
               ))}
             </ul>

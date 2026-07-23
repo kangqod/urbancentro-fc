@@ -19,8 +19,13 @@ export function GuestModal({ form, isModalOpen, onOpenModal }: GuestModalProps) 
   return (
     <Modal title="게스트 추가" width={350} open={isModalOpen} onCancel={handleClose} footer={null}>
       <Form form={form} layout="vertical" size="large" onFinish={onFinish} className="guest-modal-form">
-        <Form.Item name="name" label="이름" rules={[{ required: true, message: '' }]}>
-          <Input placeholder="게스트 이름" className="input-guest-name" />
+        <Form.Item name="name" label="이름" rules={[{ required: true, message: '이름을 입력해주세요' }]}>
+          <Flex vertical>
+            <Input placeholder="게스트 이름" className="input-guest-name" maxLength={5} />
+            <Typography.Text type="secondary" className="text-guest-modal-note">
+              ※ <span className="span-guest-modal-highlight">최대 5글자</span>까지 입력 가능합니다.
+            </Typography.Text>
+          </Flex>
         </Form.Item>
 
         <Form.Item name="matchedPlayer" label="매칭할 선수 선택">

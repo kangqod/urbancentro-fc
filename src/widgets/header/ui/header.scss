@@ -37,6 +37,13 @@
   }
 }
 
+// 소형 화면(≤375px): 헤더 타이틀 폰트 축소. 기존 규칙과 동일 명시도(0,5,0) + 후순위로 덮는다.
+@media (max-width: 375px) {
+  .ant-layout .ant-layout-header.team-header .team-header-content .ant-typography {
+    font-size: 1.25rem;
+  }
+}
+
 // body는 ConfigProvider css 변수 트리 밖이라 antd CSS 변수를 상속받지 못한다.
 // JS 렌더 이전 FOUC 방지용 폴백으로만 SCSS 변수를 유지한다.
 body.dark-mode {

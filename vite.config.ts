@@ -12,11 +12,12 @@ export default defineConfig({
   },
   server: {
     open: true,
-    port: 9000
+    port: 5174
   },
   test: {
     globals: true,
-    environment: 'jsdom'
+    environment: 'jsdom',
+    setupFiles: ['./src/shared/test/setup.ts']
   },
   build: {
     rollupOptions: {

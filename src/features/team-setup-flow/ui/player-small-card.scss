@@ -1,0 +1,51 @@
+.pl-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+
+  // 마커(line-height:1)와 글자 중심을 맞추기 위해 텍스트도 line-height 1로 — antd Text 기본 line-height가 커서 어긋나는 것을 막는다.
+  .pl-year {
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .pl-name {
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  // 좁은 폭(375px 2~3열)에서 한 줄 유지되도록 이름 길이별 축소. 팀 분배 3열은 team-distribution.scss가 추가 보강.
+  &.is-len4 .pl-name {
+    font-size: 0.9em;
+  }
+
+  &.is-len5 .pl-name {
+    font-size: 0.8em;
+  }
+}
+
+// 게스트 마커: 브랜드 컬러 칩 + 한글 '게'.
+.pl-mark-guest {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  background: var(--ant-color-primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+// 지원 마커: 타 팀 임시 차출 → 로테이션 이모지.
+.pl-mark-support {
+  flex: none;
+  font-size: 13px;
+  line-height: 1;
+}

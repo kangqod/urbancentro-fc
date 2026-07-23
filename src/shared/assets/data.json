@@ -74,10 +74,10 @@
   {
     "year": "1987",
     "number": 33,
-    "name": "강병용",
+    "name": "강동우",
     "tier": "중급",
     "strength": "수비",
-    "attributes": ["열정"]
+    "attributes": ["초반 스퍼트"]
   },
   {
     "year": "1987",
@@ -117,7 +117,7 @@
     "name": "유주헌",
     "tier": "중급",
     "strength": "넓은 시야",
-    "attributes": ["포처", "병용 친구"]
+    "attributes": ["포처", "동우 친구"]
   },
   {
     "year": "1988",

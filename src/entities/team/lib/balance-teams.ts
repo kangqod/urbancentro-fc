@@ -1,14 +1,7 @@
 import { PLAYER_CONDITIONS, PLAYER_TIERS } from '@/entities/player/model/player'
 import type { Player } from '@/entities/player/model/types'
 import type { MatchFormatType, Team } from '@/entities/team/model/types'
-import {
-  ArrangementScore,
-  calculateTeamStrength,
-  compareScore,
-  getTierWeight,
-  scoreArrangement,
-  strengthGap
-} from './balance-score'
+import { ArrangementScore, calculateTeamStrength, compareScore, getTierWeight, scoreArrangement, strengthGap } from './balance-score'
 import { CONDITION_EXEMPT_NAMES, EXCLUDED_PAIRS, PREMIUM_PLAYERS } from './constants'
 
 // calculateTeamStrength 은 balance-score 로 이동했으나 공개 표면 유지를 위해 재export 한다.
@@ -37,9 +30,7 @@ function findWeakestTeam(teams: Team[], maxSize?: number): Team | null {
 
   if (candidates.length === 0) return null
 
-  return candidates.reduce((weakest, current) =>
-    calculateTeamStrength(current) < calculateTeamStrength(weakest) ? current : weakest
-  )
+  return candidates.reduce((weakest, current) => (calculateTeamStrength(current) < calculateTeamStrength(weakest) ? current : weakest))
 }
 
 function parseMode(mode: MatchFormatType): { teamSizes: number[]; numTeams: number; playersPerTeam: number; expectedTotal: number } {
@@ -113,9 +104,7 @@ export function shuffleArray<T>(array: T[]): T[] {
 // 이동 가능한 선수 찾기 (게스트/연결선수 제외)
 /** @internal test-only */
 export function getMovablePlayers(team: Team): Player[] {
-  return team.players.filter(
-    (player) => !player.isGuest && (!player.connectedPlayerIds || player.connectedPlayerIds.length === 0)
-  )
+  return team.players.filter((player) => !player.isGuest && (!player.connectedPlayerIds || player.connectedPlayerIds.length === 0))
 }
 
 // 팀별 티어 정보 가져오기
@@ -154,9 +143,7 @@ export function setPlayerCondition(team: Team): void {
 
   if (!team.players.some((p) => p.condition === PLAYER_CONDITIONS.HIGH)) {
     const candidates = team.players.filter(
-      (p) =>
-        !CONDITION_EXEMPT_NAMES.includes(p.name) &&
-        !PREMIUM_PLAYERS.some((pp) => pp.name === p.name && pp.year === p.year)
+      (p) => !CONDITION_EXEMPT_NAMES.includes(p.name) && !PREMIUM_PLAYERS.some((pp) => pp.name === p.name && pp.year === p.year)
     )
     if (candidates.length > 0) {
       const randomIdx = Math.floor(Math.random() * candidates.length)
@@ -288,12 +275,7 @@ function createEmptyTeams(numTeams: number): Team[] {
  * 나누어떨어짐) 구성은 완전 랜덤이라 배치 공간을 폭넓게 탐색한다. 좋은 배치의 '선택'은
  * scorer(gap 밴드 → 구성 몰림)에 맡긴다. 이후 게스트 앵커 규칙(distributeGuests)을 적용한다.
  */
-function generateCandidate(
-  regularPlayers: Player[],
-  guests: Player[],
-  numTeams: number,
-  playersPerTeam: number
-): Team[] {
+function generateCandidate(regularPlayers: Player[], guests: Player[], numTeams: number, playersPerTeam: number): Team[] {
   const teams = createEmptyTeams(numTeams)
 
   shuffleArray(regularPlayers).forEach((player, i) => {

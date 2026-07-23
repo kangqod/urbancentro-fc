@@ -57,7 +57,7 @@ export function useTesseract() {
     stageIndexRef.current = 0
     try {
       worker = await createWorker('kor', 1, {
-        logger: m => {
+        logger: (m) => {
           const resolved = resolveProgress(m.status, m.progress)
           if (!resolved) return
           stageIndexRef.current = Math.max(stageIndexRef.current, resolved.index)

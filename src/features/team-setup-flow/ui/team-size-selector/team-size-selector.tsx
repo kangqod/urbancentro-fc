@@ -49,10 +49,7 @@ export function TeamSizeSelector() {
           <Row gutter={[16, 16]} className="team-option-row">
             {group.options.map((option) => (
               <Col xs={12} md={8} key={option.id}>
-                <Card
-                  hoverable
-                  className={`team-option-card ${selectedOption === option.id ? 'selected' : ''}`}
-                >
+                <Card hoverable className={`team-option-card ${selectedOption === option.id ? 'selected' : ''}`}>
                   <button
                     type="button"
                     className="team-option-button"

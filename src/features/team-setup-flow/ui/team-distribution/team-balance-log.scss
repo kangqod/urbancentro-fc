@@ -59,6 +59,7 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--ant-color-text-tertiary);
+  white-space: nowrap;
 }
 
 .tbl-hero-sub {
@@ -76,6 +77,7 @@
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--ant-color-text-tertiary);
+  white-space: nowrap;
 }
 
 .tbl-hero-stat-v {
@@ -119,12 +121,21 @@
 .tbl-team-role {
   display: inline-flex;
   align-items: center;
+  gap: 3px;
   padding: 1px 9px;
   border-radius: 999px;
   border: 1.5px solid;
   font-size: 0.8rem;
   font-weight: 500;
   line-height: 1.5;
+
+  // 방향 화살표(▲/▼) 글리프. currentColor 상속 + 세로 중심 정렬(헤더 .role-emoji와 동일 톤).
+  .tbl-role-arrow {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    line-height: 1;
+  }
 
   // 아웃라인 칩. 탑독=브랜드 주황 테두리, 언더독=중립 테두리. 초록/빨강 값판단은 배제.
   &.is-top {
@@ -235,5 +246,29 @@
 
   .tbl-hero-num {
     font-size: 2.3rem;
+  }
+}
+
+// ≤375px: 좁은 모달에서 히어로 라벨(실력 격차·총 팀 수)이 두 스탯 한 줄에 들어가도록 폰트/간격 축소.
+@media (max-width: 375px) {
+  .tbl-hero {
+    gap: 8px;
+  }
+
+  .tbl-hero-sub {
+    gap: 12px;
+  }
+
+  .tbl-hero-num {
+    font-size: 1.9rem;
+  }
+
+  .tbl-hero-label,
+  .tbl-hero-stat-k {
+    font-size: 0.82rem;
+  }
+
+  .tbl-hero-stat-v {
+    font-size: 0.9rem;
   }
 }

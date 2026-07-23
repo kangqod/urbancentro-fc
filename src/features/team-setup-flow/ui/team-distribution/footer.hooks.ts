@@ -46,20 +46,16 @@ export function useFooter() {
     // 플레이어를 [year, name, condition, tier, isGuest] 배열로 직렬화한다.
     // tier와 isGuest를 항상 담아, 복원 시 로스터에서 못 찾은 선수도 등급과
     // 게스트 여부를 잃지 않게 한다. 이름에 `-`가 포함되어도 필드가 어긋나지 않는다.
-    const teamsData = teams.map(
-      (team): SharedTeam => [
-        team.name.slice(-1), // "팀 A" -> "A"
-        team.players.map(
-          (player): SharedPlayer => [
-            player.year ? player.year.slice(-2) : '99',
-            player.name,
-            player.condition === PLAYER_CONDITIONS.HIGH ? PLAYER_CONDITIONS.HIGH : '',
-            player.tier,
-            player.isGuest
-          ]
-        )
-      ]
-    )
+    const teamsData = teams.map((team): SharedTeam => [
+      team.name.slice(-1), // "팀 A" -> "A"
+      team.players.map((player): SharedPlayer => [
+        player.year ? player.year.slice(-2) : '99',
+        player.name,
+        player.condition === PLAYER_CONDITIONS.HIGH ? PLAYER_CONDITIONS.HIGH : '',
+        player.tier,
+        player.isGuest
+      ])
+    ])
 
     const description = getTeamsText(teams)
 

@@ -194,11 +194,7 @@ describe('balance-teams helpers', () => {
   })
 
   it('setPlayerCondition keeps support/rainbow/best players from being HIGH', () => {
-    vi.spyOn(Math, 'random')
-      .mockReturnValueOnce(0.99)
-      .mockReturnValueOnce(0.99)
-      .mockReturnValueOnce(0.99)
-      .mockReturnValueOnce(0)
+    vi.spyOn(Math, 'random').mockReturnValueOnce(0.99).mockReturnValueOnce(0.99).mockReturnValueOnce(0.99).mockReturnValueOnce(0)
 
     const team = makeTeam('A', [
       makePlayer({ id: 'j1', name: '지원 1' }),
@@ -362,7 +358,12 @@ describe('balanceTeams statistical invariants', () => {
   // 팀 구성 서명(팀 순서 무시). 동일 입력 반복 시 배치 다양성을 세는 데 사용.
   function signature(teams: Team[]): string {
     return teams
-      .map((t) => t.players.map((p) => p.id).sort().join(','))
+      .map((t) =>
+        t.players
+          .map((p) => p.id)
+          .sort()
+          .join(',')
+      )
       .sort()
       .join('|')
   }

@@ -105,8 +105,14 @@ describe('balance-score lexicographic comparison (band → topImbalance → gap 
   it('gap breaks ties after topImbalance: smaller gap wins over lower int/beg imbalance (the 14 vs 12 fix)', () => {
     // 둘 다 상급 spread 0 (topImbalance 0). small 은 gap 0 이지만 중급/초급 몰림 큼,
     // big 은 gap 2 지만 중급/초급 몰림 작음. 그래도 gap 이 우선이라 small 이 이긴다.
-    const small = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE), makeTeam(ADVANCED, BEGINNER, BEGINNER, BEGINNER, BEGINNER)])
-    const big = scoreArrangement([makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE, INTERMEDIATE), makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE)])
+    const small = scoreArrangement([
+      makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE),
+      makeTeam(ADVANCED, BEGINNER, BEGINNER, BEGINNER, BEGINNER)
+    ])
+    const big = scoreArrangement([
+      makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE, INTERMEDIATE),
+      makeTeam(ADVANCED, INTERMEDIATE, INTERMEDIATE)
+    ])
     expect(small.topImbalance).toBe(0)
     expect(big.topImbalance).toBe(0)
     expect(small.gap).toBe(0)

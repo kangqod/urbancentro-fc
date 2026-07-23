@@ -6,20 +6,16 @@ import { parseSharedTeams, type SharedPlayer, type SharedTeam } from '../utils'
 
 // footer.hooks.handleShareKakao 의 직렬화 로직을 그대로 재현한다.
 function serialize(teams: Team[]): string {
-  const teamsData = teams.map(
-    (team): SharedTeam => [
-      team.name.slice(-1),
-      team.players.map(
-        (player): SharedPlayer => [
-          player.year ? player.year.slice(-2) : '99',
-          player.name,
-          player.condition === PLAYER_CONDITIONS.HIGH ? PLAYER_CONDITIONS.HIGH : '',
-          player.tier,
-          player.isGuest
-        ]
-      )
-    ]
-  )
+  const teamsData = teams.map((team): SharedTeam => [
+    team.name.slice(-1),
+    team.players.map((player): SharedPlayer => [
+      player.year ? player.year.slice(-2) : '99',
+      player.name,
+      player.condition === PLAYER_CONDITIONS.HIGH ? PLAYER_CONDITIONS.HIGH : '',
+      player.tier,
+      player.isGuest
+    ])
+  ])
   return JSON.stringify(teamsData)
 }
 
@@ -97,4 +93,37 @@ describe('공유 링크 선수 복원 (buildSharedPlayer / parseSharedTeams)', (
     expect(restored.isGuest).toBe(true)
     expect(restored.tier).toBe(PLAYER_TIERS.ACE)
   })
+
+  it.each([PLAYER_TIERS.ACE, PLAYER_TIERS.ADVANCED, PLAYER_TIERS.INTERMEDIATE, PLAYER_TIERS.BEGINNER])(
+    '게스트의 tier=%s 는 신규 포맷 직렬화→역직렬화 왕복 후에도 게스트 플래그와 함께 보존된다',
+    (tier) => {
+      const guest = new PlayerClass({
+        id: `guest-${tier}`,
+        name: '왕복게스트',
+        year: DEFAULT_YEAR,
+        number: DEFAULT_NUMBER,
+        tier,
+        isGuest: true,
+        isActiveForMatch: true
+      })
+
+      const [restored] = roundTrip([guest])
+
+      expect(restored.isGuest).toBe(true)
+      expect(restored.tier).toBe(tier)
+    }
+  )
+
+  it.each([PLAYER_TIERS.ACE, PLAYER_TIERS.ADVANCED, PLAYER_TIERS.INTERMEDIATE, PLAYER_TIERS.BEGINNER])(
+    '로스터 매칭에 실패한 비게스트(tier=%s)도 게스트로 오분류되지 않고 직렬화된 tier를 보존한다',
+    (tier) => {
+      // 로스터에 없는 이름 + isGuest=false: buildSharedPlayer가 playerInfo를 못 찾으므로
+      // (로스터 매칭 시엔 playerInfo.tier가 우선하는 것과 달리) 직렬화된 tier가 그대로 쓰인다.
+      const shared: SharedTeam[] = [['A', [['89', '없는정규멤버', '', tier, false]]]]
+      const restored = parseSharedTeams(JSON.stringify(shared))![0].players[0]
+
+      expect(restored.isGuest).toBe(false)
+      expect(restored.tier).toBe(tier)
+    }
+  )
 })

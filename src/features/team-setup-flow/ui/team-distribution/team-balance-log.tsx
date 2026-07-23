@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Modal, Button, Flex } from 'antd'
 import { Trophy } from 'lucide-react'
-import { PLAYER_TIERS, TIER_LABELS, calculateTeamStrength, getTopDogTeamNames, type Team } from '@/entities'
+import { PLAYER_TIERS, TIER_LABELS, calculateTeamStrength, type Team } from '@/entities'
 import { teamNameToNumber } from '@/shared'
 import { getTierColor } from '@/features/player-modal/lib'
 
@@ -9,6 +9,8 @@ import './team-balance-log.scss'
 
 interface TeamLogProps {
   teams: Team[]
+  // 탑독/언더독 판정은 container에서 한 번 계산해 내려받는다(팀 헤더와 동일 소스).
+  topDogNames: Set<string>
 }
 
 const TIER_ORDER = [PLAYER_TIERS.ACE, PLAYER_TIERS.ADVANCED, PLAYER_TIERS.INTERMEDIATE, PLAYER_TIERS.BEGINNER]
@@ -16,8 +18,11 @@ const TIER_ORDER = [PLAYER_TIERS.ACE, PLAYER_TIERS.ADVANCED, PLAYER_TIERS.INTERM
 // 팀 번호 → 팀 컬러(--fc-team-*). body 클래스 미장착(FOUC) 대비 인라인 다크 폴백 포함.
 const TEAM_COLORS = ['var(--fc-team-a, #ff681f)', 'var(--fc-team-b, #1890ff)', 'var(--fc-team-c, #52c41a)', 'var(--fc-team-d, #eb2f96)']
 
-export function TeamBalanceLog({ teams }: TeamLogProps) {
+export function TeamBalanceLog({ teams, topDogNames }: TeamLogProps) {
   const [visible, setVisible] = useState(false)
+
+  // 손상된 공유 링크 등으로 teams가 비면 통계가 NaN/-Infinity가 되므로 버튼째 렌더하지 않는다.
+  if (teams.length === 0) return null
 
   // 팀별 상세 정보 계산
   const teamAnalytics = teams.map((team) => {
@@ -49,9 +54,6 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
   const maxStrength = Math.max(...teamAnalytics.map((t) => t.strength))
   const minStrength = Math.min(...teamAnalytics.map((t) => t.strength))
   const avgStrength = teamAnalytics.reduce((sum, t) => sum + t.strength, 0) / teamAnalytics.length
-
-  // 탑독/언더독 판정은 공용 단일 소스(getTopDogTeamNames)를 소비 — 팀 헤더와 어긋나지 않게.
-  const topDogTeamNames = getTopDogTeamNames(teams)
 
   const gap = maxStrength - minStrength
 
@@ -100,7 +102,7 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
           {/* 팀별 상세 */}
           <div className="tbl-list">
             {teamAnalytics.map((analytics, idx) => {
-              const isTopDog = topDogTeamNames.has(analytics.team.name)
+              const isTopDog = topDogNames.has(analytics.team.name)
               const teamNo = teamNameToNumber(analytics.team.name) ?? idx + 1
               const tc = TEAM_COLORS[(teamNo - 1) % TEAM_COLORS.length]
               const total = analytics.totalPlayers
@@ -110,8 +112,15 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                     <span className="tbl-team-name">
                       <i className="tbl-team-dot" style={{ background: tc }} />
                       {teamNo}팀
-                      <span className={`tbl-team-role ${isTopDog ? 'is-top' : 'is-under'}`}>{isTopDog ? '🔥 탑독' : '🥊 언더독'}</span>
+                      <span className={`tbl-team-role ${isTopDog ? 'is-top' : 'is-under'}`}>
+                        <span className="tbl-role-arrow" aria-hidden="true">
+                          {isTopDog ? '▲' : '▼'}
+                        </span>
+                        &nbsp;
+                        {isTopDog ? '탑독' : '언더독'}
+                      </span>
                     </span>
+                    {/* 배지는 화력(powerScore: strength+컨디션+프리미엄) 기준, 점수는 순수 strength라 의도적으로 기준이 다르다. */}
                     <span className="tbl-team-score">
                       {analytics.strength}
                       <small>점</small>
@@ -122,7 +131,13 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                     {TIER_ORDER.map((tier) => {
                       const count = analytics.tierCounts[tier]
                       if (count === 0 || total === 0) return null
-                      return <span key={tier} className="tbl-bar-seg" style={{ width: `${(count / total) * 100}%`, background: getTierColor(tier) }} />
+                      return (
+                        <span
+                          key={tier}
+                          className="tbl-bar-seg"
+                          style={{ width: `${(count / total) * 100}%`, background: getTierColor(tier) }}
+                        />
+                      )
                     })}
                   </div>
 
