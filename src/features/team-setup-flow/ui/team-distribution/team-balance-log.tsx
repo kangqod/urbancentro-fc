@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Modal, Button, Card, Row, Col, Tag, Progress, Divider, Statistic, Space, Flex } from 'antd'
-import { Trophy, Users } from 'lucide-react'
-import { PLAYER_TIERS, TIER_LABELS, PLAYER_CONDITIONS, PREMIUM_PLAYERS, calculateTeamStrength, type Team } from '@/entities'
+import { Modal, Button, Flex } from 'antd'
+import { Trophy } from 'lucide-react'
+import { PLAYER_TIERS, TIER_LABELS, calculateTeamStrength, getTopDogTeamNames, type Team } from '@/entities'
 import { teamNameToNumber } from '@/shared'
 import { getTierColor } from '@/features/player-modal/lib'
 
@@ -10,6 +10,11 @@ import './team-balance-log.scss'
 interface TeamLogProps {
   teams: Team[]
 }
+
+const TIER_ORDER = [PLAYER_TIERS.ACE, PLAYER_TIERS.ADVANCED, PLAYER_TIERS.INTERMEDIATE, PLAYER_TIERS.BEGINNER]
+
+// 팀 번호 → 팀 컬러(--fc-team-*). body 클래스 미장착(FOUC) 대비 인라인 다크 폴백 포함.
+const TEAM_COLORS = ['var(--fc-team-a, #ff681f)', 'var(--fc-team-b, #1890ff)', 'var(--fc-team-c, #52c41a)', 'var(--fc-team-d, #eb2f96)']
 
 export function TeamBalanceLog({ teams }: TeamLogProps) {
   const [visible, setVisible] = useState(false)
@@ -27,24 +32,15 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
     const guestCount = team.players.filter((p) => p.isGuest).length
     const regularCount = team.players.length - guestCount
 
-    const highCount = team.players.filter((p) => p.condition === PLAYER_CONDITIONS.HIGH).length
-    const premiumCount = team.players.filter((p) => PREMIUM_PLAYERS.some((pp) => pp.name === p.name && pp.year === p.year)).length
-
     // 실력 점수 계산 (밸런서와 동일한 가중치 로직 재사용 — 표시값과 실제 밸런싱이 어긋나지 않도록)
     const strength = calculateTeamStrength(team)
-
-    // 최강/약체 판정용 종합 화력: 점수 + HIGH 컨디션 + 프리미엄 선수 수를 가중 합산.
-    const powerScore = strength + highCount * 2 + premiumCount * 3
 
     return {
       team,
       tierCounts,
       guestCount,
       regularCount,
-      highCount,
-      premiumCount,
       strength,
-      powerScore,
       totalPlayers: team.players.length
     }
   })
@@ -54,22 +50,10 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
   const minStrength = Math.min(...teamAnalytics.map((t) => t.strength))
   const avgStrength = teamAnalytics.reduce((sum, t) => sum + t.strength, 0) / teamAnalytics.length
 
-  // 종합 화력 내림차순 정렬 후 상위 floor(N/2)팀을 탑독, 나머지를 언더독으로.
-  // 타이브레이크: powerScore → 팀점수 → 프리미엄 → HIGH → 상위 티어 구성(에이스→상급→중급)
-  // → 팀 이름. 마지막 팀 이름 비교로 완전 동점을 없애 항상 강한/약한 팀이 갈리게 한다.
-  const rankedTeams = [...teamAnalytics].sort(
-    (a, b) =>
-      b.powerScore - a.powerScore ||
-      b.strength - a.strength ||
-      b.premiumCount - a.premiumCount ||
-      b.highCount - a.highCount ||
-      b.tierCounts[PLAYER_TIERS.ACE] - a.tierCounts[PLAYER_TIERS.ACE] ||
-      b.tierCounts[PLAYER_TIERS.ADVANCED] - a.tierCounts[PLAYER_TIERS.ADVANCED] ||
-      b.tierCounts[PLAYER_TIERS.INTERMEDIATE] - a.tierCounts[PLAYER_TIERS.INTERMEDIATE] ||
-      a.team.name.localeCompare(b.team.name)
-  )
-  const topDogCount = Math.max(1, Math.floor(teamAnalytics.length / 2))
-  const topDogTeamNames = new Set(rankedTeams.slice(0, topDogCount).map((t) => t.team.name))
+  // 탑독/언더독 판정은 공용 단일 소스(getTopDogTeamNames)를 소비 — 팀 헤더와 어긋나지 않게.
+  const topDogTeamNames = getTopDogTeamNames(teams)
+
+  const gap = maxStrength - minStrength
 
   function handleCancel() {
     setVisible(false)
@@ -94,107 +78,81 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
         className="team-balance-log-modal"
         onCancel={handleCancel}
       >
-        <Flex vertical onClick={handleCancel}>
-          {/* 전체 통계 요약 */}
-          <Card size="small" className="team-balance-log-total-statistics-card">
-            <Row gutter={16} style={{ textAlign: 'center' }}>
-              <Col span={8}>
-                <Statistic title={<span className="team-balance-log-statistic-title">평균 실력</span>} value={avgStrength.toFixed(1)} />
-              </Col>
-              <Col span={8}>
-                <Statistic title={<span className="team-balance-log-statistic-title">실력 격차</span>} value={maxStrength - minStrength} />
-              </Col>
-              <Col span={8}>
-                <Statistic title={<span className="team-balance-log-statistic-title">총 팀 수</span>} value={teams.length} />
-              </Col>
-            </Row>
-          </Card>
+        <Flex vertical onClick={handleCancel} className="tbl-body">
+          {/* 히어로 요약 */}
+          <div className="tbl-hero">
+            <div className="tbl-hero-main">
+              <span className="tbl-hero-num">{avgStrength.toFixed(1)}</span>
+              <span className="tbl-hero-label">평균 실력</span>
+            </div>
+            <div className="tbl-hero-sub">
+              <div className="tbl-hero-stat">
+                <span className="tbl-hero-stat-k">실력 격차</span>
+                <span className="tbl-hero-stat-v">{gap}점</span>
+              </div>
+              <div className="tbl-hero-stat">
+                <span className="tbl-hero-stat-k">총 팀 수</span>
+                <span className="tbl-hero-stat-v">{teams.length}팀</span>
+              </div>
+            </div>
+          </div>
 
-          <Divider titlePlacement="start">팀별 상세 분석</Divider>
-          {/* 티어 범례 */}
-          <Flex className="team-balance-log-legend" align="center" justify="space-around">
-            <Space>
-              <Tag variant="solid" color={getTierColor(PLAYER_TIERS.ACE)}>{TIER_LABELS[PLAYER_TIERS.ACE]}</Tag>
-              <Tag variant="solid" color={getTierColor(PLAYER_TIERS.ADVANCED)}>{TIER_LABELS[PLAYER_TIERS.ADVANCED]}</Tag>
-              <Tag variant="solid" color={getTierColor(PLAYER_TIERS.INTERMEDIATE)}>{TIER_LABELS[PLAYER_TIERS.INTERMEDIATE]}</Tag>
-              <Tag variant="solid" color={getTierColor(PLAYER_TIERS.BEGINNER)}>{TIER_LABELS[PLAYER_TIERS.BEGINNER]}</Tag>
-            </Space>
-          </Flex>
-
-          <Row gutter={[16, 16]} justify="center">
+          {/* 팀별 상세 */}
+          <div className="tbl-list">
             {teamAnalytics.map((analytics, idx) => {
               const isTopDog = topDogTeamNames.has(analytics.team.name)
+              const teamNo = teamNameToNumber(analytics.team.name) ?? idx + 1
+              const tc = TEAM_COLORS[(teamNo - 1) % TEAM_COLORS.length]
+              const total = analytics.totalPlayers
               return (
-              <Col span={8} key={idx}>
-                <Card
-                  title={
-                    <>
-                      <Users className="icon-users" size="20" />
-                      <strong className="team-balance-log-team-name">{teamNameToNumber(analytics.team.name)}&nbsp;팀</strong>
-                    </>
-                  }
-                  size="small"
-                  className={`team-balance-log-card ` + (isTopDog ? 'team-balance-log-card--max' : 'team-balance-log-card--min')}
-                >
-                  {/* 밸런스 상태 표시 — 종합 화력 상위 절반=탑독 / 하위=언더독 */}
-                  <Flex className="team-balance-log-tier mt-auto" justify="center" align="center">
-                    {isTopDog ? <Tag color="success">탑독</Tag> : <Tag color="error">언더독</Tag>}
-                  </Flex>
+                <div className="tbl-team" key={idx}>
+                  <div className="tbl-team-head">
+                    <span className="tbl-team-name">
+                      <i className="tbl-team-dot" style={{ background: tc }} />
+                      {teamNo}팀
+                      <span className={`tbl-team-role ${isTopDog ? 'is-top' : 'is-under'}`}>{isTopDog ? '🔥 탑독' : '🥊 언더독'}</span>
+                    </span>
+                    <span className="tbl-team-score">
+                      {analytics.strength}
+                      <small>점</small>
+                    </span>
+                  </div>
 
-                  {/* 실력 점수 */}
-                  <Space orientation="vertical" className="team-balance-log-strength-space">
-                    <Flex className="team-balance-log-strength" justify="space-between" align="center" style={{ width: '100%' }}>
-                      <span className="team-balance-log-strength-title">팀 점수</span>
-                      <span className="team-balance-log-strength-value">{analytics.strength}점</span>
-                    </Flex>
-                    <Progress
-                      percent={maxStrength > 0 ? Math.round((analytics.strength / maxStrength) * 100) : 0}
-                      showInfo={false}
-                      strokeColor={{
-                        '0%': '#d05000',
-                        '100%': '#ff9f5f'
-                      }}
-                    />
-                  </Space>
+                  <div className="tbl-bar">
+                    {TIER_ORDER.map((tier) => {
+                      const count = analytics.tierCounts[tier]
+                      if (count === 0 || total === 0) return null
+                      return <span key={tier} className="tbl-bar-seg" style={{ width: `${(count / total) * 100}%`, background: getTierColor(tier) }} />
+                    })}
+                  </div>
 
-                  {/* 티어별 구성 - 숫자만 태그로 표시 */}
-                  <Flex className="team-balance-log-tier mt-8" wrap justify="space-between" gap={4}>
-                    {Object.entries(analytics.tierCounts).map(
-                      ([tier, count]) =>
-                        count > 0 && (
-                          <Tag
-                            key={tier}
-                            variant="solid"
-                            color={getTierColor(tier)}
-                            style={{ margin: '2px', minWidth: 32, textAlign: 'center', fontWeight: 'bold' }}
-                          >
-                            {count}
-                          </Tag>
-                        )
-                    )}
-                  </Flex>
-                </Card>
-              </Col>
+                  <div className="tbl-tierlabels">
+                    {TIER_ORDER.map((tier) => {
+                      const count = analytics.tierCounts[tier]
+                      if (count === 0) return null
+                      return (
+                        <span className="tbl-tl" key={tier}>
+                          <i className="tbl-tl-dot" style={{ background: getTierColor(tier) }} />
+                          {TIER_LABELS[tier]} <b>{count}</b>
+                        </span>
+                      )
+                    })}
+                  </div>
+                </div>
               )
             })}
-          </Row>
+          </div>
 
-          <Divider titlePlacement="start">밸런스 평가</Divider>
-          <Flex justify="center" align="center">
-            {maxStrength - minStrength <= 2 ? (
-              <Tag color="success" className="team-balance-log-tag">
-                ✅&nbsp;&nbsp;매우 균형잡힌 팀 구성
-              </Tag>
-            ) : maxStrength - minStrength <= 4 ? (
-              <Tag color="warning" className="team-balance-log-tag">
-                ⚠️&nbsp;&nbsp;보통 수준의 밸런스
-              </Tag>
+          {/* 밸런스 평가 */}
+          <div className="tbl-verdict">
+            {gap <= 2 ? (
+              <span className="tbl-verdict-badge is-good">✅&nbsp;매우 균형잡힌 팀 구성</span>
+            ) : gap <= 4 ? (
+              <span className="tbl-verdict-badge is-warn">⚠️&nbsp;보통 수준의 밸런스</span>
             ) : (
-              <Tag color="error" className="team-balance-log-tag">
-                ❌&nbsp;&nbsp;밸런스 조정 필요
-              </Tag>
+              <span className="tbl-verdict-badge is-bad">❌&nbsp;밸런스 조정 필요</span>
             )}
-          </Flex>
+          </div>
         </Flex>
       </Modal>
     </>

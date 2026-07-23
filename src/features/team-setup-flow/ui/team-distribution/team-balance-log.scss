@@ -1,6 +1,6 @@
 .team-balance-log-modal {
   .ant-modal-body {
-    padding: 24px 0;
+    padding: 20px;
   }
 }
 
@@ -29,135 +29,211 @@
   color: var(--ant-color-warning);
 }
 
-.team-balance-log-total-statistics-card {
+/* 히어로 요약 */
+.tbl-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block-end: 16px;
   margin-block-end: 16px;
-  background: var(--fc-gradient-cta, linear-gradient(135deg, #ff681f, #ff8f4d));
-
-  .ant-card-body {
-    border-radius: 16px;
-  }
-
-  .ant-statistic-content-value {
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
+  border-block-end: 1px solid var(--ant-color-border);
 }
 
-.team-balance-log-statistic-title {
-  font-weight: 500;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+.tbl-hero-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
-.team-balance-log-tag {
-  font-size: 0.85rem;
+.tbl-hero-num {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ant-color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.tbl-hero-label {
+  font-size: 0.95rem;
   font-weight: 600;
-  padding: 4px 12px;
+  color: var(--ant-color-text-tertiary);
 }
 
-.team-balance-log-legend {
-  margin-block-end: 12px;
-
-  .ant-tag {
-    font-weight: 600;
-    margin-inline-end: 0px;
-  }
+.tbl-hero-sub {
+  display: flex;
+  gap: 18px;
 }
 
-.team-balance-log-tier {
-  &.mt-8 {
-    margin-block-start: 8px;
-  }
-
-  &.mb-12 {
-    margin-block-end: 12px;
-  }
-
-  &.mt-auto {
-    margin-block-start: auto;
-  }
-
-  .ant-tag {
-    font-weight: 600;
-    margin-inline-end: 0px;
-  }
-
+.tbl-hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
-.icon-users {
-  color: var(--ant-color-primary);
-}
-
-.team-balance-log-card {
-  height: 100%;
-  min-height: 200px;
-  border: 1px solid var(--ant-color-border);
-  box-shadow: var(--ant-box-shadow);
-
-  .ant-card-head {
-    align-items: center;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-
-    .ant-card-head-wrapper .ant-card-head-title {
-      display: flex;
-      align-items: center;
-      column-gap: 8px;
-    }
-  }
-
-  .ant-card-body {
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-  }
-
-  &.team-balance-log-card--max {
-    border: 2px solid var(--ant-color-success);
-  }
-
-  &.team-balance-log-card--min {
-    border: 2px solid var(--ant-color-error);
-  }
-}
-
-.dark-mode .team-balance-log-card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-
-  // 초록/빨강 accent 보더(--max/--min)는 유지하고, 기본 카드 테두리만 다크에 맞게 조정
-  &:not(.team-balance-log-card--max):not(.team-balance-log-card--min) {
-    border-color: rgba(253, 253, 253, 0.12);
-  }
-
-  .ant-card-head {
-    background-color: var(--ant-color-bg-layout);
-    border-bottom-color: rgba(253, 253, 253, 0.12);
-  }
-}
-
-.light-mode .team-balance-log-card {
-  .ant-card-head {
-    background-color: var(--ant-color-bg-container);
-    border-bottom-color: rgba(5, 5, 5, 0.06);
-  }
-}
-
-.team-balance-log-strength-space {
-  width: 100%;
-  row-gap: 0px;
-  margin-block-start: 8px;
-
-  .team-balance-log-strength-value {
-    color: var(--ant-color-primary);
-  }
-
-  .ant-progress {
-    width: 100%;
-  }
-}
-
-.team-balance-log-team-name {
-  font-size: 1rem;
+.tbl-hero-stat-k {
+  font-size: 0.95rem;
   font-weight: 500;
+  color: var(--ant-color-text-tertiary);
+}
+
+.tbl-hero-stat-v {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ant-color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 팀별 상세 리스트 */
+.tbl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tbl-team-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: 8px;
+}
+
+.tbl-team-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ant-color-text);
+}
+
+.tbl-team-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.tbl-team-role {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 9px;
+  border-radius: 999px;
+  border: 1.5px solid;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.5;
+
+  // 아웃라인 칩. 탑독=브랜드 주황 테두리, 언더독=중립 테두리. 초록/빨강 값판단은 배제.
+  &.is-top {
+    color: var(--ant-color-primary);
+    border-color: var(--ant-color-primary-border);
+  }
+
+  &.is-under {
+    color: var(--ant-color-text-secondary);
+    border-color: var(--ant-color-border);
+  }
+}
+
+.tbl-team-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ant-color-text);
+  font-variant-numeric: tabular-nums;
+
+  small {
+    margin-inline-start: 1px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ant-color-text-tertiary);
+  }
+}
+
+.tbl-bar {
+  display: flex;
+  height: 9px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: var(--ant-color-fill-secondary);
+}
+
+.tbl-bar-seg {
+  height: 100%;
+}
+
+.tbl-tierlabels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-block-start: 8px;
+}
+
+.tbl-tl {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: var(--ant-color-text-secondary);
+
+  b {
+    font-weight: 700;
+    color: var(--ant-color-text);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tbl-tl-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* 밸런스 평가 */
+.tbl-verdict {
+  display: flex;
+  justify-content: center;
+  margin-block-start: 20px;
+}
+
+.tbl-verdict-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+
+  &.is-good {
+    color: var(--ant-color-success);
+    background: var(--ant-color-success-bg);
+  }
+
+  &.is-warn {
+    color: var(--ant-color-warning);
+    background: var(--ant-color-warning-bg);
+  }
+
+  &.is-bad {
+    color: var(--ant-color-error);
+    background: var(--ant-color-error-bg);
+  }
+}
+
+@media (max-width: 576px) {
+  .tbl-hero {
+    gap: 10px;
+  }
+
+  .tbl-hero-sub {
+    gap: 14px;
+  }
+
+  .tbl-hero-num {
+    font-size: 2.3rem;
+  }
 }

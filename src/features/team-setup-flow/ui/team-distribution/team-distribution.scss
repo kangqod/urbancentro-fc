@@ -16,11 +16,50 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 
-  >span {
+  .team-card-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
     @include sport.sport-headline;
     font-style: normal;
     font-weight: 800;
+  }
+}
+
+// 헤더의 팀색 큐(기존 인원수 배지 배경 대체). 기본 team-a, 2~4팀은 nth-child로 덮어씀.
+.team-card-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  display: inline-block;
+  background: var(--fc-team-a, #ff681f);
+}
+
+// 탑독/언더독 아웃라인 칩. 모달 .tbl-team-role과 동일 톤(antd 토큰만, 값판단 색 배제).
+.team-card-role {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1.5px solid;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+
+  &.is-top {
+    color: var(--ant-color-primary);
+    border-color: var(--ant-color-primary-border);
+  }
+
+  &.is-under {
+    color: var(--ant-color-text-secondary);
+    border-color: var(--ant-color-border);
   }
 }
 
@@ -133,22 +172,17 @@
 // 팀별 고유색 — 컬럼 순서(nth-child)로 팀을 구분한다(컴포넌트 wiring은 건드리지 않는 CSS-only 방식).
 // 기본값(팀1·5번째 이후)은 team-a. 2~4번째 팀만 team-b/c/d로 덮어쓴다.
 .team-row {
-  .ant-col:nth-child(2) .team-card-header .ant-badge-count {
+  .ant-col:nth-child(2) .team-card-dot {
     background: var(--fc-team-b, #1890ff);
   }
 
-  .ant-col:nth-child(3) .team-card-header .ant-badge-count {
+  .ant-col:nth-child(3) .team-card-dot {
     background: var(--fc-team-c, #52c41a);
   }
 
-  .ant-col:nth-child(4) .team-card-header .ant-badge-count {
+  .ant-col:nth-child(4) .team-card-dot {
     background: var(--fc-team-d, #eb2f96);
   }
-}
-
-.team-card-header .ant-badge-count {
-  background: var(--fc-team-a, #ff681f);
-  font-size: 0.95rem;
 }
 
 .player-list {
@@ -445,12 +479,13 @@
       }
     }
 
-    .team-card-header>span {
+    .team-card-title {
       font-size: 1.25rem;
     }
 
-    .team-card-header .ant-badge-count {
-      font-size: 0.95rem;
+    .team-card-role {
+      font-size: 0.7rem;
+      padding-inline: 6px;
     }
   }
 }

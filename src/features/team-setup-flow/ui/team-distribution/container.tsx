@@ -1,5 +1,5 @@
-import { Card, Row, Col, Spin, Badge } from 'antd'
-import { PREMIUM_PLAYERS, PLAYER_CONDITIONS } from '@/entities'
+import { Card, Row, Col, Spin } from 'antd'
+import { PREMIUM_PLAYERS, PLAYER_CONDITIONS, getTopDogTeamNames } from '@/entities'
 import { teamNameToNumber } from '@/shared'
 import { useTeamsValue, useSetSelectedPlayerState } from '../../lib'
 import { PlayerCard } from './player-card'
@@ -14,6 +14,7 @@ export function Container({ isShuffle }: ContainerProps) {
   const updateSelectedPlayer = useSetSelectedPlayerState()
 
   const columnSpan = teams.length % 2 === 0 ? 12 : 8
+  const topDogNames = getTopDogTeamNames(teams)
 
   return (
     <>
@@ -39,8 +40,13 @@ export function Container({ isShuffle }: ContainerProps) {
             <Card
               title={
                 <div className="team-card-header">
-                  <span>{teamNameToNumber(team.name)}&nbsp;팀</span>
-                  <Badge count={team.players.length} />
+                  <span className="team-card-title">
+                    <i className="team-card-dot" />
+                    {teamNameToNumber(team.name)}&nbsp;팀
+                  </span>
+                  <span className={`team-card-role ${topDogNames.has(team.name) ? 'is-top' : 'is-under'}`}>
+                    {topDogNames.has(team.name) ? '🔥 탑독' : '🥊 언더독'}
+                  </span>
                 </div>
               }
               className="team-card"
