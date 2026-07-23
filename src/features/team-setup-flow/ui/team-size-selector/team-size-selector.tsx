@@ -1,24 +1,35 @@
 import { Card, Button, Typography, Row, Col } from 'antd'
-import { Users, ArrowRight } from 'lucide-react'
+import { Shirt, ArrowRight } from 'lucide-react'
 import { MATCH_FORMAT_CONFIG } from '@/entities'
 import { TabFooter, TabHeader } from '@/shared'
 import { useTeamSizeSelector } from './team-size-selector.hooks'
 
 import './team-size-selector.scss'
 
-const { Title, Text } = Typography
+const { Text } = Typography
 
 const ICON_SIZE = {
-  TEAM: 32,
+  TEAM: 26,
   ARROW: 16
 }
 
 const TEAM_OPTION_GROUPS = Object.values(
   Object.values(MATCH_FORMAT_CONFIG).reduce<
-    Record<number, { teamCount: number; options: { id: string; title: string; description: string }[] }>
+    Record<
+      number,
+      {
+        teamCount: number
+        options: { id: string; title: string; playersPerTeam: number; totalPlayers: number }[]
+      }
+    >
   >((groups, config) => {
     const group = (groups[config.TEAM_COUNT] ??= { teamCount: config.TEAM_COUNT, options: [] })
-    group.options.push({ id: config.ID, title: config.TITLE, description: config.DESCRIPTION })
+    group.options.push({
+      id: config.ID,
+      title: config.TITLE,
+      playersPerTeam: config.PLAYERS_PER_TEAM,
+      totalPlayers: config.PLAYERS_PER_TEAM * config.TEAM_COUNT
+    })
     return groups
   }, {})
 ).sort((a, b) => a.teamCount - b.teamCount)
@@ -47,14 +58,20 @@ export function TeamSizeSelector() {
                     className="team-option-button"
                     onClick={handleOptionClick(option.id)}
                     aria-pressed={selectedOption === option.id}
-                    aria-label={`${option.title} ${option.description}`}
+                    aria-label={`${group.teamCount}팀, 팀당 ${option.playersPerTeam}명, 총 ${option.totalPlayers}명`}
                   >
                     <div className="team-option-content">
-                      <Users size={ICON_SIZE.TEAM} className={selectedOption === option.id ? 'icon-selected' : 'icon-default'} />
-                      <Title level={5} className="option-title">
-                        {option.title}
-                      </Title>
-                      <Text type="secondary">{option.description}</Text>
+                      <div className="team-option-jerseys" aria-hidden="true">
+                        {Array.from({ length: group.teamCount }).map((_, i) => (
+                          <span key={i} className="team-jersey">
+                            <Shirt size={ICON_SIZE.TEAM} />
+                            <span className="team-jersey-num">{option.playersPerTeam}</span>
+                          </span>
+                        ))}
+                      </div>
+                      <Text type="secondary" className="team-option-format">
+                        총 {option.totalPlayers}명
+                      </Text>
                     </div>
                   </button>
                 </Card>

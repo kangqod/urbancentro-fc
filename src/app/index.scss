@@ -1,3 +1,5 @@
+@use '@/shared/assets/sport';
+
 html,
 body {
   margin: 0;
@@ -9,6 +11,46 @@ body {
 
 #root {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1120px;
   margin-inline: auto;
+}
+
+// a11y: 모션 축소 선호 시 애니메이션/트랜지션을 제거하지 않고 즉시 완료(fast-forward)시킨다.
+// antd v6 는 @rc-component/motion 으로 Modal/Tabs/Dropdown enter/leave 를 구동하므로
+// none 처리하면 이벤트가 안 끝나 중간에 멈춘다. 아래 레시피는 이벤트를 유지한 채 빠르게 끝낸다.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// 브라우저 자동완성(autofill) 배경/글자색을 테마 토큰에 맞춘다.
+// 브라우저는 autofill 배경을 background-color 로 직접 덮지 못하게 막으므로 큰 inset box-shadow 로 덮는다.
+// antd CSS 변수를 쓰므로 라이트/다크가 자동으로 반영된다(입력창 기본 배경색과 동일).
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--ant-color-bg-container) inset !important;
+  -webkit-text-fill-color: var(--ant-color-text) !important;
+  caret-color: var(--ant-color-text);
+  // 노란 배경이 잠깐 번쩍이는 브라우저 트랜지션을 사실상 정지시킨다.
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+// 표준/Firefox autofill
+input:autofill,
+textarea:autofill,
+select:autofill {
+  box-shadow: 0 0 0 1000px var(--ant-color-bg-container) inset !important;
+  -webkit-text-fill-color: var(--ant-color-text) !important;
 }

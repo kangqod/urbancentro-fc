@@ -153,11 +153,19 @@
   },
   {
     "year": "1989",
+    "number": 0,
+    "name": "오정오",
+    "tier": "초급",
+    "strength": "",
+    "attributes": [""]
+  },
+  {
+    "year": "1989",
     "number": 1,
     "name": "윤용준",
     "tier": "중급",
-    "strength": "데이터 부족",
-    "attributes": ["빠른 참석 요망"]
+    "strength": "",
+    "attributes": [""]
   },
   {
     "year": "1989",

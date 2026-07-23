@@ -15,11 +15,13 @@
 
   &.selected {
     border: 2px solid var(--ant-color-primary);
+    box-shadow: 0 4px 14px var(--fc-glow, rgba(255, 104, 31, 0.45));
   }
 }
 
 .ant-card.team-option-card .ant-card-body {
   padding: 0;
+  border-radius: 16px;
 }
 
 .team-option-button {
@@ -34,20 +36,46 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0;
+  gap: 0.4rem;
+  padding: 0.6rem 0;
+
+  // 2줄: 총 인원 — 보조(회색), 작게
+  .team-option-format {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ant-color-text-secondary);
+  }
 }
 
-.icon-selected {
-  color: var(--ant-color-primary);
+// 1줄: 팀 수만큼 유니폼 + 인원 배지 나열
+.team-option-jerseys {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
 }
 
-.icon-default {
+.team-jersey {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
   color: var(--ant-color-text-tertiary);
+  transition: color 0.3s ease;
 }
 
-.option-title {
-  margin: 0 !important;
+.team-jersey-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ant-color-text-secondary);
+  transition: color 0.3s ease;
+}
+
+.team-option-card.selected {
+  .team-jersey,
+  .team-jersey-num {
+    color: var(--ant-color-primary);
+  }
 }
 
 .team-option-group {

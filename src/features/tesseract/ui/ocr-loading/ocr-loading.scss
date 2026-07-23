@@ -1,3 +1,5 @@
+@use '@/shared/assets/sport' as sport;
+
 .ocr-loading {
   position: fixed;
   inset: 0;
@@ -80,7 +82,7 @@
   height: 14px;
   border-radius: 50%;
   background: var(--ant-color-fill-secondary);
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  transition: background var(--fc-motion-mid, 0.25s) ease, box-shadow var(--fc-motion-mid, 0.25s) ease;
 }
 
 .ocr-loading__step.is-done .ocr-loading__dot,
@@ -89,14 +91,14 @@
 }
 
 .ocr-loading__step.is-active .ocr-loading__dot {
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ant-color-primary) 25%, transparent);
+  box-shadow: 0 0 0 4px var(--fc-glow, rgba(255, 104, 31, 0.45));
 }
 
 .ocr-loading__label {
   margin-top: 0.45rem;
   font-size: 0.75rem;
   color: var(--ant-color-text-tertiary);
-  transition: color 0.3s ease;
+  transition: color var(--fc-motion-mid, 0.25s) ease;
 }
 
 .ocr-loading__step.is-done .ocr-loading__label,
@@ -116,8 +118,8 @@
 .ocr-loading__bar-fill {
   height: 100%;
   border-radius: 999px;
-  background: var(--ant-color-primary);
-  transition: width 0.3s ease;
+  background: var(--fc-gradient-cta, linear-gradient(135deg, #ff681f, #ff8f4d));
+  transition: width var(--fc-motion-mid, 0.25s) ease;
 }
 
 .ocr-loading__percent {

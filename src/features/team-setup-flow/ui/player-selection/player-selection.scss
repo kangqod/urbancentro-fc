@@ -1,3 +1,5 @@
+@use '@/shared/assets/sport' as sport;
+
 .player-selection-container {
   display: flex;
   flex-direction: column;
@@ -56,13 +58,14 @@
 }
 
 .ant-card.player-card .ant-card-body {
-  border-radius: 8px;
+  border-radius: 16px;
   padding-block: 0.8rem;
   background-color: var(--ant-color-bg-container);
 }
 
 .player-card.selected {
   border: 2px solid var(--ant-color-primary);
+  box-shadow: 0 4px 14px var(--fc-glow, rgba(255, 104, 31, 0.45));
 }
 
 .player-card-content {
@@ -73,6 +76,10 @@
 
 .player-card-content .ant-checkbox-wrapper.detail-mode {
   display: none;
+}
+
+.player-card-content.detail-mode {
+  justify-content: center;
 }
 
 .player-info {
@@ -109,9 +116,16 @@
   justify-content: flex-end;
 }
 
-.add-guest-button {
+.add-guest-button,
+.detail-button {
+  @include sport.sport-cta;
   display: flex;
   align-items: center;
+  transition: transform var(--fc-motion-fast, 0.15s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+
+  &:hover {
+    transform: translateY(-1px);
+  }
 }
 
 /* 스크롤바 스타일링 */
@@ -120,28 +134,16 @@
 }
 
 .players-scroll-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--ant-color-fill-tertiary);
   border-radius: 3px;
 }
 
 .players-scroll-container::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--ant-color-fill-secondary);
   border-radius: 3px;
 }
 
 .players-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-.dark-mode .players-scroll-container::-webkit-scrollbar-track {
-  background: #333;
-}
-
-.dark-mode .players-scroll-container::-webkit-scrollbar-thumb {
-  background: #555;
-}
-
-.dark-mode .players-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: #777;
+  background: var(--ant-color-border);
 }
 

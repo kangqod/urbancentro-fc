@@ -18,6 +18,19 @@ body {
   justify-content: center;
   align-items: center;
   padding: 0 2rem;
+
+  // 스포츠 아이덴티티 액센트 스트라이프 — 헤더 밴드 하단
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--fc-gradient-cta, linear-gradient(135deg, #ff681f, #ff8f4d));
+    opacity: 0.85;
+  }
+
   @media (max-width: 576px) {
     justify-content: space-between;
     padding-inline: 2rem;

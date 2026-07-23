@@ -26,12 +26,16 @@
 }
 
 .icon-trophy-title {
-  color: #faad14;
+  color: var(--ant-color-warning);
 }
 
 .team-balance-log-total-statistics-card {
   margin-block-end: 16px;
-  background: linear-gradient(120deg, #d35400 0%, #ff9b5c 100%);
+  background: var(--fc-gradient-cta, linear-gradient(135deg, #ff681f, #ff8f4d));
+
+  .ant-card-body {
+    border-radius: 16px;
+  }
 
   .ant-statistic-content-value {
     font-weight: 700;
@@ -94,8 +98,8 @@
 
   .ant-card-head {
     align-items: center;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
 
     .ant-card-head-wrapper .ant-card-head-title {
       display: flex;
@@ -104,12 +108,17 @@
     }
   }
 
+  .ant-card-body {
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
+
   &.team-balance-log-card--max {
-    border: 2px solid #52c41a;
+    border: 2px solid var(--ant-color-success);
   }
 
   &.team-balance-log-card--min {
-    border: 2px solid #ff4d4f;
+    border: 2px solid var(--ant-color-error);
   }
 }
 

@@ -38,11 +38,23 @@ export function Provider() {
         algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
         token: {
           colorPrimary: PRIMARY_COLOR,
-          borderRadius: 6,
           fontFamily,
-          // 라이트/다크 공용 엘리베이션 스케일 (rest / hover 단계)
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
-          boxShadowSecondary: '0 4px 12px rgba(0, 0, 0, 0.10)',
+          // 스포츠·에너지틱 라운드: 컨트롤 10 / 카드 16
+          borderRadius: 10,
+          borderRadiusLG: 16,
+          // CTA 임팩트 + 터치 타깃 확대
+          controlHeight: 40,
+          controlHeightLG: 48,
+          // 헤딩 타입 스케일 업
+          fontSize: 15,
+          fontSizeHeading3: 28,
+          fontSizeHeading4: 22,
+          // antd 컴포넌트 트랜지션 타이밍 통일
+          motionDurationMid: '0.25s',
+          motionEaseInOut: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          // 라이트/다크 공용 엘리베이션 스케일 — 에너지틱 리프트
+          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
+          boxShadowSecondary: '0 8px 24px rgba(0, 0, 0, 0.14)',
           ...(isDarkMode ? darkSurfaceTokens : lightSurfaceTokens)
         }
       }}

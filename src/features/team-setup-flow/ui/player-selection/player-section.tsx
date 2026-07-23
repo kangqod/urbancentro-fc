@@ -19,7 +19,7 @@ export function PlayerSection({ detailMode, onClickPlayer }: PlayerSectionProps)
           return (
             <Col xs={12} sm={12} md={8} key={player.id}>
               <Card hoverable className={`player-card ${selectMode ? 'selected' : ''}`} onClick={onClickPlayer(player)}>
-                <div className="player-card-content">
+                <div className={`player-card-content ${detailMode ? 'detail-mode' : ''}`}>
                   <Checkbox checked={selectMode} className={`${detailMode ? 'detail-mode' : ''}`} />
                   <div className="player-info">
                     <div className="player-name-container">

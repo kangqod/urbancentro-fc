@@ -1,7 +1,10 @@
+@use '@/shared/assets/sport' as sport;
+
 .player-modal-title {
   display: flex;
   align-items: center;
   gap: 12px;
+  @include sport.sport-headline;
 }
 
 .player-name {
@@ -10,6 +13,7 @@
   column-gap: 10px;
   font-size: 24px;
   font-weight: 600;
+  font-style: normal;
 }
 
 .ant-descriptions .ant-descriptions-item-container .ant-descriptions-item-label {
@@ -62,21 +66,21 @@
 }
 
 .tier-icon {
-  color: #1890ff;
+  color: var(--fc-team-b, #1890ff);
 }
 
 .flame-icon {
-  color: #ff681f;
+  color: var(--ant-color-primary);
 }
 
 .zap-icon {
-  color: #faad14;
+  color: var(--ant-color-warning);
 }
 
 .attribute-icon {
-  color: #52c41a;
+  color: var(--ant-color-success);
 }
 
 .shirt-icon {
-  color: #13c2c2;
+  color: var(--fc-team-b, #1890ff);
 }

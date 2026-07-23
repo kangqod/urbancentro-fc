@@ -11,15 +11,17 @@ export function useToastMessage() {
   const availablePlayerCount = useAvailablePlayerCountValue()
 
   useEffect(() => {
-    const newStatus = getSelectionStatus(availablePlayerCount, requiredPlayers)
-    if (activeTab === TabMenu.PlayerSelection) {
-      // PLAYER_SELECTION 탭일 때만
-      messageApi.open({
-        key: TabMenu.PlayerSelection,
-        type: newStatus.type as 'warning' | 'error' | 'success',
-        content: newStatus.message
-      })
+    // 선수 선택 탭을 벗어나면 남아 있던 토스트를 즉시 닫는다(분배 탭까지 잔상이 넘어가지 않도록).
+    if (activeTab !== TabMenu.PlayerSelection) {
+      messageApi.destroy(TabMenu.PlayerSelection)
+      return
     }
+    const newStatus = getSelectionStatus(availablePlayerCount, requiredPlayers)
+    messageApi.open({
+      key: TabMenu.PlayerSelection,
+      type: newStatus.type as 'warning' | 'error' | 'success',
+      content: newStatus.message
+    })
   }, [availablePlayerCount, messageApi, activeTab, requiredPlayers])
 
   return { contextHolder }

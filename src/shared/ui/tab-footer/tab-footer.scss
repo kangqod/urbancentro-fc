@@ -1,8 +1,10 @@
+@use '@/shared/assets/sport' as sport;
+
 .tab-footer {
   padding: 1rem 0;
   position: fixed;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1120px;
   bottom: 0;
   z-index: 1;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
@@ -40,6 +42,24 @@
   .prev-button {
     &.ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):hover {
       background-color: var(--ant-color-fill-secondary);
+    }
+  }
+
+  .next-button,
+  .shuffle-button {
+    @include sport.sport-cta;
+    transition: box-shadow var(--fc-motion-mid, 0.25s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+      transform var(--fc-motion-fast, 0.15s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+
+    &:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px var(--fc-glow, rgba(255, 104, 31, 0.45));
+    }
+
+    &:disabled {
+      color: var(--ant-color-text-tertiary);
+      background: var(--ant-color-fill-secondary);
+      box-shadow: none;
     }
   }
 }

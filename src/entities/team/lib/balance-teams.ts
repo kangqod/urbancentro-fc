@@ -9,7 +9,7 @@ import {
   scoreArrangement,
   strengthGap
 } from './balance-score'
-import { BEST_PLAYERS, CONDITION_EXEMPT_NAMES, EXCLUDED_PAIRS, RAINBOW_PLAYERS } from './constants'
+import { CONDITION_EXEMPT_NAMES, EXCLUDED_PAIRS, PREMIUM_PLAYERS } from './constants'
 
 // calculateTeamStrength 은 balance-score 로 이동했으나 공개 표면 유지를 위해 재export 한다.
 // (index.ts 가 './balance-teams' 에서 calculateTeamStrength 를 export 하고,
@@ -144,8 +144,7 @@ export function setPlayerCondition(team: Team): void {
 
     if (CONDITION_EXEMPT_NAMES.includes(player.name)) continue
     if (player.condition === PLAYER_CONDITIONS.HIGH) continue
-    if (RAINBOW_PLAYERS.some((p) => p.name === player.name && p.year === player.year)) continue
-    if (BEST_PLAYERS.some((p) => p.name === player.name && p.year === player.year)) continue
+    if (PREMIUM_PLAYERS.some((p) => p.name === player.name && p.year === player.year)) continue
 
     const probability = i === 1 ? 0.7 : i === 2 ? 0.3 : 0.02
     if (Math.random() < probability) {
@@ -157,8 +156,7 @@ export function setPlayerCondition(team: Team): void {
     const candidates = team.players.filter(
       (p) =>
         !CONDITION_EXEMPT_NAMES.includes(p.name) &&
-        !RAINBOW_PLAYERS.some((rp) => rp.name === p.name && rp.year === p.year) &&
-        !BEST_PLAYERS.some((bp) => bp.name === p.name && bp.year === p.year)
+        !PREMIUM_PLAYERS.some((pp) => pp.name === p.name && pp.year === p.year)
     )
     if (candidates.length > 0) {
       const randomIdx = Math.floor(Math.random() * candidates.length)

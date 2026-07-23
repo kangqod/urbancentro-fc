@@ -1,9 +1,16 @@
+@use '@/shared/assets/sport' as sport;
+
 .tab-header {
   display: flex;
   flex-direction: column;
   margin-bottom: 1.5rem;
   flex-shrink: 0;
   text-align: center;
+
+  h4 {
+    @include sport.sport-headline;
+    font-style: normal;
+  }
 }
 
 @media (max-width: 576px) {

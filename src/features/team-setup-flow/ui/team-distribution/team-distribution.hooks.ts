@@ -74,7 +74,7 @@ export function useTeamDistribution() {
         setTimeout(() => {
           const balancedTeams = balanceTeams(availablePlayers, mode)
           resolve(balancedTeams)
-        }, 800)
+        }, 1100)
       })
 
       setTeams(newTeams)

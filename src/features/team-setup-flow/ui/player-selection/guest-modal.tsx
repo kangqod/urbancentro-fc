@@ -18,19 +18,20 @@ export function GuestModal({ form, isModalOpen, onOpenModal }: GuestModalProps) 
 
   return (
     <Modal title="게스트 추가" width={350} open={isModalOpen} onCancel={handleClose} footer={null}>
-      <Form form={form} layout="vertical" size="large" onFinish={onFinish}>
-        <Form.Item name="name" label="이름" rules={[{ required: true, message: '이름을 입력해주세요' }]}>
+      <Form form={form} layout="vertical" size="large" onFinish={onFinish} className="guest-modal-form">
+        <Form.Item name="name" label="이름" rules={[{ required: true, message: '' }]}>
           <Input placeholder="게스트 이름" className="input-guest-name" />
         </Form.Item>
 
         <Form.Item name="matchedPlayer" label="매칭할 선수 선택">
           <Flex vertical>
             <Select
-              showSearch
               allowClear
+              showSearch={{
+                optionFilterProp: 'children',
+                filterOption: (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              }}
               placeholder="기존 선수 중 선택하세요"
-              optionFilterProp="children"
-              filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
               options={playerOptions}
               onChange={handlePlayerSelect}
             />

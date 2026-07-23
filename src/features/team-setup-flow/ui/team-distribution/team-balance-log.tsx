@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Modal, Button, Card, Row, Col, Tag, Progress, Divider, Statistic, Space, Flex } from 'antd'
 import { Trophy, Users } from 'lucide-react'
-import { PLAYER_TIERS, TIER_LABELS, calculateTeamStrength, type Team } from '@/entities'
+import { PLAYER_TIERS, TIER_LABELS, PLAYER_CONDITIONS, PREMIUM_PLAYERS, calculateTeamStrength, type Team } from '@/entities'
 import { teamNameToNumber } from '@/shared'
 import { getTierColor } from '@/features/player-modal/lib'
 
@@ -27,15 +27,24 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
     const guestCount = team.players.filter((p) => p.isGuest).length
     const regularCount = team.players.length - guestCount
 
+    const highCount = team.players.filter((p) => p.condition === PLAYER_CONDITIONS.HIGH).length
+    const premiumCount = team.players.filter((p) => PREMIUM_PLAYERS.some((pp) => pp.name === p.name && pp.year === p.year)).length
+
     // 실력 점수 계산 (밸런서와 동일한 가중치 로직 재사용 — 표시값과 실제 밸런싱이 어긋나지 않도록)
     const strength = calculateTeamStrength(team)
+
+    // 최강/약체 판정용 종합 화력: 점수 + HIGH 컨디션 + 프리미엄 선수 수를 가중 합산.
+    const powerScore = strength + highCount * 2 + premiumCount * 3
 
     return {
       team,
       tierCounts,
       guestCount,
       regularCount,
+      highCount,
+      premiumCount,
       strength,
+      powerScore,
       totalPlayers: team.players.length
     }
   })
@@ -44,6 +53,23 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
   const maxStrength = Math.max(...teamAnalytics.map((t) => t.strength))
   const minStrength = Math.min(...teamAnalytics.map((t) => t.strength))
   const avgStrength = teamAnalytics.reduce((sum, t) => sum + t.strength, 0) / teamAnalytics.length
+
+  // 종합 화력 내림차순 정렬 후 상위 floor(N/2)팀을 탑독, 나머지를 언더독으로.
+  // 타이브레이크: powerScore → 팀점수 → 프리미엄 → HIGH → 상위 티어 구성(에이스→상급→중급)
+  // → 팀 이름. 마지막 팀 이름 비교로 완전 동점을 없애 항상 강한/약한 팀이 갈리게 한다.
+  const rankedTeams = [...teamAnalytics].sort(
+    (a, b) =>
+      b.powerScore - a.powerScore ||
+      b.strength - a.strength ||
+      b.premiumCount - a.premiumCount ||
+      b.highCount - a.highCount ||
+      b.tierCounts[PLAYER_TIERS.ACE] - a.tierCounts[PLAYER_TIERS.ACE] ||
+      b.tierCounts[PLAYER_TIERS.ADVANCED] - a.tierCounts[PLAYER_TIERS.ADVANCED] ||
+      b.tierCounts[PLAYER_TIERS.INTERMEDIATE] - a.tierCounts[PLAYER_TIERS.INTERMEDIATE] ||
+      a.team.name.localeCompare(b.team.name)
+  )
+  const topDogCount = Math.max(1, Math.floor(teamAnalytics.length / 2))
+  const topDogTeamNames = new Set(rankedTeams.slice(0, topDogCount).map((t) => t.team.name))
 
   function handleCancel() {
     setVisible(false)
@@ -96,7 +122,9 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
           </Flex>
 
           <Row gutter={[16, 16]} justify="center">
-            {teamAnalytics.map((analytics, idx) => (
+            {teamAnalytics.map((analytics, idx) => {
+              const isTopDog = topDogTeamNames.has(analytics.team.name)
+              return (
               <Col span={8} key={idx}>
                 <Card
                   title={
@@ -106,24 +134,11 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                     </>
                   }
                   size="small"
-                  className={
-                    `team-balance-log-card ` +
-                    (analytics.strength === maxStrength
-                      ? 'team-balance-log-card--max'
-                      : analytics.strength === minStrength
-                      ? 'team-balance-log-card--min'
-                      : '')
-                  }
+                  className={`team-balance-log-card ` + (isTopDog ? 'team-balance-log-card--max' : 'team-balance-log-card--min')}
                 >
-                  {/* 밸런스 상태 표시 */}
+                  {/* 밸런스 상태 표시 — 종합 화력 상위 절반=탑독 / 하위=언더독 */}
                   <Flex className="team-balance-log-tier mt-auto" justify="center" align="center">
-                    {analytics.strength === maxStrength ? (
-                      <Tag color="success">최강팀</Tag>
-                    ) : analytics.strength === minStrength ? (
-                      <Tag color="error">약체팀</Tag>
-                    ) : (
-                      <Tag color="default">균형팀</Tag>
-                    )}
+                    {isTopDog ? <Tag color="success">탑독</Tag> : <Tag color="error">언더독</Tag>}
                   </Flex>
 
                   {/* 실력 점수 */}
@@ -160,7 +175,8 @@ export function TeamBalanceLog({ teams }: TeamLogProps) {
                   </Flex>
                 </Card>
               </Col>
-            ))}
+              )
+            })}
           </Row>
 
           <Divider titlePlacement="start">밸런스 평가</Divider>

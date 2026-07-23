@@ -1,0 +1,60 @@
+// 스포츠·에너지틱 아이덴티티 중 antd 토큰으로 표현 불가능한 부분만 이곳에 모은다.
+// 타이포 스포츠 트리트먼트(대문자/이탤릭/자간/굵기) + 브랜드 커스텀 프로퍼티(--fc-*) + 모션 타이밍.
+// 폰트 패밀리는 Pretendard 유지(상속) — 여기서 바꾸지 않는다.
+
+// 헤드라인·CTA 라벨 전용. 본문/인풋에는 쓰지 않는다(한글 가독성).
+@mixin sport-headline {
+  font-style: italic;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+// 오렌지 그라디언트 + 글로우 CTA. body 클래스 미장착 구간(FOUC) 대비 인라인 다크 폴백 포함.
+@mixin sport-cta {
+  background: var(--fc-gradient-cta, linear-gradient(135deg, #ff681f, #ff8f4d));
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--fc-glow, rgba(255, 104, 31, 0.45));
+}
+
+// 브랜드 커스텀 프로퍼티: body 는 --ant-color-* 변수 트리 밖이므로 다크/라이트 각각 명시 정의한다.
+// 소비 측은 항상 var(--fc-x, <다크값>) 형태로 인라인 다크 폴백을 함께 쓴다(§3.2).
+body.dark-mode {
+  --fc-team-a: #ff681f;
+  --fc-team-b: #1890ff;
+  --fc-team-c: #52c41a;
+  --fc-team-d: #eb2f96;
+  --fc-gradient-cta: linear-gradient(135deg, #ff681f, #ff8f4d);
+  --fc-glow: rgba(255, 104, 31, 0.45);
+  --fc-accent-advanced: #fa8c16;
+
+  // 특별 선수(premium/high) 강조: 주황 그라데이션 링 + 광택 스윕 색.
+  --fc-gradient-premium: linear-gradient(120deg, #ff5a00, #ffb056 50%, #ff5a00);
+  --fc-premium-sheen: rgba(255, 255, 255, 0.42);
+  --fc-premium-sheen-strong: rgba(255, 255, 255, 0.9);
+  --fc-premium-spark-glyph: '✨';
+
+  --fc-motion-fast: 0.15s;
+  --fc-motion-mid: 0.25s;
+  --fc-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.light-mode {
+  --fc-team-a: #ff681f;
+  --fc-team-b: #1677ff;
+  --fc-team-c: #389e0d;
+  --fc-team-d: #c41d7f;
+  --fc-gradient-cta: linear-gradient(135deg, #ff681f, #ff8f4d);
+  --fc-glow: rgba(255, 104, 31, 0.30);
+  --fc-accent-advanced: #d46b08;
+
+  // 라이트 모드: 흰 광택은 밝은 배경에서 죽으므로 주황 글린트로 대체, 반짝임은 따봉(👍)이 잘 보임.
+  --fc-gradient-premium: linear-gradient(120deg, #e85400, #ff9d4d 50%, #e85400);
+  --fc-premium-sheen: rgba(255, 150, 70, 0.35);
+  --fc-premium-sheen-strong: rgba(255, 125, 35, 0.7);
+  --fc-premium-spark-glyph: '👍';
+
+  --fc-motion-fast: 0.15s;
+  --fc-motion-mid: 0.25s;
+  --fc-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}

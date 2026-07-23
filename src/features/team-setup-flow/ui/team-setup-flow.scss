@@ -1,9 +1,18 @@
+@use '@/shared/assets/sport' as sport;
+
 .tab-menu {
   display: flex;
   flex-direction: column;
   align-items: center;
   row-gap: 4px;
   padding: 4px 8px;
+  transition: transform var(--fc-motion-fast, 0.15s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+
+  span {
+    @include sport.sport-headline;
+    font-style: normal;
+    font-size: 1rem;
+  }
 }
 
 .ant-tabs {
@@ -18,11 +27,32 @@
   .ant-tabs-tab .ant-tabs-tab-btn,
   .ant-tabs-tab-btn:focus:not(:focus-visible) {
     color: var(--ant-color-text-tertiary);
+    transition: color var(--fc-motion-mid, 0.25s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  }
+
+  // 현재 탭만 hover 시 살짝 뜬다(비활성 탭은 정적).
+  .ant-tabs-tab.ant-tabs-tab-active:hover .tab-menu {
+    transform: translateY(-2px);
   }
 
   .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
     color: var(--ant-color-primary);
     text-shadow: 0 0 0.25px currentcolor;
+  }
+
+  // 현재 탭이 아니면 선택 불가한 비활성(disabled) 느낌: 더 흐린 색 + 낮은 불투명도 + not-allowed 커서.
+  .ant-tabs-tab:not(.ant-tabs-tab-active) {
+    cursor: not-allowed;
+
+    .ant-tabs-tab-btn {
+      color: var(--ant-color-text-quaternary);
+      opacity: 0.45;
+    }
+  }
+
+  .ant-tabs-ink-bar {
+    background: var(--fc-gradient-cta, linear-gradient(135deg, #ff681f, #ff8f4d));
+    height: 3px;
   }
 
   .ant-tabs-content:focus-visible {

@@ -66,12 +66,14 @@ export const MATCH_FORMAT_CONFIG = {
   }
 } as const
 
-export const RAINBOW_PLAYERS = [
+// 특별 선수(구 무지개 + 베스트 통합). 강조 이펙트·밸런싱 예외를 동일하게 받는다.
+export const PREMIUM_PLAYERS = [
+  { name: '김동수', year: '1989' },
+  { name: '이원식', year: '1989' },
   { name: '조용일', year: '1986' },
+  { name: '박준범', year: '1989' },
   { name: '박근휘', year: '1989' }
 ]
-
-export const BEST_PLAYERS = [{ name: '박준범', year: '1989' }]
 
 // 같은 팀에 두면 안 되는 선수 쌍 (밸런서가 다른 팀으로 분리한다)
 export const EXCLUDED_PAIRS: string[][] = [['지원 1', '지원 2']]

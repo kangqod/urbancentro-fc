@@ -1,11 +1,12 @@
 @use '@/shared/assets/variables' as var;
+@use '@/shared/assets/sport' as sport;
 
 .ant-layout {
   .ant-layout-header {
     &.team-header {
       display: flex;
       justify-content: center;
-      height: 64px;
+      height: 80px;
       padding: 0;
       align-items: center;
       background-color: transparent;
@@ -18,12 +19,19 @@
         align-items: center;
         gap: 8px;
         .ant-typography {
+          @include sport.sport-headline;
+          text-transform: none;
+          font-weight: 800;
           margin: 0;
           color: var(--ant-color-text);
         }
         .icon-users {
-          color: var.$primary-color;
+          color: var(--ant-color-primary);
+          transition: transform var(--fc-motion-fast, 0.15s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
         }
+      }
+      &:hover .icon-users {
+        transform: scale(1.1) rotate(-4deg);
       }
     }
   }

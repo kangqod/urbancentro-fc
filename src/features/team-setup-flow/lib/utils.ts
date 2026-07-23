@@ -25,11 +25,11 @@ export function getSelectionStatus(count: number, requiredPlayers: number) {
 
 export function getTeamsText(teams: Team[]) {
   return teams
-    .map((team) => {
+    .map((team, index) => {
       const playerList = team.players
         .map((p) => `${p.year ? `${p.year.slice(-2)}` : '99'} ${p.name} [${TIER_LABELS[p.tier] ?? p.tier}] ${p.condition === PLAYER_CONDITIONS.HIGH ? '↑' : ''}`.trimEnd())
         .join('\n')
-      return `${team.name}\n${playerList}`
+      return `${index + 1}팀\n${playerList}`
     })
     .join('\n\n')
 }

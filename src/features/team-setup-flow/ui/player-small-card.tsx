@@ -29,7 +29,10 @@ export function PlayerSmallCard({ player }: { player: Player }) {
 
   return (
     <Text strong>
-      {player.year.slice(-2)}&nbsp;{player.name}
+      <Text type="secondary" style={{ fontSize: '0.8em', fontWeight: 400 }}>
+        {player.year.slice(-2)}
+      </Text>
+      &nbsp;{player.name}
     </Text>
   )
 }

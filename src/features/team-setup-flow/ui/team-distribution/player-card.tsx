@@ -1,23 +1,26 @@
-import { type Player, PLAYER_CONDITIONS } from '@/entities'
+import { type Player } from '@/entities'
 import { PlayerSmallCard } from '../player-small-card'
-import { Wavy } from './wavy'
 
 interface PlayerCardProps {
   player: Player
-  isBestPlayer: boolean
+  special: boolean
 }
 
-export function PlayerCard({ player, isBestPlayer }: PlayerCardProps) {
-  if (isBestPlayer || player.condition === PLAYER_CONDITIONS.HIGH) {
-    return (
-      <div className="card-container">
-        <div className="card" />
-        <PlayerSmallCard player={player} />
-
-        <Wavy />
-      </div>
-    )
-  }
-
-  return <PlayerSmallCard player={player} />
+export function PlayerCard({ player, special }: PlayerCardProps) {
+  return (
+    <>
+      {special && (
+        <>
+          <span className="fx-shine" aria-hidden="true" />
+          <span className="fx-sparks" aria-hidden="true">
+            <span className="fx-spark" />
+            <span className="fx-spark" />
+            <span className="fx-spark" />
+            <span className="fx-spark" />
+          </span>
+        </>
+      )}
+      <PlayerSmallCard player={player} />
+    </>
+  )
 }
