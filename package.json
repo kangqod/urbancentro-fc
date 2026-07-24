@@ -6,7 +6,8 @@
   "homepage": "https://kangqod.github.io/urbancentro-fc",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/check-build-manifest.mjs",
+    "check:build": "node scripts/check-build-manifest.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "pages": "pnpm build && gh-pages -d dist",
