@@ -27,6 +27,7 @@ function makePlayer(overrides: Partial<Player> = {}): Player {
     number: overrides.number ?? 1,
     isGuest: overrides.isGuest ?? false,
     isActiveForMatch: overrides.isActiveForMatch ?? true,
+    isPremium: overrides.isPremium ?? false,
     strength: overrides.strength,
     connectedPlayerIds: overrides.connectedPlayerIds ?? []
   }
@@ -193,13 +194,13 @@ describe('balance-teams helpers', () => {
     expect(sameTeam).toBe(false)
   })
 
-  it('setPlayerCondition keeps support/rainbow/best players from being HIGH', () => {
+  it('setPlayerCondition keeps support/premium players from being HIGH', () => {
     vi.spyOn(Math, 'random').mockReturnValueOnce(0.99).mockReturnValueOnce(0.99).mockReturnValueOnce(0.99).mockReturnValueOnce(0)
 
     const team = makeTeam('A', [
       makePlayer({ id: 'j1', name: '지원 1' }),
-      makePlayer({ id: 'rainbow', name: '조용일', year: '1986' }),
-      makePlayer({ id: 'best', name: '박준범', year: '1989' }),
+      makePlayer({ id: 'rainbow', name: '프리미엄 A', isPremium: true }),
+      makePlayer({ id: 'best', name: '프리미엄 B', isPremium: true }),
       makePlayer({ id: 'normal', name: '일반 선수' })
     ])
 

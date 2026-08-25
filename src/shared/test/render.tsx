@@ -5,6 +5,9 @@ import { afterEach } from 'vitest'
 import { PRIMARY_COLOR } from '@/shared'
 import { useTeamStore } from '@/entities/team/model/store'
 import { usePlayerStore } from '@/entities/player/model/store'
+import { useRosterStore } from '@/entities/player/model/roster-store'
+import { resetRosterLoader } from '@/entities/player/lib/load-roster'
+import { clearRosterCache } from '@/entities/player/lib/roster-cache'
 
 // src/app/Provider.tsx와 동일한 antd 토큰(색/모션)만 재사용 — SCSS는 jsdom에서 무시되므로 스타일 단언은 하지 않는다
 // eslint-disable-next-line react-refresh/only-export-components -- 테스트 전용 유틸이라 Fast Refresh 대상 아님
@@ -27,6 +30,7 @@ export function renderWithProviders(ui: ReactElement): RenderResult {
 
 const initialTeamState = useTeamStore.getState()
 const initialPlayerState = usePlayerStore.getState()
+const initialRosterState = useRosterStore.getState()
 
 // zustand 싱글턴 스토어는 테스트 간 상태가 새지 않도록 매 테스트 종료 후 초기 상태로 리셋한다.
 // 이 afterEach는 RTL cleanup보다 먼저 실행돼(마운트 상태) 구독 컴포넌트를 재렌더시키므로 act로 감싼다.
@@ -34,7 +38,10 @@ afterEach(() => {
   act(() => {
     useTeamStore.setState(initialTeamState, true)
     usePlayerStore.setState(initialPlayerState, true)
+    useRosterStore.setState(initialRosterState, true)
   })
+  resetRosterLoader()
+  clearRosterCache()
 })
 
 export { useTeamStore, usePlayerStore }

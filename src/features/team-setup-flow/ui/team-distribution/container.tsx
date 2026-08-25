@@ -1,5 +1,5 @@
 import { Card, Row, Col, Spin } from 'antd'
-import { PREMIUM_PLAYERS, PLAYER_CONDITIONS, getTopDogTeamNames } from '@/entities'
+import { PLAYER_CONDITIONS, getTopDogTeamNames } from '@/entities'
 import { teamNameToNumber } from '@/shared'
 // 티어 노치·범례 비활성화로 미사용. 재활성화 시 아래 import와 PLAYER_TIERS·TIER_LABELS(@/entities) 복구.
 // import { getTierColor } from '@/features/player-modal/lib'
@@ -72,7 +72,7 @@ export function Container({ isShuffle }: ContainerProps) {
             >
               <div className="player-list">
                 {team.players.map((player) => {
-                  const isPremiumPlayer = PREMIUM_PLAYERS.some((p) => p.name === player.name && p.year === player.year)
+                  const isPremiumPlayer = player.isPremium === true
                   const isHighPlayer = player.condition === PLAYER_CONDITIONS.HIGH
                   const tierClass = isPremiumPlayer ? ' premium' : isHighPlayer ? ' high' : ''
                   return (

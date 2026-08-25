@@ -1,4 +1,5 @@
 import { Typography } from 'antd'
+import { formatDateToKorean } from '@/shared/lib/date'
 
 import './release-date.scss'
 
@@ -13,15 +14,11 @@ export function ReleaseDate() {
   const date = new Date(BUILD_TIME)
   if (Number.isNaN(date.getTime())) return null
 
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
   return (
     <>
       <br />
       <Typography.Text type="secondary" className="release-date-text">
-        최근 업데이트 : {`${year}년 ${month}월 ${day}일`}
+        최근 업데이트 : {formatDateToKorean(date)}
       </Typography.Text>
     </>
   )

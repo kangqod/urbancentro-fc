@@ -1,7 +1,16 @@
-import { describe, it, expect } from 'vitest'
-import { PLAYER_CONDITIONS, PLAYER_TIERS, PlayerClass, DEFAULT_YEAR, DEFAULT_NUMBER, DEFAULT_TIER } from '@/entities'
-import type { Player, Team } from '@/entities'
-import playerData from '@/shared/assets/data.json'
+import { describe, it, expect, beforeAll } from 'vitest'
+import {
+  PLAYER_CONDITIONS,
+  PLAYER_TIERS,
+  PlayerClass,
+  DEFAULT_YEAR,
+  DEFAULT_NUMBER,
+  DEFAULT_TIER,
+  SUPPORT_SLOTS,
+  composeRoster,
+  useRosterStore
+} from '@/entities'
+import type { Player, RosterRow, Team } from '@/entities'
 import { parseSharedTeams, type SharedPlayer, type SharedTeam } from '../utils'
 
 // footer.hooks.handleShareKakao 의 직렬화 로직을 그대로 재현한다.
@@ -24,20 +33,31 @@ function roundTrip(players: Player[]): Player[] {
   return parseSharedTeams(serialize(teams))![0].players
 }
 
+// buildSharedPlayer는 런타임 로스터 스토어를 조회하므로 테스트 로스터를 직접 시드한다.
+const ROSTER: RosterRow[] = [
+  { year: '1973', number: 10, name: '김정표', tier: '중급', strength: '골 결정력', attributes: ['양발 슈팅'], isPremium: true }
+]
+
 describe('공유 링크 선수 복원 (buildSharedPlayer / parseSharedTeams)', () => {
+  beforeAll(() => {
+    useRosterStore.setState({ rows: composeRoster(ROSTER), status: 'remote' })
+  })
+
   it('일반 로스터 선수는 연도가 유지되고 게스트가 아니다', () => {
-    const roster = playerData.find((p) => p.name !== '지원 1' && p.name !== '지원 2' && p.year !== DEFAULT_YEAR)!
-    const player = new PlayerClass({ ...roster, tier: roster.tier as never, isActiveForMatch: true })
+    const roster = ROSTER[0]
+    const player = new PlayerClass({ ...roster, isActiveForMatch: true })
 
     const [restored] = roundTrip([player])
 
     expect(restored.isGuest).toBe(false)
     expect(restored.year).toBe(roster.year)
+    // 프리미엄 여부는 링크가 아니라 로스터(시트)에서 복원된다
+    expect(restored.isPremium).toBe(true)
   })
 
   it('지원 선수(지원 1/2)는 게스트가 아니라 지원으로 복원된다', () => {
-    const support = playerData.find((p) => p.name === '지원 1')!
-    const player = new PlayerClass({ ...support, tier: support.tier as never, isActiveForMatch: true })
+    const support = SUPPORT_SLOTS[0]
+    const player = new PlayerClass({ ...support, isActiveForMatch: true })
 
     const [restored] = roundTrip([player])
 
@@ -75,7 +95,7 @@ describe('공유 링크 선수 복원 (buildSharedPlayer / parseSharedTeams)', (
   })
 
   it('신규 포맷에서 isGuest=false 인 실제 멤버는 로스터 매칭에 실패해도 게스트로 오분류되지 않고 연도를 보존한다', () => {
-    // data.json 에 없는 이름 + isGuest=false (예: 링크 공유 후 로스터에서 이름 변경/삭제된 정규 멤버).
+    // 로스터에 없는 이름 + isGuest=false (예: 링크 공유 후 로스터에서 이름 변경/삭제된 정규 멤버).
     const shared: SharedTeam[] = [['A', [['89', '없는정규멤버', '', PLAYER_TIERS.ADVANCED, false]]]]
     const restored = parseSharedTeams(JSON.stringify(shared))![0].players[0]
 

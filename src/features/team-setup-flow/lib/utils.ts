@@ -7,10 +7,10 @@ import {
   PLAYER_TIERS,
   PlayerClass,
   TIER_LABELS,
+  getRosterRows,
   toTierType
 } from '@/entities'
 import type { ConditionType, Team, TierType } from '@/entities'
-import playerData from '@/shared/assets/data.json'
 
 // 레거시 링크 하위 호환: 한글 티어 마이그레이션 이전에 공유된 링크는 영문 티어('ace' 등)를
 // 담고 있다. 공유 링크 복원 경로에서만 한글 티어로 매핑하고, toTierType 자체는 순수하게 둔다.
@@ -81,17 +81,17 @@ export function normalizeSharedPlayer(player: SharedPlayer | string): {
 
 /**
  * 공유 링크의 단일 플레이어 항목으로 PlayerClass를 만든다.
- * 로스터(data.json)에서 이름+연도가 일치하면 로스터 정보로 복원한다.
+ * 로스터(시트 런타임 로딩 결과)에서 이름+연도가 일치하면 로스터 정보로 복원한다.
  * 매칭에 실패했을 때의 게스트 여부는 직렬화 포맷에 따라 다르게 결정한다:
  *  - 신규 포맷(isGuest 명시): 직렬화된 값을 신뢰한다. isGuest=false인 실제 멤버가
- *    data.json에서 이름 변경/삭제되어 매칭에 실패해도 게스트로 오분류하지 않는다.
- *  - 레거시 포맷(isGuest 미포함): 정규/지원 선수는 모두 data.json에 있으므로 매칭 실패는
+ *    로스터에서 이름 변경/삭제되어 매칭에 실패해도 게스트로 오분류하지 않는다.
+ *  - 레거시 포맷(isGuest 미포함): 정규/지원 선수는 모두 로스터에 있으므로 매칭 실패는
  *    게스트로 간주한다. 게스트가 "00 이름"이 아니라 "G 이름"으로 올바르게 표시된다.
  * parseSharedTeams와 createPlayersFromTeams가 공통으로 사용한다.
  */
 export function buildSharedPlayer(rawPlayer: SharedPlayer | string, id: string): PlayerClass {
   const { year, name, condition, tier, isGuest, hasExplicitGuest } = normalizeSharedPlayer(rawPlayer)
-  const playerInfo = !isGuest ? playerData.find((player) => player.name === name && player.year.slice(-2) === year) : undefined
+  const playerInfo = !isGuest ? getRosterRows().find((player) => player.name === name && player.year.slice(-2) === year) : undefined
 
   if (playerInfo) {
     return new PlayerClass({
@@ -99,9 +99,10 @@ export function buildSharedPlayer(rawPlayer: SharedPlayer | string, id: string):
       name: playerInfo.name,
       number: playerInfo.number,
       year: playerInfo.year,
-      tier: playerInfo.tier as TierType,
+      tier: playerInfo.tier,
       strength: playerInfo.strength,
       attributes: playerInfo.attributes,
+      isPremium: playerInfo.isPremium,
       condition: (condition || DEFAULT_CONDITION) as ConditionType,
       isGuest: false,
       isActiveForMatch: true

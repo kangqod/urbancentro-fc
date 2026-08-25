@@ -1,39 +1,26 @@
-import { type Player } from '@/entities'
-import playerData from '@/shared/assets/data.json'
+import { getRosterRows, type Player } from '@/entities'
+
+// OCR 오인식·약칭 → 로스터 이름. 시트에서 연도가 바뀌어도 매칭이 깨지지 않도록 이름만으로 찾는다.
+const NAME_ALIASES: Readonly<Record<string, string>> = {
+  박지환: '박치환',
+  박치환: '박치환',
+  이원식: '이원식',
+  원식: '이원식',
+  이원재: '이원재',
+  원재: '이원재',
+  이한별: '이한별',
+  한별: '이한별',
+  이민수: '이민수',
+  민수: '이민수'
+}
 
 function handlePlayerException(name: string, usedNames: Set<string>, results: Pick<Player, 'name' | 'year'>[]) {
-  if (name === '박지환' || name === '박치환') {
-    const item = playerData.find((p) => p.name === '박치환' && p.year === '1990')
-    if (item && !usedNames.has(item.name)) {
-      results.push(item)
-      usedNames.add(item.name)
-    }
-  } else if (name === '이원식' || name === '원식') {
-    const item = playerData.find((p) => p.name === '이원식' && p.year === '1989')
-    if (item && !usedNames.has(item.name)) {
-      results.push(item)
-      usedNames.add(item.name)
-    }
-  } else if (name === '이원재' || name === '원재') {
-    const item = playerData.find((p) => p.name === '이원재' && p.year === '1989')
-    if (item && !usedNames.has(item.name)) {
-      results.push(item)
-      usedNames.add(item.name)
-    }
-  } else if (name === '이한별' || name === '한별') {
-    const item = playerData.find((p) => p.name === '이한별' && p.year === '1989')
-    if (item && !usedNames.has(item.name)) {
-      results.push(item)
-      usedNames.add(item.name)
-    }
-  } else if (name === '이민수' || name === '민수') {
-    const item = playerData.find((p) => p.name === '이민수' && p.year === '1989')
-    if (item && !usedNames.has(item.name)) {
-      results.push(item)
-      usedNames.add(item.name)
-    }
-  } else {
-    //
+  const canonical = NAME_ALIASES[name]
+  if (!canonical) return
+  const item = getRosterRows().find((p) => p.name === canonical)
+  if (item && !usedNames.has(item.name)) {
+    results.push(item)
+    usedNames.add(item.name)
   }
 }
 
@@ -46,6 +33,7 @@ export function extractMatchedPlayersUnified(text: string) {
   // 2. 이름만 추출 (예: 홍길동)
   const nameMatches = [...beforeAbsent.matchAll(/([가-힣]{2,})/g)]
 
+  const playerData = getRosterRows()
   const results: Pick<Player, 'name' | 'year'>[] = []
   const usedNames: Set<string> = new Set()
 

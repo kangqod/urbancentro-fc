@@ -3,4 +3,3 @@ node_modules
 pnpm-lock.yaml
 **/*.scss
 **/*.css
-data.json

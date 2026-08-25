@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import type { MouseEvent } from 'react'
-import { PlayerClass } from '@/entities'
-import type { Player, TierType } from '@/entities'
+import { PlayerClass, useRosterStore } from '@/entities'
+import type { Player } from '@/entities'
 import {
   useAvailablePlayerCountValue,
   useSetPlayerSelectionState,
@@ -10,7 +10,6 @@ import {
   useSetSelectedPlayerState
 } from '../../lib'
 
-import playerData from '@/shared/assets/data.json'
 import { TabMenu } from '../../model'
 
 export function usePlayerSelection() {
@@ -19,6 +18,7 @@ export function usePlayerSelection() {
   const setActiveTab = useSetActiveTabState()
   const { setPlayers, togglePlayerAvailability } = useSetPlayerSelectionState()
   const updateSelectedPlayer = useSetSelectedPlayerState()
+  const rosterRows = useRosterStore((state) => state.rows)
 
   const [detailMode, setDetailMode] = useState(false)
 
@@ -47,14 +47,9 @@ export function usePlayerSelection() {
   }
 
   useEffect(() => {
-    const transformedPlayers = playerData.map((player) => {
-      return new PlayerClass({
-        ...player,
-        tier: player.tier as TierType
-      })
-    })
+    const transformedPlayers = rosterRows.map((player) => new PlayerClass(player))
     setPlayers(transformedPlayers)
-  }, [setPlayers])
+  }, [setPlayers, rosterRows])
 
   return {
     isDisabled,

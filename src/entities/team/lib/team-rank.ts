@@ -1,7 +1,6 @@
 import { PLAYER_TIERS, PLAYER_CONDITIONS } from '@/entities/player/model/player'
 import type { Team } from '@/entities/team/model/types'
 import { calculateTeamStrength } from './balance-score'
-import { PREMIUM_PLAYERS } from './constants'
 
 // 탑독/언더독 판정 (밸런스 정보 모달 + 팀 헤더 공용 단일 소스).
 // powerScore 는 밸런서가 쓰지 않는 표시 전용 화력 지표다 — 밸런싱 로직과 무관.
@@ -10,7 +9,7 @@ export function getTopDogTeamNames(teams: Team[]): Set<string> {
     .map((team) => {
       const strength = calculateTeamStrength(team)
       const highCount = team.players.filter((p) => p.condition === PLAYER_CONDITIONS.HIGH).length
-      const premiumCount = team.players.filter((p) => PREMIUM_PLAYERS.some((pp) => pp.name === p.name && pp.year === p.year)).length
+      const premiumCount = team.players.filter((p) => p.isPremium).length
 
       // 최강/약체 판정용 종합 화력: 점수 + HIGH 컨디션 + 프리미엄 선수 수를 가중 합산.
       const powerScore = strength + highCount * 2 + premiumCount * 3
