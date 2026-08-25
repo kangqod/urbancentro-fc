@@ -19,12 +19,13 @@
   }
 
   // 좁은 폭(375px 2~3열)에서 한 줄 유지되도록 이름 길이별 축소. 팀 분배 3열은 team-distribution.scss가 추가 보강.
+  // em은 부모 .player-item{font-size:0.5rem}를 타서 7px대로 붕괴하므로 antd 본문 토큰 기준으로 계산한다.
   &.is-len4 .pl-name {
-    font-size: 0.9em;
+    font-size: calc(var(--ant-font-size, 15px) * 0.9);
   }
 
   &.is-len5 .pl-name {
-    font-size: 0.8em;
+    font-size: calc(var(--ant-font-size, 15px) * 0.8);
   }
 }
 

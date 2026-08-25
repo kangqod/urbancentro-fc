@@ -1,3 +1,5 @@
 export * from './store'
 export * from './player'
+export * from './roster-store'
+export * from './support-slots'
 export type * from './types'

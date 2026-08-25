@@ -44,6 +44,7 @@ export class PlayerClass implements Player {
   number: number
   isGuest: boolean
   isActiveForMatch: boolean
+  isPremium: boolean
   connectedPlayerIds?: string[]
 
   constructor(data: Partial<Player>) {
@@ -57,6 +58,7 @@ export class PlayerClass implements Player {
     this.condition = data.condition || DEFAULT_CONDITION
     this.isGuest = data.isGuest || false
     this.isActiveForMatch = data.isActiveForMatch ?? data.year !== DEFAULT_YEAR
+    this.isPremium = data.isPremium ?? false
     this.connectedPlayerIds = data.connectedPlayerIds || []
   }
 

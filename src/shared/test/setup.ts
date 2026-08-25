@@ -25,6 +25,9 @@ if (!window.ResizeObserver) {
 const origGetComputedStyle = window.getComputedStyle.bind(window)
 window.getComputedStyle = ((elt: Element, _pseudoElt?: string | null) => origGetComputedStyle(elt)) as typeof window.getComputedStyle
 
+// 테스트는 네트워크에 나가지 않는다 — 로스터 로더는 reject를 받아 캐시/error 경로로 간다.
+vi.stubGlobal('fetch', () => Promise.reject(new Error('network disabled in tests')))
+
 afterEach(() => {
   cleanup()
 })

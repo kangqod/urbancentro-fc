@@ -27,3 +27,5 @@ dist-ssr
 .gstack/
 
 .omc
+.env*.local
+

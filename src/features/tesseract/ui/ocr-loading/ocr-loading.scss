@@ -1,48 +1,6 @@
 @use '@/shared/assets/sport' as sport;
 
-.ocr-loading {
-  position: fixed;
-  inset: 0;
-  z-index: 1050;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  // 딤 배경 + blur — 스피너/문구가 화면에 묻히던 문제(백드롭 부재)를 해결하는 핵심.
-  // 반투명 검정이라 라이트/다크 양쪽에서 공통으로 대비를 확보한다.
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-
-.ocr-loading__card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-  min-width: 280px;
-  max-width: 90vw;
-  padding: 2rem 2.5rem;
-  border-radius: 16px;
-  // Tesseract 컴포넌트는 <AntdApp>(=.css-var-root) 하위에서 인라인 렌더되므로
-  // antd CSS 변수가 정상 해석된다 (Spin fullscreen의 body 포털 트랩 회피).
-  background: var(--ant-color-bg-elevated);
-  color: var(--ant-color-text);
-  box-shadow: var(--ant-box-shadow-secondary);
-  text-align: center;
-}
-
-.ocr-loading__ball {
-  font-size: 3rem;
-  line-height: 1;
-  animation: ocr-loading-spin 1.2s linear infinite;
-}
-
-.ocr-loading__title {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 600;
-}
+// 오버레이·카드·공·제목은 @/shared LoadingOverlay. 여기는 OCR 단계 표시와 진행바만.
 
 .ocr-loading__steps {
   display: flex;
@@ -128,17 +86,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-@keyframes ocr-loading-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .ocr-loading__ball {
-    animation: none;
-  }
-
   .ocr-loading__dot,
   .ocr-loading__label,
   .ocr-loading__bar-fill {

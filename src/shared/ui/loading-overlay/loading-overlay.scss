@@ -1,0 +1,46 @@
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  // 반투명 검정 딤 + blur — 라이트/다크 양쪽에서 카드 대비를 확보한다.
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.loading-overlay__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 280px;
+  max-width: 90vw;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  background: var(--ant-color-bg-elevated);
+  color: var(--ant-color-text);
+  box-shadow: var(--ant-box-shadow-secondary);
+  text-align: center;
+}
+
+.loading-overlay__ball {
+  font-size: 3rem;
+  line-height: 1;
+  animation: loading-overlay-spin 1.2s linear infinite;
+}
+
+.loading-overlay__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+@keyframes loading-overlay-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
