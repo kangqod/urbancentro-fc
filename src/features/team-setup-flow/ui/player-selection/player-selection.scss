@@ -121,11 +121,6 @@
   @include sport.sport-cta;
   display: flex;
   align-items: center;
-  transition: transform var(--fc-motion-fast, 0.15s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
-
-  &:hover {
-    transform: translateY(-1px);
-  }
 }
 
 /* 스크롤바 스타일링 */

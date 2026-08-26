@@ -15,12 +15,12 @@
 
 ## Subdirectories
 
-| Directory          | Purpose                                                                                                    |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- |
-| `loading-overlay/` | `LoadingOverlay({ title, children })` — 전체화면 딤+blur, 카드, 굴러가는 ⚽. 로스터 로딩·OCR 오버레이 공용 |
-| `release-date/`    | "최근 업데이트 : YYYY년 MM월 DD일" (`__APP_BUILD_TIME__` 기반, 로컬 타임존)                                |
-| `tab-header/`      | 탭 제목+설명+`ReleaseDate`                                                                                 |
-| `tab-footer/`      | 하단 고정 버튼 바(`z-index: 10`, CTA 스타일)                                                               |
+| Directory          | Purpose                                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `loading-overlay/` | `LoadingOverlay({ title, description?, children })` — 전체화면 딤+blur, `surface-card` 카드, 굴러가는 ⚽, 제목 아래 보조 설명. 로스터 로딩·OCR 오버레이 공용 |
+| `release-date/`    | "최근 업데이트 : YYYY년 MM월 DD일" (`__APP_BUILD_TIME__` 기반, 로컬 타임존)                                                                                  |
+| `tab-header/`      | 탭 제목+설명+`ReleaseDate`                                                                                                                                   |
+| `tab-footer/`      | 하단 고정 버튼 바(`z-index: 10`, CTA 스타일)                                                                                                                 |
 
 ## For AI Agents
 

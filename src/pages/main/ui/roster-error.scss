@@ -1,0 +1,101 @@
+@use '@/shared/assets/sport' as sport;
+
+// .app-content가 flex row라 flex:1로 남은 폭을 채운 뒤 카드를 가운데 정렬한다.
+.roster-error {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.roster-error__card {
+  @include sport.surface-card;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  animation: roster-error-rise 0.4s var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+.roster-error__badge {
+  position: relative;
+  display: inline-flex;
+}
+
+// 로딩 화면의 회전 ⚽와 대비되는 정지 상태 — opacity로만 눌러 "멈춤"을 표현한다.
+.roster-error__ball {
+  font-size: 3.5rem;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.roster-error__mark {
+  position: absolute;
+  top: -0.2rem;
+  right: -0.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  background: var(--ant-color-error);
+  color: var(--ant-color-white, #ffffff);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-style: normal;
+  box-shadow: 0 0 0 3px var(--ant-color-bg-elevated);
+}
+
+.roster-error__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.roster-error__title {
+  @include sport.sport-headline;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ant-color-text);
+}
+
+.roster-error__desc {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ant-color-text-secondary);
+}
+
+.roster-error__retry {
+  @include sport.sport-cta;
+  height: auto;
+  padding: 0.55rem 2rem;
+  font-weight: 600;
+}
+
+@keyframes roster-error-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 576px) {
+  .roster-error__card {
+    padding: 2rem 1.5rem;
+  }
+
+  .roster-error__ball {
+    font-size: 3rem;
+  }
+
+  .roster-error__retry {
+    width: 100%;
+  }
+}

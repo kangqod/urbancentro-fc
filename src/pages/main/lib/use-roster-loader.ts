@@ -20,8 +20,11 @@ export function useRosterLoader(): { status: RosterStatus; retry: () => void } {
       setRoster(result.rows, result.status)
       if (result.status === 'cached') {
         const savedAt = result.savedAt ? formatDateToKorean(new Date(result.savedAt)) : '이전에'
-        // 기본 3초는 날짜까지 읽기엔 짧다
-        message.warning({ content: `최신 명단을 불러오지 못해 ${savedAt} 저장된 명단을 사용합니다`, duration: 6 })
+        // 기본 3초는 날짜·안내까지 읽기엔 짧다
+        message.warning({
+          content: `최신 명단을 불러오지 못해 ${savedAt} 저장된 명단을 사용합니다. 새 명단을 반영하려면 새로고침해 주세요.`,
+          duration: 8
+        })
       }
     })
     return () => {

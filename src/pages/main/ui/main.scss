@@ -43,10 +43,5 @@ body {
   position: relative;
   margin: 0 auto;
   padding: 0;
-
-  // .app-content가 flex row라 블록 요소인 Result가 왼쪽으로 쏠린다
-  .roster-error {
-    flex: 1;
-  }
 }
 

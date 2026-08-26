@@ -1,5 +1,5 @@
 // 스포츠·에너지틱 아이덴티티 중 antd 토큰으로 표현 불가능한 부분만 이곳에 모은다.
-// 타이포 스포츠 트리트먼트(대문자/이탤릭/자간/굵기) + 브랜드 커스텀 프로퍼티(--fc-*) + 모션 타이밍.
+// 타이포 스포츠 트리트먼트(대문자/이탤릭/자간/굵기) + CTA·카드 셸 믹스인 + 브랜드 커스텀 프로퍼티(--fc-*) + 모션 타이밍.
 // 폰트 패밀리는 Pretendard 유지(상속) — 여기서 바꾸지 않는다.
 
 // 헤드라인·CTA 라벨 전용. 본문/인풋에는 쓰지 않는다(한글 가독성).
@@ -9,12 +9,29 @@
   font-weight: 500;
 }
 
-// 오렌지 그라디언트 + 글로우 CTA. body 클래스 미장착 구간(FOUC) 대비 인라인 다크 폴백 포함.
+// 오렌지 그라디언트 + 글로우 + hover 리프트 CTA. FOUC 대비 인라인 다크 폴백 포함. antd hover는 background-color만 바꿔 그라디언트(background-image)는 유지된다.
 @mixin sport-cta {
   background: var(--fc-gradient-cta, linear-gradient(135deg, #ff681f, #ff8f4d));
   border: none;
   color: #ffffff;
   box-shadow: 0 4px 14px var(--fc-glow, rgba(255, 104, 31, 0.45));
+  transition: transform var(--fc-motion-fast, 0.15s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+
+  &:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+}
+
+// 로딩 오버레이·에러 화면이 공유하는 elevated 카드 셸. padding·폭은 소비 측이 정한다.
+@mixin surface-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  border-radius: 16px;
+  background: var(--ant-color-bg-elevated);
+  box-shadow: var(--ant-box-shadow-secondary);
+  text-align: center;
 }
 
 // 브랜드 커스텀 프로퍼티: body 는 --ant-color-* 변수 트리 밖이므로 다크/라이트 각각 명시 정의한다.

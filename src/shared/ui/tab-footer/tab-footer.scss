@@ -49,11 +49,11 @@
   .next-button,
   .shuffle-button {
     @include sport.sport-cta;
+    // sport-cta의 transform 모션에 글로우 확장을 더한다 — transition은 병합되지 않아 목록 전체를 재선언.
     transition: box-shadow var(--fc-motion-mid, 0.25s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1)),
       transform var(--fc-motion-fast, 0.15s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
 
     &:not(:disabled):hover {
-      transform: translateY(-1px);
       box-shadow: 0 6px 18px var(--fc-glow, rgba(255, 104, 31, 0.45));
     }
 
