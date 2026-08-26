@@ -42,6 +42,7 @@
 
 .loading-overlay__desc {
   margin: 0;
+  white-space: pre-line;
   font-size: 0.875rem;
   line-height: 1.5;
   color: var(--ant-color-text-secondary);

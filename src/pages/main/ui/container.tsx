@@ -16,7 +16,7 @@ export function Container() {
   useBuildVersionCheck()
 
   if (status === 'loading') {
-    return <LoadingOverlay title="선수 명단을 불러오고 있어요" description="구글 시트 응답이 느릴 수 있어요. 잠시만 기다려 주세요" />
+    return <LoadingOverlay title="선수 명단을 불러오고 있어요" description={'구글 시트 응답이 느릴 수 있어요.\n잠시만 기다려 주세요.'} />
   }
 
   if (status === 'error') {
