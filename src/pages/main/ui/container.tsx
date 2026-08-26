@@ -19,7 +19,7 @@ export function Container() {
     return <LoadingOverlay title="선수 명단을 불러오고 있어요" description="구글 시트 응답이 느릴 수 있어요. 잠시만 기다려 주세요" />
   }
 
-  if (status !== 'error') {
+  if (status === 'error') {
     return <RosterError onRetry={retry} />
   }
 
