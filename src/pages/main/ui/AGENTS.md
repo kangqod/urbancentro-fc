@@ -13,7 +13,7 @@
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `main.tsx`                   | antd `Layout`: `.app-header`(`Header` + `Theme` 토글) / `Content` > `Container` / 형제로 `PlayerDetailModal`, `KakaoLoader`                                                                                                                                                               |
 | `container.tsx`              | `Container`: `useRosterLoader()`가 `loading`이면 `LoadingOverlay`(⚽, `@/shared`), `error`면 `RosterError`(⚽ + 다시 시도 버튼), 아니면 `ReadyContainer`(URL 복원 훅 호출 후 `TeamSetupFlow`). `useBuildVersionCheck()`는 게이트 바깥 `Container`에서 호출 — 에러 화면에서도 새 배포 안내 |
-| `roster-error.tsx` / `.scss` | 명단 로딩 실패 빈 상태. `.app-content` 안에 인라인 렌더(fixed 아님), `role="alert"`는 제목+설명 텍스트 그룹에만(버튼 밖). ⚽ + 정지 뱃지, `surface-card`, `sport-headline`/`sport-cta` 믹스인 사용                                                                                        |
+| `roster-error.tsx` / `.scss` | 명단 로딩 실패 빈 상태. `.app-content` 안에 인라인 렌더(fixed 아님), `role="alert"`는 제목+설명 텍스트 그룹에만(버튼 밖). ⚽ + 정지 뱃지, `surface-card`, `sport-headline`/`sport-cta` 믹스인 사용. 재시도 아래 보조 링크 "구글 시트 상태 확인"(`ROSTER_SHEET_EDIT_URL`, 새 탭)           |
 | `main.scss`                  | `html, body` 리셋, `.app-layout`(`--ant-color-bg-layout`), `.app-header`(`::after` 3px 그라디언트 스트라이프 `--fc-gradient-cta` 폴백 포함, ≤576px space-between), `.app-content`                                                                                                         |
 
 ## For AI Agents

@@ -16,7 +16,7 @@
 - 스포츠 믹스인·`--fc-*`: `src/shared/assets/_sport.scss` / FOUC 폴백: `src/shared/assets/_variables.scss`
 - 다크 상태: `src/entities/theme/model/store.ts` / 매치 포맷 정의: `src/entities/team/lib/constants.ts`(`MATCH_FORMAT_CONFIG`)
 - 레이아웃 셸: `src/pages/main/ui/main.tsx` / 전체 플로우: `src/features/team-setup-flow`
-- 선수 명단 소스: Google Sheets 게시 CSV(`ROSTER_CSV_URL`, `src/entities/player/lib/constants.ts`) → `useRosterStore`(`src/entities/player/model/roster-store.ts`). 원격 실패 시 localStorage 마지막 성공분(`roster-cache.ts`) → 그것도 없으면 `Container`가 에러 화면으로 서비스 차단. 번들 명단 없음. `지원 1/2`는 `support-slots.ts` 코드 상수 — 시트에 넣지 않는다. 명단 수정은 시트에서, 재배포 불필요. 시트 열: 이름·출생년도·등번호·티어·강점·특성(+선택 `프리미엄` — 카드 이펙트·탑독 가중·HIGH 면제, 코드 상수 없음).
+- 선수 명단 소스: Google Sheets 게시 CSV(`ROSTER_CSV_URL`, `src/entities/player/lib/constants.ts`) → `useRosterStore`(`src/entities/player/model/roster-store.ts`). 원격 실패 시 localStorage 마지막 성공분(`roster-cache.ts`) → 그것도 없으면 `Container`가 에러 화면으로 서비스 차단. 번들 명단 없음. `지원 1/2`는 `support-slots.ts` 코드 상수 — 시트에 넣지 않는다. 명단 수정은 시트에서, 재배포 불필요(게시 캐시 5분). 편집 링크는 `ROSTER_SHEET_EDIT_URL`(같은 constants.ts) — 선수 선택 컨트롤 패널 "명단 관리" 버튼(→ `sheet-modal.tsx` 안내 모달의 CTA)·로스터 에러 화면 보조 링크로 노출, 시트 문서가 바뀌면 이 상수만 갱신. 시트 열: 이름·출생년도·등번호·티어·강점·특성(+선택 `프리미엄` — 카드 이펙트·탑독 가중·HIGH 면제, 코드 상수 없음).
 
 ## Commands
 

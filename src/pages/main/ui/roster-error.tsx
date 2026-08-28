@@ -1,4 +1,6 @@
 import { Button } from 'antd'
+import { ExternalLink } from 'lucide-react'
+import { ROSTER_SHEET_EDIT_URL } from '@/entities'
 
 import './roster-error.scss'
 
@@ -26,6 +28,19 @@ export function RosterError({ onRetry }: RosterErrorProps) {
         <Button className="roster-error__retry" type="primary" onClick={onRetry}>
           다시 시도
         </Button>
+        {ROSTER_SHEET_EDIT_URL && (
+          <Button
+            type="link"
+            size="small"
+            href={ROSTER_SHEET_EDIT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<ExternalLink size={14} />}
+            className="roster-error__sheet-link"
+          >
+            구글 시트 상태 확인
+          </Button>
+        )}
       </div>
     </div>
   )

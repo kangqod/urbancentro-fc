@@ -3,5 +3,9 @@
 export const ROSTER_CSV_URL =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrFjhz3PaIcWss7Ka3i_eP2RS_RdZK34LyqPSEU-AqGG7cA7_nSAH0faVl-5L68YlMdR1uZ4wSXz-W/pub?gid=2042895997&single=true&output=csv'
 
+// 사람이 열어 편집하는 시트 주소. ROSTER_CSV_URL(게시 주소)에는 문서 ID가 없어 파생 불가. 빈 문자열이면 UI가 링크를 렌더하지 않는다.
+export const ROSTER_SHEET_EDIT_URL =
+  'https://docs.google.com/spreadsheets/d/107dmWVq01c7xK6IJHV802mDkqku1ffPL7bFkf22oQLY/edit?gid=2042895997#gid=2042895997'
+
 // 구글 게시 캐시(max-age=300) 만료 직후 콜드 요청은 5초를 넘기기도 한다 — 캐시 폴백·에러 화면보다 기다리는 쪽이 낫다.
 export const ROSTER_FETCH_TIMEOUT_MS = 15000

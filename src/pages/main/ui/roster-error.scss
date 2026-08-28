@@ -75,6 +75,12 @@
   font-weight: 600;
 }
 
+// 재시도(primary)의 보조 링크 — 카드 gap(1.25rem)을 일부 상쇄해 재시도 버튼에 붙이고 위계를 아래로 둔다
+.roster-error__sheet-link {
+  margin-top: -0.75rem;
+  font-size: 0.85rem;
+}
+
 @keyframes roster-error-rise {
   from {
     opacity: 0;

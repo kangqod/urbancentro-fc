@@ -1,4 +1,5 @@
 import { Row, Col, Card, Checkbox } from 'antd'
+import { Info } from 'lucide-react'
 import { type Player } from '@/entities'
 import { PlayerSmallCard } from '../player-small-card'
 import { usePlayerSection } from './player-section.hooks'
@@ -19,8 +20,9 @@ export function PlayerSection({ detailMode, onClickPlayer }: PlayerSectionProps)
           return (
             <Col xs={12} sm={12} md={8} key={player.id}>
               <Card hoverable className={`player-card ${selectMode ? 'selected' : ''}`} onClick={onClickPlayer(player)}>
-                <div className={`player-card-content ${detailMode ? 'detail-mode' : ''}`}>
+                <div className="player-card-content">
                   <Checkbox checked={selectMode} className={`${detailMode ? 'detail-mode' : ''}`} />
+                  {detailMode && <Info size={16} className="player-card-info-icon" aria-hidden="true" />}
                   <div className="player-info">
                     <div className="player-name-container">
                       <PlayerSmallCard player={player} />

@@ -10,8 +10,10 @@
 
 .control-panel {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  gap: 0.75rem 1rem;
   margin-bottom: 0.5rem;
   flex-shrink: 0;
   padding-inline: 1rem;
@@ -19,33 +21,113 @@
 
 .control-panel .control-buttons {
   display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.detail-switch-container {
+// antd dashed 버튼(controlHeight·1px dashed colorBorder·radius)과 같은 프레임 — 컨트롤 4개가 같은 급으로 읽히게 한다
+.control-panel .detail-switch-container {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: var(--ant-control-height, 40px);
+  padding-inline: 12px 6px;
+  border: 1px dashed var(--ant-color-border);
+  border-radius: var(--ant-border-radius);
+  background: var(--ant-color-bg-container);
+  color: var(--ant-color-text);
   cursor: pointer;
+  user-select: none;
+  transition:
+    border-color var(--fc-motion-fast, 0.15s) ease,
+    background-color var(--fc-motion-fast, 0.15s) ease;
+}
+
+.control-panel .detail-switch-container:hover {
+  border-color: var(--ant-color-primary-hover);
+}
+
+.control-panel .detail-switch-container.active {
+  border-style: solid;
+  border-color: var(--ant-color-primary);
+  background: var(--ant-color-primary-bg);
 }
 
 .detail-switch-container > .ant-typography {
-  margin-inline: 0.2rem 0.5rem;
-  user-select: none;
+  flex: 1;
+  min-width: 0;
+  margin-inline: 0.4rem 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.control-panel .status-alert {
+  word-break: keep-all;
+}
+
+// ≤767px: 버튼 2×2 그리드(4번째 칸은 상세 보기 스위치) + 전폭 상태 스트립. Tesseract는 Upload span이 버튼을 감싸므로 span까지 늘려야 셀 폭이 맞는다.
+@media (max-width: 767px) {
+  .control-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .control-panel .control-buttons {
+    display: grid;
+    // 1fr = minmax(auto,1fr)라 긴 라벨의 min-content가 열을 밀어 320px에서 넘친다 — 0으로 잠가 두 열을 균등하게
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+
+  .control-panel .control-buttons .ant-btn {
+    min-width: 0;
+  }
+
+  .control-panel .control-buttons .ant-btn > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .control-panel .control-buttons > .ant-btn,
+  .control-panel .control-upload .ant-upload,
+  .control-panel .control-upload .ant-btn {
+    width: 100%;
+  }
+
+  // 전폭 버튼은 좌측 정렬 — 아이콘이 한 열로 서고 "선수 정보 보기" 타일(아이콘 12px 시작)과 같은 리듬
+  .control-panel .control-buttons .ant-btn {
+    justify-content: flex-start;
+    padding-inline: 12px;
+  }
+
+  // 균등 열(≈158px)에 "아이콘+라벨+스위치"를 넣기 위해 라벨 14px·여백 축소. 스위치 small은 guest-button.tsx가 useMediaQuery로 전환(타일 전체가 탭 타깃이라 터치 영역은 그대로)
+  .control-panel .detail-switch-container {
+    padding-inline: 12px 4px;
+  }
+
+  .detail-switch-container > .ant-typography {
+    font-size: 14px;
+    margin-inline: 4px;
+  }
+
+  .control-panel .status-alert {
+    align-self: flex-end;
+    width: fit-content;
+    max-width: 100%;
+  }
 }
 
 .player-row {
   padding-inline: 1rem;
 }
 
-.guest-add-button,
-.detail-button {
+.guest-add-button {
   display: flex;
   align-items: center;
-}
-
-.status-alert {
-  margin-left: 0.5rem;
 }
 
 .player-card {
@@ -72,14 +154,17 @@
   display: flex;
   align-items: center;
   column-gap: 10px;
+  // 선택 모드의 체크박스 라인박스(fontSize × lineHeight) 높이를 고정 — 정보 모드(ⓘ 16px)로 바뀔 때 카드가 7px 줄어드는 점프 방지
+  min-height: calc(var(--ant-font-size, 15px) * var(--ant-line-height, 1.5333));
 }
 
 .player-card-content .ant-checkbox-wrapper.detail-mode {
   display: none;
 }
 
-.player-card-content.detail-mode {
-  justify-content: center;
+.player-card-content .player-card-info-icon {
+  flex-shrink: 0;
+  color: var(--ant-color-text-tertiary);
 }
 
 .player-info {
@@ -116,8 +201,7 @@
   justify-content: flex-end;
 }
 
-.add-guest-button,
-.detail-button {
+.add-guest-button {
   @include sport.sport-cta;
   display: flex;
   align-items: center;
