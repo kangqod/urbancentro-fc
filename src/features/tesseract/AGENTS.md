@@ -5,7 +5,7 @@
 
 ## Purpose
 
-참가자 명단 이미지(카톡 캡처 등)를 tesseract.js(kor)로 인식해 로스터와 매칭, 선택 상태에 반영.
+참가자 명단 이미지(카톡 캡처 등)를 tesseract.js(kor)로 인식해 로스터와 매칭해 즉시 선택 상태에 반영하고, 결과(반영된 선수·미인식)를 알림 모달로 보여준다.
 
 ## Key Files
 
@@ -15,10 +15,10 @@
 
 ## Subdirectories
 
-| Directory | Purpose                                                                                                  |
-| --------- | -------------------------------------------------------------------------------------------------------- |
-| `lib/`    | `useTesseract`(OCR 실행·진행률), `extract-player`(텍스트 → 선수 매칭), `use-store` (see `lib/AGENTS.md`) |
-| `ui/`     | `Tesseract` 업로드 버튼, `ocr-loading/` 오버레이 (see `ui/AGENTS.md`)                                    |
+| Directory | Purpose                                                                                                              |
+| --------- | -------------------------------------------------------------------------------------------------------------------- |
+| `lib/`    | `useTesseract`(OCR 실행·진행률), `extract-player`(텍스트 → 매칭 후보·미인식 분류), `use-store` (see `lib/AGENTS.md`) |
+| `ui/`     | `Tesseract` 업로드 버튼, `OcrReviewModal` 인식 결과 알림 모달, `ocr-loading/` 오버레이 (see `ui/AGENTS.md`)          |
 
 ## For AI Agents
 

@@ -14,17 +14,37 @@ const NAME_ALIASES: Readonly<Record<string, string>> = {
   민수: '이민수'
 }
 
-function handlePlayerException(name: string, usedNames: Set<string>, results: Pick<Player, 'name' | 'year'>[]) {
-  const canonical = NAME_ALIASES[name]
-  if (!canonical) return
-  const item = getRosterRows().find((p) => p.name === canonical)
-  if (item && !usedNames.has(item.name)) {
-    results.push(item)
-    usedNames.add(item.name)
-  }
+const UNMATCHED_MIN_LENGTH = 2
+const UNMATCHED_MAX_LENGTH = 4
+// 카톡 투표 결과 화면의 UI 문구 — 이름이 아니므로 미인식 목록에서 뺀다.
+const VOTE_UI_WORDS: ReadonlySet<string> = new Set(['투표', '투표가', '현황', '항목별', '멤버별', '참석'])
+
+export type OcrMatchKind = 'exact' | 'alias' | 'prefix'
+
+export interface OcrMatch {
+  player: Pick<Player, 'name' | 'year'>
+  kind: OcrMatchKind
+  raw: string
 }
 
-export function extractMatchedPlayersUnified(text: string) {
+export interface OcrExtraction {
+  matches: OcrMatch[]
+  unmatched: string[]
+}
+
+// 별칭이 로스터 행에 닿았는지 반환한다(push 여부와 무관) — 미인식 판정용.
+function handlePlayerException(name: string, usedNames: Set<string>, results: OcrMatch[]) {
+  const canonical = NAME_ALIASES[name]
+  if (!canonical) return false
+  const item = getRosterRows().find((p) => p.name === canonical)
+  if (item && !usedNames.has(item.name)) {
+    results.push({ player: item, kind: 'alias', raw: name })
+    usedNames.add(item.name)
+  }
+  return !!item
+}
+
+export function extractOcrCandidates(text: string): OcrExtraction {
   // "불참" 이전까지만 추출
   const beforeAbsent = text.split(/불참/)[0]
 
@@ -34,14 +54,15 @@ export function extractMatchedPlayersUnified(text: string) {
   const nameMatches = [...beforeAbsent.matchAll(/([가-힣]{2,})/g)]
 
   const playerData = getRosterRows()
-  const results: Pick<Player, 'name' | 'year'>[] = []
+  const results: OcrMatch[] = []
   const usedNames: Set<string> = new Set()
+  const unmatchedCandidates: string[] = []
 
   // 1. 생년/이름 매칭
   for (const [, , name] of yearNameMatches) {
     const matched = playerData.find((p) => p.name === name)
     if (matched && !usedNames.has(matched.name)) {
-      results.push(matched)
+      results.push({ player: matched, kind: 'exact', raw: name })
       usedNames.add(matched.name)
     } else if (!usedNames.has(name)) {
       handlePlayerException(name, usedNames, results)
@@ -52,15 +73,28 @@ export function extractMatchedPlayersUnified(text: string) {
   for (const [name] of nameMatches) {
     if (usedNames.has(name)) continue
     let matched = playerData.find((p) => p.name === name)
+    let kind: OcrMatchKind = 'exact'
     if (!matched) {
       matched = playerData.find((p) => p.name.slice(0, 2) === name.slice(0, 2))
+      kind = 'prefix'
     }
     if (matched && !usedNames.has(matched.name)) {
-      results.push(matched)
+      results.push({ player: matched, kind, raw: name })
       usedNames.add(matched.name)
     }
-    handlePlayerException(name, usedNames, results)
+    const aliasReached = handlePlayerException(name, usedNames, results)
+    if (!matched && !aliasReached) unmatchedCandidates.push(name)
   }
 
-  return results
+  const excluded = new Set(results.flatMap((m) => [m.player.name, m.raw]))
+  const unmatched = [
+    ...new Set(
+      unmatchedCandidates.filter(
+        (token) =>
+          token.length >= UNMATCHED_MIN_LENGTH && token.length <= UNMATCHED_MAX_LENGTH && !excluded.has(token) && !VOTE_UI_WORDS.has(token)
+      )
+    )
+  ]
+
+  return { matches: results, unmatched }
 }

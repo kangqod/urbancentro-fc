@@ -2,9 +2,10 @@ import { Button, Upload } from 'antd'
 import { Upload as IconUpload } from 'lucide-react'
 import { useTesseract } from '../lib'
 import { OcrLoading } from './ocr-loading'
+import { OcrReviewModal } from './ocr-review-modal'
 
 export function Tesseract() {
-  const { loading, phase, progress, contextHolder, iconSize, beforeUpload } = useTesseract()
+  const { loading, phase, progress, contextHolder, iconSize, beforeUpload, review, reviewId, closeReview } = useTesseract()
 
   return (
     <>
@@ -14,6 +15,7 @@ export function Tesseract() {
         </Button>
       </Upload>
       <OcrLoading visible={loading} phase={phase} progress={progress} />
+      <OcrReviewModal key={reviewId} extraction={review} onClose={closeReview} />
       {contextHolder}
     </>
   )
