@@ -9,10 +9,10 @@ GitHub Actions 구성. PR 검증(CI)과 `master` push 시 GitHub Pages 배포를
 
 ## Subdirectories
 
-| Directory        | Purpose                                                                                                                                    |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `actions/setup/` | 복합 액션 "Setup": pnpm 10 + node 24 설치, `VITE_KAKAO_JS_KEY` 입력을 `.env`로 기록, `pnpm install`                                        |
-| `workflows/`     | `deploy.yml`(master push → build → upload-pages-artifact → deploy-pages, 동시성 `deploy-<ref>`), `lint.yml`(PR → `pnpm lint` → `pnpm tsc`) |
+| Directory        | Purpose                                                                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `actions/setup/` | 복합 액션 "Setup": pnpm 10 + node 24 설치, `VITE_KAKAO_JS_KEY` 입력을 `.env`로 기록, `pnpm install`                                                               |
+| `workflows/`     | `deploy.yml`(master push → build job(build → upload-pages-artifact) → deploy job(deploy-pages), 동시성 `deploy-<ref>`), `lint.yml`(PR → `pnpm lint` → `pnpm tsc`) |
 
 ## For AI Agents
 
