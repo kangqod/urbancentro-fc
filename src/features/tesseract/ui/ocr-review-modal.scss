@@ -1,0 +1,121 @@
+@use '@/shared/assets/dialog' as dialog;
+
+@include dialog.fc-dialog('ocr-review-dialog', 'ocr-review-modal');
+
+.ocr-review-modal {
+  display: flex;
+  flex-direction: column;
+  row-gap: 28px;
+}
+
+.ocr-review-modal .ocr-review-modal__heading {
+  display: flex;
+  align-items: center;
+  column-gap: 6px;
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ant-color-text);
+
+  &.is-applied svg {
+    color: var(--ant-color-primary);
+  }
+
+  &.is-unmatched svg {
+    color: var(--ant-color-warning);
+  }
+}
+
+.ocr-review-modal .ocr-review-modal__hint {
+  margin: -4px 0 12px;
+  font-size: 14px;
+  color: var(--ant-color-text-tertiary);
+}
+
+// 400px 고정 모달에선 4열이면 칸이 ~80px로 좁아 'OCR: 원문' 줄이 넘친다 → 데스크톱도 3열.
+.ocr-review-modal__chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ocr-review-modal__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 2px;
+  min-width: 0;
+  padding: 9px 8px;
+  border-radius: 10px;
+  border: 1px solid;
+  line-height: 1.4;
+  text-align: center;
+  animation: ocr-review-pop 0.3s var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+
+  @for $i from 2 through 24 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 20}ms;
+    }
+  }
+
+  // 표면은 sheet-modal 노트·업데이트 안내 항목과 같은 중립 톤으로 둔다.
+  &.is-applied {
+    background: var(--ant-color-fill-quaternary);
+    border-color: var(--ant-color-border-secondary);
+    color: var(--ant-color-text);
+  }
+
+  &.is-unmatched {
+    border-style: dashed;
+    border-color: var(--ant-color-border);
+    background: transparent;
+    color: var(--ant-color-text-secondary);
+  }
+}
+
+.ocr-review-modal__name {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 6px;
+  max-width: 100%;
+  font-size: 15px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.ocr-review-modal .ocr-review-modal__year {
+  flex: none;
+  font-size: 14px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--ant-color-text-tertiary);
+}
+
+// 접두 추정 매칭의 OCR 원문 — 칩 안 둘째 줄, 이름보다 한 단계 낮은 위계.
+.ocr-review-modal__raw {
+  max-width: 100%;
+  font-size: 14px;
+  color: var(--ant-color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+@keyframes ocr-review-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 576px) {
+  .ocr-review-modal {
+    row-gap: 24px;
+  }
+}

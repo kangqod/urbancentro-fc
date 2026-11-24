@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { message } from 'antd'
 import { createWorker } from 'tesseract.js'
-import { extractMatchedPlayersUnified } from './extract-player'
+import { extractOcrCandidates, type OcrExtraction } from './extract-player'
 import { useSetPlayerState } from './use-store'
 
 const ICON_SIZE = 16
@@ -46,6 +46,9 @@ export function useTesseract() {
   const stageIndexRef = useRef(0)
   const [messageApi, contextHolder] = message.useMessage()
   const updatePlayers = useSetPlayerState()
+  const [review, setReview] = useState<OcrExtraction | null>(null)
+  // 추출마다 모달을 리마운트해 모달이 고정해 둔 첫 extraction 스냅샷을 새 값으로 바꾸는 key
+  const [reviewId, setReviewId] = useState(0)
 
   const runOCR = async (file: File) => {
     let worker: Tesseract.Worker | undefined
@@ -70,9 +73,9 @@ export function useTesseract() {
       const ret = await worker.recognize(image)
       const rawText = ret.data.text
       console.log('OCR raw:', rawText)
-      const result = extractMatchedPlayersUnified(rawText)
+      const result = extractOcrCandidates(rawText)
 
-      if (result.length === 0) {
+      if (result.matches.length === 0 && result.unmatched.length === 0) {
         messageApi.open({
           key: 'ocr',
           type: 'error',
@@ -85,15 +88,10 @@ export function useTesseract() {
       }
 
       console.log('OCR 결과 :', result)
-      updatePlayers(result)
-      messageApi.open({
-        key: 'ocr',
-        type: 'success',
-        style: {
-          marginTop: '50px'
-        },
-        content: `${result.length} 명의 선수가 반영되었습니다.`
-      })
+      // 매치 0건이면 반영하지 않는다 — 첫 OCR에서 빈 배열은 기존 선택을 전부 해제한다.
+      if (result.matches.length > 0) updatePlayers(result.matches.map((m) => m.player))
+      setReviewId((id) => id + 1)
+      setReview(result)
     } catch (error) {
       messageApi.open({
         key: 'ocr',
@@ -116,6 +114,8 @@ export function useTesseract() {
     }
   }
 
+  const closeReview = () => setReview(null)
+
   const beforeUpload = (file: File) => {
     runOCR(file)
     // 업로드는 실제로 하지 않음
@@ -128,6 +128,9 @@ export function useTesseract() {
     progress,
     contextHolder,
     iconSize: ICON_SIZE,
-    beforeUpload
+    beforeUpload,
+    review,
+    reviewId,
+    closeReview
   }
 }

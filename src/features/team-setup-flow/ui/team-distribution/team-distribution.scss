@@ -471,6 +471,122 @@
   padding-inline: 1rem;
 }
 
+.team-toolbar {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.75rem;
+}
+
+.team-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+
+  .team-balance-log-button {
+    margin-inline: 0;
+  }
+}
+
+// 밸런스 정보 버튼과 같은 크기로 짝을 맞춘다 — 라벨이 '자리 바꾸기'↔'완료'로 바뀌어도 폭이 고정돼 흔들리지 않는다.
+.team-toolbar__actions .swap-toggle-button {
+  width: 140px;
+  height: 48px;
+  padding: 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.swap-banner {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  margin-inline: 1rem;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--ant-color-primary-border);
+  background: var(--ant-color-fill-quaternary);
+  animation: swap-banner-in var(--fc-motion-mid, 0.25s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+.swap-banner__icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--ant-color-primary-bg);
+  color: var(--ant-color-primary);
+}
+
+.swap-banner .swap-banner__text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ant-color-text);
+  word-break: keep-all;
+}
+
+.swap-banner__name {
+  font-weight: 700;
+}
+
+.swap-banner__arrow {
+  font-weight: 700;
+  color: var(--ant-color-primary);
+}
+
+// 스왑 모드: 보더 스타일·색·opacity만 바꾸고(폭 동일) 선택 강조는 outline으로 — 레이아웃 시프트 없음.
+// 교환된 두 선수는 다른 팀 목록으로 옮겨지며 리마운트되므로 swap-land가 그 둘에서만 다시 재생된다(모드 진입 시엔 전체 1회).
+.team-row.is-swap-mode .player-item {
+  border-style: dashed;
+  transition:
+    transform var(--fc-motion-fast, 0.15s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity var(--fc-motion-mid, 0.25s) var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  animation: swap-land 0.35s var(--fc-motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+
+  &[data-swap-target='other'] {
+    border-color: var(--ant-color-primary-border);
+  }
+
+  &[data-swap-target='same'] {
+    opacity: 0.4;
+  }
+
+  &.is-swap-selected {
+    z-index: 2;
+    border-style: solid;
+    border-color: var(--ant-color-primary);
+    outline: 2px solid var(--ant-color-primary);
+    outline-offset: 3px;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes swap-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes swap-land {
+  from {
+    opacity: 0.5;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .team-badge {
   background-color: var(--fc-team-a, #ff681f);
 }
@@ -493,6 +609,10 @@
 
   .share-icons {
     margin-bottom: 1.2rem;
+  }
+
+  .swap-banner {
+    padding: 10px 12px;
   }
 }
 

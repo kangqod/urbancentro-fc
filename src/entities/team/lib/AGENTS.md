@@ -11,12 +11,13 @@
 
 | File               | Description                                                                                                                                                                                                                                                                      |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.ts`         | 선택적 배럴: `./constants`, `{ balanceTeams, calculateTeamStrength }`, `./team-rank`, `./share-kakao` (`balance-score` 내부는 비공개)                                                                                                                                            |
+| `index.ts`         | 선택적 배럴: `./constants`, `{ balanceTeams, calculateTeamStrength }`, `./team-rank`, `./share-kakao`, `./swap-players` (`balance-score` 내부는 비공개)                                                                                                                          |
 | `constants.ts`     | `MATCH_FORMAT_CONFIG`(5:5~5:5:5:5 9종, ID/TITLE/TEAM_COUNT/PLAYERS_PER_TEAM), `EXCLUDED_PAIRS=[['지원 1','지원 2']]`, `CONDITION_EXEMPT_NAMES`, `TIER_WEIGHTS`(에이스4/상급3/중급2/초급1)                                                                                        |
 | `balance-score.ts` | `getTierWeight`, `calculateTeamStrength`, `strengthGap`, `tierCountSpread`, `compositionImbalance`, `topTierImbalance`, `scoreArrangement`(band: gap≤2→0, 3→1, ≥4→∞), `compareScore`                                                                                             |
 | `balance-teams.ts` | `balanceTeams(players, mode)`; `@internal` 테스트용 `shuffleArray`(Fisher–Yates 고정), `getMovablePlayers`, `getTeamTierCounts`, `setPlayerCondition`, `distributeGuests`, `enforceExcludedPairs`. `CANDIDATE_COUNT=400`. 무결성 assert(중복 id·인원 불일치·팀 크기 차 >1) throw |
 | `team-rank.ts`     | `getTopDogTeamNames(teams)` — 표시 전용 `powerScore = strength + high*2 + isPremium*3`, 밸런싱과 무관                                                                                                                                                                            |
 | `share-kakao.ts`   | `shareKakao({teams, description})` → `window.Kakao.Share.sendCustom({ templateId: 119479, templateArgs: { description, link: 'teams=<JSON>' } })`                                                                                                                                |
+| `swap-players.ts`  | `swapPlayers(teams, idA, idB)` — 다른 팀 두 선수를 자리(인덱스) 유지한 채 맞교환한 새 배열. 같은 팀·미존재·동일 id면 입력 참조 그대로 반환(호출부가 참조 비교로 판정)                                                                                                            |
 
 ## Subdirectories
 
