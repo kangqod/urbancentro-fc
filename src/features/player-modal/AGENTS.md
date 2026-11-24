@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # player-modal
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -20,4 +20,6 @@
 | `lib/`    | `getTierColor(tier)` (see `lib/AGENTS.md`)                    |
 | `ui/`     | `PlayerModal`, `Title`, `Contents`, SCSS (see `ui/AGENTS.md`) |
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

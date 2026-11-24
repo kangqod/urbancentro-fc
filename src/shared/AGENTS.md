@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # shared
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -28,4 +28,6 @@
 
 - 다른 레이어를 import 하지 않는다(`test/render.tsx`가 스토어 리셋을 위해 `@/entities/*` 를 참조하는 것이 유일한 예외 — 테스트 전용).
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

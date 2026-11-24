@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
+# `team/lib/__tests__`
 
-# team/lib/**tests**
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -17,4 +17,6 @@
 - 상급 편차는 hard assert가 아니라 **위반율**로 게이트한다(hard assert는 80회에서 ~9% 플레이크). gap·크기·완전성은 hard assert.
 - 랜덤 기반이라 반복 횟수를 줄이면 통계 검증력이 떨어진다. 상수(200/80/20000)를 임의로 낮추지 말 것.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

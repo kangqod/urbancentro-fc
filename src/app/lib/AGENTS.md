@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # app/lib
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -10,4 +10,6 @@
 | `index.ts`     | 배럴                                                                 |
 | `use-store.ts` | `useThemeValue()` — `useThemeStore.isDarkMode`를 `useShallow`로 선택 |
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

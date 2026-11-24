@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # tesseract/ui
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -15,4 +15,6 @@
 | -------------- | ---------------------------------------------------- |
 | `ocr-loading/` | 전체화면 진행 오버레이 (see `ocr-loading/AGENTS.md`) |
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

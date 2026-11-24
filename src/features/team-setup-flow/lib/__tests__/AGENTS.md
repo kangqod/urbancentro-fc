@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
+# `team-setup-flow/lib/__tests__`
 
-# team-setup-flow/lib/**tests**
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -16,4 +16,6 @@
 - 인코더(`footer.hooks.ts`)를 바꾸면 여기 `serialize()`도 동일하게 바꿔야 테스트가 의미가 있다.
 - `buildSharedPlayer`가 런타임 로스터 스토어를 조회하므로 `beforeAll`에서 `useRosterStore.setState`로 테스트 로스터를 시드한다.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # team-setup-flow/lib
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -26,4 +26,6 @@
 - 영문 티어 별칭(`ace/advanced/...`)은 `LEGACY_TIER_ALIASES`로 이 경로에서만 매핑. `toTierType` 자체는 순수하게 둔다.
 - 로스터 조회는 `getRosterRows()`(런타임 스토어) — 정적 명단 파일을 두거나 import 하지 않는다.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

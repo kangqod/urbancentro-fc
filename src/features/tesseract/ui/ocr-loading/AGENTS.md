@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # ocr-loading
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -17,4 +17,6 @@
 
 - 오버레이 껍데기는 `LoadingOverlay`가 담당(인라인 렌더라 antd CSS 변수 정상 해석). fullscreen `Spin`으로 바꾸지 말 것.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

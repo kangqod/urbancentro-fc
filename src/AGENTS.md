@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # src
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -36,4 +36,6 @@
 
 - 테스트는 각 디렉터리의 `__tests__/`에 두고 `pnpm test:run`으로 실행. jsdom + `shared/test/setup.ts`(fetch 차단, matchMedia 스텁).
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

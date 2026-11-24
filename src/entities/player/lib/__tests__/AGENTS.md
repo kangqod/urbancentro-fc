@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
+# `player/lib/__tests__`
 
-# player/lib/**tests**
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -17,4 +17,6 @@
 - `beforeEach`에서 `resetRosterLoader()` + `clearRosterCache()` 필수 — 메모이즈·localStorage가 테스트 간 새는 것을 막는다.
 - `console.warn`은 `vi.spyOn`으로 잠재운다.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

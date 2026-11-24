@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # theme/model
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -18,4 +18,6 @@
 - `store.ts`에 `resetThemeState`가 정의돼 있지만 `ThemeStore` 타입에 없어 타입 훅으로는 접근 불가. 필요하면 타입에 추가.
 - `body` 클래스 부착은 `src/app/Provider.tsx`가 담당한다(여기서 DOM 조작하지 않음).
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

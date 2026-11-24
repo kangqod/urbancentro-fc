@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # .github
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -30,6 +30,8 @@ GitHub Actions 구성. PR 검증(CI)과 `master` push 시 GitHub Pages 배포를
 
 ### External
 
-- actions/checkout@v6, pnpm/action-setup@v5, actions/setup-node@v6, actions/upload-pages-artifact@v5, actions/deploy-pages@v5
+- actions/checkout@v6, pnpm/action-setup@v6, actions/setup-node@v6, actions/upload-pages-artifact@v5, actions/deploy-pages@v5
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.
