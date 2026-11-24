@@ -26,6 +26,7 @@
 ### Working In This Directory
 
 - 탭 이동은 **푸터 버튼 → `setActiveTab`** 으로만 한다. antd Tabs에 `onChange`가 없고 비활성 탭은 CSS로 disabled 처리돼 있다.
+- 사용자 공지가 필요한 배포는 `lib/release-notice.ts`의 `RELEASE_NOTICE`의 날짜·항목을 새 내용으로 교체(id는 내용 해시로 자동 생성 — 같은 날 두 번째 공지도 내용만 다르면 재표시, 문구만 고쳐도 재표시. 이전 공지는 남기지 않음, 없으면 `null`). 슬라이스 내부 전용이라 `lib/index.ts`에 export 하지 않는다.
 - 공유링크 포맷은 인코더(`ui/team-distribution/footer.hooks.ts`)·디코더(`lib/utils.ts`)·테스트(`lib/__tests__`)·`pages/main/lib/initialize.ts` 네 곳이 한 세트.
 
 ## Manual Notes

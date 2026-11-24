@@ -11,6 +11,7 @@
 | `team-setup-flow.scss`   | `.tab-menu`(`sport-headline`), 활성 탭 `--ant-color-primary`, ink bar `--fc-gradient-cta`, 비활성 탭 disabled 표현(`not-allowed`, opacity .45), nav 높이 78px |
 | `player-small-card.tsx`  | `PlayerSmallCard({ player })`: 게스트 → `게` 칩, `SUPPORT_NAMES`(지원 1/2) → 🔄, 일반 → `YY 이름`. `is-len4/is-len5` 클래스로 긴 이름 축소(지원 슬롯 제외)    |
 | `player-small-card.scss` | `.pl-line` nowrap, `.pl-year/.pl-name` line-height 1 정렬, 길이별 폰트, `.pl-mark-guest/.pl-mark-support`                                                     |
+| `release-notice/`        | 팀 구성 탭 진입 시 업데이트 공지 모달(`ReleaseNotice`, '확인'만으로 닫힘, 공유 화면 제외)                                                                     |
 | `index.ts`               | 배럴                                                                                                                                                          |
 
 ## Subdirectories

@@ -1,0 +1,86 @@
+@use 'sport';
+
+// 헤더 스트라이프(main.scss .app-header::after)와 같은 톤의 상단 띠 — 라운드 모서리에 맞춰 잘리도록 overflow를 숨긴다.
+// antd 기본(:where 0,2,0) 여백은 루트 클래스 이중 지정(0,3,0)으로 넓힌다. $root = 모달 루트 클래스, $block = BEM 접두.
+@mixin fc-dialog($root, $block) {
+  .#{$root} .ant-modal-container {
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      background: var(--fc-gradient-cta, linear-gradient(135deg, #ff681f, #ff8f4d));
+    }
+  }
+
+  .ant-modal.#{$root} {
+    .ant-modal-container {
+      padding: 28px 28px 24px;
+    }
+
+    .ant-modal-header {
+      margin-bottom: 20px;
+    }
+
+    .ant-modal-footer {
+      margin-top: 24px;
+    }
+  }
+
+  .#{$block}__header {
+    display: flex;
+    align-items: center;
+    column-gap: 12px;
+  }
+
+  .#{$block}__icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--ant-color-primary-bg);
+    color: var(--ant-color-primary);
+  }
+
+  .#{$block}__title {
+    @include sport.sport-headline;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ant-color-text);
+  }
+
+  .#{$root} .#{$block}__cta {
+    @include sport.sport-cta;
+    font-weight: 600;
+  }
+
+  @media (max-width: 576px) {
+    .ant-modal.#{$root} {
+      .ant-modal-container {
+        padding: 24px 20px 20px;
+      }
+
+      .ant-modal-header {
+        margin-bottom: 16px;
+      }
+
+      .ant-modal-footer {
+        margin-top: 20px;
+      }
+    }
+
+    .#{$block}__icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    .#{$block}__title {
+      font-size: 1.05rem;
+    }
+  }
+}

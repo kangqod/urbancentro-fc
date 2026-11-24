@@ -5,6 +5,7 @@ import { TabMenu } from '../model'
 import { TeamSizeSelector } from './team-size-selector'
 import { PlayerSelection } from './player-selection'
 import { TeamDistribution } from './team-distribution'
+import { ReleaseNotice } from './release-notice'
 
 import './team-setup-flow.scss'
 
@@ -44,5 +45,10 @@ export function TeamSetupFlow() {
     }
   ]
 
-  return <Tabs activeKey={activeTab} items={tabItems} className="team-setup-flow" centered size="large" tabBarGutter={TAB_GAP} />
+  return (
+    <>
+      <Tabs activeKey={activeTab} items={tabItems} className="team-setup-flow" centered size="large" tabBarGutter={TAB_GAP} />
+      <ReleaseNotice />
+    </>
+  )
 }
