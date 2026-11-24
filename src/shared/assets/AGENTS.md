@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # shared/assets
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -23,4 +23,6 @@ SCSS 파셜.
 - 선수 명단은 여기 두지 않는다(시트 런타임 로딩 + localStorage 캐시).
 - `sport-headline`은 본문·입력·선수 이름에 적용하지 않는다(한글 가독성).
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

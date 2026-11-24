@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # app
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -35,4 +35,6 @@ React 진입점과 앱 전역 설정. antd 디자인 토큰(색·radius·모션)
 
 - `@/pages`(`Main`), `@/entities`(`useThemeStore`), `@/shared`(`PRIMARY_COLOR`, `assets/sport`)
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

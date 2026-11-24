@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # shared/test
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -22,4 +22,6 @@ vitest 전역 셋업과 RTL 렌더 헬퍼.
 - 스토어 리셋 `afterEach`는 RTL cleanup보다 먼저 돌아(마운트 상태) `act`로 감싸야 act 경고가 없다. 경고 재현은 `vitest run --disableConsoleIntercept`.
 - 새 zustand 스토어를 추가하면 여기 리셋 목록에도 추가.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

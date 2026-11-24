@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # team/model
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -17,4 +17,6 @@
 
 - `ShareKakaoContent.teams`는 `Team[]`으로 타입돼 있지만 실제 링크에는 직렬화 튜플이 들어간다(`footer.hooks.ts`에서 캐스팅). FSD 레이어 위반을 피하기 위한 의도적 경계.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

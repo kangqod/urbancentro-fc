@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
+# `player-selection/__tests__`
 
-# player-selection/**tests**
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -15,4 +15,6 @@
 
 - `renderWithProviders`(`@/shared/test/render`)를 쓰고 스토어는 afterEach 자동 리셋에 맡긴다.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

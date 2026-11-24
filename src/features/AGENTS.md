@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # features
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -35,4 +35,6 @@
 
 - RTL 테스트: `guest-modal.test.tsx`, `team-distribution/__tests__/*`. 단위: `lib/__tests__/shared-player.test.ts`. 그 외 화면은 육안 QA.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

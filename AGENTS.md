@@ -1,6 +1,6 @@
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # urbancentro-fc
+
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -8,30 +8,31 @@
 
 ## Key Files
 
-| File                                                         | Description                                                                                                                                                                  |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `package.json`                                               | pnpm 스크립트(`dev/build/lint/typecheck/test/verify/pages`)와 의존성. `verify`가 완료 게이트 SSOT                                                                            |
-| `vite.config.ts`                                             | `base: '/urbancentro-fc'`, `@` alias, vitest(jsdom, `src/shared/test/setup.ts`), `__APP_BUILD_TIME__` define + `dist/build.json` 생성 플러그인, antd/lucide/vendor 수동 청크 |
-| `tsconfig.json` / `tsconfig.app.json` / `tsconfig.node.json` | 솔루션 + 앱(ES2022, bundler, strict, vitest globals) + node(vite.config) 설정                                                                                                |
-| `eslint.config.js`                                           | flat config: ts-eslint recommended + react-hooks + react-refresh, prettier 호환. `--max-warnings 0`                                                                          |
-| `.prettierrc.json` / `.prettierignore`                       | printWidth 140, semi 없음, singleQuote. SCSS/CSS는 포맷 제외                                                                                                                 |
-| `index.html`                                                 | Pretendard(jsDelivr) 프리로드, Kakao JS SDK 2.7.4(SRI), `#root`, 진입 `/src/app/index.tsx`                                                                                   |
-| `CLAUDE.md`                                                  | 작업 규칙(스택·FSD·테마 토큰·SCSS 규칙·동작 동결·검증 게이트). 반드시 먼저 읽는다                                                                                            |
-| `README.md`                                                  | 사용자용 소개(기능·알고리즘·배포). 일부 버전 표기가 구버전(antd 5/Vite 7)                                                                                                    |
-| `mise.toml`                                                  | node 24.13.0 고정                                                                                                                                                            |
-| `pnpm-workspace.yaml`                                        | `allowBuilds`: esbuild, tesseract.js, @parcel/watcher                                                                                                                        |
+| File                                                         | Description                                                                                                                                                                                  |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package.json`                                               | pnpm 스크립트(`dev/build/lint/typecheck/test/verify/pages`)와 의존성. `verify`가 완료 게이트 SSOT. `packageManager: pnpm@12.23.0`이 pnpm 버전 SSOT(CI `pnpm/action-setup@v6`가 이 값을 읽음) |
+| `vite.config.ts`                                             | `base: '/urbancentro-fc'`, `@` alias, vitest(jsdom, `src/shared/test/setup.ts`), `__APP_BUILD_TIME__` define + `dist/build.json` 생성 플러그인, antd/lucide/vendor 수동 청크                 |
+| `tsconfig.json` / `tsconfig.app.json` / `tsconfig.node.json` | 솔루션 + 앱(ES2022, bundler, strict, vitest globals) + node(vite.config) 설정                                                                                                                |
+| `eslint.config.js`                                           | flat config: ts-eslint recommended + react-hooks + react-refresh, prettier 호환. `--max-warnings 0`                                                                                          |
+| `.prettierrc.json` / `.prettierignore`                       | printWidth 140, semi 없음, singleQuote. SCSS/CSS는 포맷 제외                                                                                                                                 |
+| `index.html`                                                 | Pretendard(jsDelivr) 프리로드, Kakao JS SDK 2.7.4(SRI), `#root`, 진입 `/src/app/index.tsx`                                                                                                   |
+| `CLAUDE.md`                                                  | 작업 규칙(스택·FSD·테마 토큰·SCSS 규칙·동작 동결·검증 게이트). 반드시 먼저 읽는다                                                                                                            |
+| `README.md`                                                  | 사용자용 소개(기능·알고리즘·배포). 일부 버전 표기가 구버전(antd 5/Vite 7)                                                                                                                    |
+| `mise.toml`                                                  | node 24.13.0 + pnpm 12.23.0 고정(로컬 mise용 — pnpm 버전은 `packageManager`와 함께 갱신)                                                                                                     |
+| `pnpm-workspace.yaml`                                        | `allowBuilds`: esbuild, tesseract.js, @parcel/watcher. pnpm 11+ 설정 파일(`.npmrc`는 인증 전용). 모르는 키는 에러                                                                            |
+| `pnpm-lock.yaml`                                             | lockfile v9. `packageManagerDependencies`에 pnpm 자체가 기록되므로 `packageManager` 변경 후 `pnpm install` 필수(안 하면 frozen install 실패)                                                 |
 
 ## Subdirectories
 
-| Directory  | Purpose                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------- |
-| `src/`     | 앱 소스, FSD 레이어(app/pages/widgets/features/entities/shared) (see `src/AGENTS.md`)             |
-| `.github/` | CI(lint) + GitHub Pages 배포 워크플로 (see `.github/AGENTS.md`)                                   |
-| `scripts/` | 빌드 후 `build.json` 정합성 게이트 (see `scripts/AGENTS.md`)                                      |
-| `docs/`    | 과거 계획 문서 (see `docs/AGENTS.md`)                                                             |
-| `public/`  | 정적 자산(파비콘) (see `public/AGENTS.md`)                                                        |
-| `.claude/` | Claude Code Stop 훅 `verify-gate.sh`(`pnpm verify` 강제, 소스 해시로 스킵, 3회 실패 시 사람 개입) |
-| `.vscode/` | 워크스페이스 TS SDK, 저장 시 ESLint fix + Prettier                                                |
+| Directory  | Purpose                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `src/`     | 앱 소스, FSD 레이어(app/pages/widgets/features/entities/shared) (see `src/AGENTS.md`)                                       |
+| `.github/` | CI(lint) + GitHub Pages 배포 워크플로 (see `.github/AGENTS.md`)                                                             |
+| `scripts/` | 빌드 후 `build.json` 정합성 게이트 (see `scripts/AGENTS.md`)                                                                |
+| `docs/`    | 과거 계획 문서 (see `docs/AGENTS.md`)                                                                                       |
+| `public/`  | 정적 자산(파비콘) (see `public/AGENTS.md`)                                                                                  |
+| `.claude/` | Claude Code Stop 훅 `verify-gate.sh`(`pnpm verify` 강제, 소스 해시로 스킵, 3회 실패 시 사람 개입) (see `.claude/AGENTS.md`) |
+| `.vscode/` | 워크스페이스 TS SDK, 저장 시 ESLint fix + Prettier                                                                          |
 
 ## For AI Agents
 
@@ -59,5 +60,8 @@
 
 - React 19, antd 6, Zustand 5 (+immer), lucide-react, tesseract.js 7, Kakao JS SDK(CDN)
 - Vite 8, TypeScript 6, Vitest 4 + Testing Library, ESLint 10, Prettier 3, sass, gh-pages
+- pnpm 12(Rust 네이티브). pnpm 11부터의 기본값: `minimumReleaseAge` 1일(갓 배포된 버전은 설치 거부), `strictDepBuilds`(`allowBuilds`에 없는 빌드 스크립트는 install 실패)
 
-<!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

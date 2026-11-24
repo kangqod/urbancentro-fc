@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # shared/ui
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -29,4 +29,6 @@
 - `tab-footer.scss`의 `.dark-mode/.light-mode` 그림자 분기는 방향·대비가 모드별로 달라 단일 토큰으로 합치지 않는다.
 - `release-date`는 ISO 앞 10자를 그대로 쓰지 않고 `Date`로 파싱해 로컬 날짜로 표기(UTC 저녁 빌드가 KST에서 하루 밀리는 문제).
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

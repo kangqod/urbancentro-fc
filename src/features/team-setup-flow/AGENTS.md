@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # team-setup-flow
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Purpose
 
@@ -28,4 +28,6 @@
 - 탭 이동은 **푸터 버튼 → `setActiveTab`** 으로만 한다. antd Tabs에 `onChange`가 없고 비활성 탭은 CSS로 disabled 처리돼 있다.
 - 공유링크 포맷은 인코더(`ui/team-distribution/footer.hooks.ts`)·디코더(`lib/utils.ts`)·테스트(`lib/__tests__`)·`pages/main/lib/initialize.ts` 네 곳이 한 세트.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.

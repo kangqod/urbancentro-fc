@@ -1,2 +1,3 @@
 [tools]
 node = "24.13.0"  # LTS/Krypton
+pnpm = "12.23.0"

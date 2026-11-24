@@ -1,7 +1,7 @@
-<!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-25 | Updated: 2026-08-25 -->
-
 # tesseract/lib
+
+**Parent context:** `../AGENTS.md`
+**Generated:** 2026-08-25 · **Updated:** 2026-11-24
 
 ## Key Files
 
@@ -12,10 +12,18 @@
 | `use-store.ts`      | `useSetPlayerState()` → `usePlayerStore.checkTesseractPlayers`                                                                                                                                                                                                                                                                                                                             |
 | `index.ts`          | `./useTesseract` 만 export                                                                                                                                                                                                                                                                                                                                                                 |
 
+## Subdirectories
+
+| Directory    | Purpose                                              |
+| ------------ | ---------------------------------------------------- |
+| `__tests__/` | `extract-player.test.ts` (see `__tests__/AGENTS.md`) |
+
 ## For AI Agents
 
 ### Working In This Directory
 
 - tesseract v7 logger status 는 `startsWith`로 매칭(`(from cache)` 접미사 대응). "100% 후 되감기" 버그 방지를 위해 `initialized api` 같은 완료 이벤트는 무시한다.
 
-<!-- MANUAL: -->
+## Manual Notes
+
+이 제목 아래는 사람이 작성한 메모이며 재생성 시 보존된다.
