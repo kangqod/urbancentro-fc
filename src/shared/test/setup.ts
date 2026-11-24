@@ -15,9 +15,13 @@ if (!window.matchMedia) {
     dispatchEvent: vi.fn()
   }))
 }
-// antd 내부 컴포넌트가 종종 요구
+// antd 내부 컴포넌트가 `new ResizeObserver()`로 생성한다 — vitest 4의 vi.fn(화살표 구현)은 new 불가라 클래스로 둔다.
 if (!window.ResizeObserver) {
-  window.ResizeObserver = vi.fn().mockImplementation(() => ({ observe: vi.fn(), unobserve: vi.fn(), disconnect: vi.fn() }))
+  window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver
 }
 
 // antd Wave/Modal이 getComputedStyle(node, '::before')를 호출하면 jsdom이 "Not implemented" 노이즈를 낸다.
