@@ -6,13 +6,25 @@ import { useTeamDistribution } from './team-distribution.hooks'
 import './team-distribution.scss'
 
 export function TeamDistribution() {
-  const { contextHolder, isSharedView, isShuffle, handleDistributePlayers } = useTeamDistribution()
+  const { contextHolder, isSharedView, isShuffle, handleDistributePlayers, isSwapMode, swapSelectedId, toggleSwapMode, handleSwapTap } =
+    useTeamDistribution()
 
   return (
     <div className={`team-distribution-container${isSharedView ? ' shared-view' : ''}`}>
       <TabHeader title="팀 분배" description="선택된 선수들을 랜덤으로 팀에 배치합니다" />
 
-      {isSharedView ? <SharedView isShuffle={isShuffle} /> : <DefaultView isShuffle={isShuffle} onClickShuffle={handleDistributePlayers} />}
+      {isSharedView ? (
+        <SharedView isShuffle={isShuffle} />
+      ) : (
+        <DefaultView
+          isShuffle={isShuffle}
+          onClickShuffle={handleDistributePlayers}
+          isSwapMode={isSwapMode}
+          swapSelectedId={swapSelectedId}
+          onToggleSwapMode={toggleSwapMode}
+          onSwapTap={handleSwapTap}
+        />
+      )}
 
       {contextHolder}
     </div>

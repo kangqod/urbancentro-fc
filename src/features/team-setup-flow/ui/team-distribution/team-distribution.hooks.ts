@@ -1,8 +1,15 @@
 import { useEffect, useState, useRef } from 'react'
 import { message } from 'antd'
-import { balanceTeams } from '@/entities'
+import { balanceTeams, swapPlayers } from '@/entities'
 import type { MatchFormatType, Team } from '@/entities'
-import { parseSharedTeams, useTeamDistributionValue, useTeamsState, useGetAvailablePlayersState, TEAMS_PARAMS } from '../../lib'
+import {
+  parseSharedTeams,
+  useTeamDistributionValue,
+  useTeamsState,
+  useTeamsValue,
+  useGetAvailablePlayersState,
+  TEAMS_PARAMS
+} from '../../lib'
 import { TabMenu } from '../../model'
 
 function getUserFriendlyErrorMessage(error: unknown): string {
@@ -34,10 +41,13 @@ function getUserFriendlyErrorMessage(error: unknown): string {
 export function useTeamDistribution() {
   const { isSharedView, activeTab } = useTeamDistributionValue()
   const { teamCount, setTeams } = useTeamsState()
+  const teams = useTeamsValue()
 
   const getAvailablePlayers = useGetAvailablePlayersState()
 
   const [isShuffle, setIsShuffle] = useState(true)
+  const [isSwapMode, setIsSwapMode] = useState(false)
+  const [swapSelectedId, setSwapSelectedId] = useState<string | null>(null)
   const [messageApi, contextHolder] = message.useMessage()
 
   const isFirstRenderRef = useRef<boolean>(false)
@@ -88,12 +98,41 @@ export function useTeamDistribution() {
 
   const handleDistributePlayers = async () => {
     setIsShuffle(true)
+    setIsSwapMode(false)
+    setSwapSelectedId(null)
 
     if (isSharedView) {
       await distributeTeamsFromSharedLink()
     } else {
       await distributeTeamsLocally()
     }
+  }
+
+  const toggleSwapMode = () => {
+    setIsSwapMode((prev) => !prev)
+    setSwapSelectedId(null)
+  }
+
+  const handleSwapTap = (id: string) => {
+    if (swapSelectedId === null) {
+      setSwapSelectedId(id)
+      return
+    }
+
+    if (swapSelectedId === id) {
+      setSwapSelectedId(null)
+      return
+    }
+
+    const nextTeams = swapPlayers(teams, swapSelectedId, id)
+    // 같은 참조 = 같은 팀(교환 불가) → 선택만 새 선수로 옮긴다.
+    if (nextTeams === teams) {
+      setSwapSelectedId(id)
+      return
+    }
+
+    setTeams(nextTeams)
+    setSwapSelectedId(null)
   }
 
   useEffect(() => {
@@ -110,6 +149,10 @@ export function useTeamDistribution() {
     contextHolder,
     isSharedView,
     isShuffle,
-    handleDistributePlayers
+    handleDistributePlayers,
+    isSwapMode,
+    swapSelectedId,
+    toggleSwapMode,
+    handleSwapTap
   }
 }
